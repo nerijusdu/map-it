@@ -1,0 +1,138 @@
+* {
+  margin: 0px;
+  padding: 0px;
+  font-family: 'Noto Sans', sans-serif;
+  color: white;
+  stroke: white !important;
+}
+
+:root {
+  --main-bg-color: #33333d;
+  --secondary-bg-color: #27272f;
+  --primary-color: #1eb980;
+  --primary-darker-color: #045d56;
+  --modal-overlay-color: rgba(255, 255, 255, 0.25);
+}
+
+body {
+  background: var(--main-bg-color);
+  color: white;
+  stroke: white;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-center-v {
+  display: flex;
+  align-items: center;
+}
+
+.grow {
+  flex-grow: 1;
+}
+
+.border-between-children > * {
+  border-right: 1px solid white;
+}
+
+.border-between-children > *:last-of-type {
+  border-right: none;
+}
+
+.modal {
+  position: absolute;
+  top: 40px;
+  left: 40px;
+  right: 40px;
+  margin: auto !important;
+  bottom: 40px;
+  background: var(--main-bg-color);
+  overflow: initial;
+  border-radius: 2px;
+  outline: currentcolor none medium;
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-title {
+  background: var(--primary-color);
+  height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.modal-content {
+  padding: 0px 20px 20px 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.modal-footer {
+  display: flex;
+}
+
+.modal-footer > .button {
+  flex-grow: 1;
+  height: 50px;
+}
+
+.ReactModal__Overlay {
+  background: var(--modal-overlay-color ) !important;
+}
+
+.mui-textfield > input,
+.mui-textfield > textarea,
+.mui-textfield > textarea::placeholder,
+.mui-select > select,
+.mui-textfield > label,
+.mui-select > label {
+  color: white;
+  border-bottom-color: white;
+}
+
+.mui-textfield--float-label > input:not(:focus).mui--is-not-empty ~ label,
+.mui-textfield--float-label > textarea:not(:focus).mui--is-not-empty ~ label,
+.mui-select > select:not(:focus).mui--is-not-empty ~ label {
+  color: white;
+}
+
+.mui-textfield > input:focus ~ label,
+.mui-textfield > textarea:focus ~ label,
+.mui-select > select:focus ~ label,
+.mui-select:focus > label {
+  color: var(--primary-color);
+}
+
+.mui-textfield > input:focus,
+.mui-textfield > textarea:focus,
+.mui-select:focus > select,
+.mui-select > select:focus {
+  border-bottom-color: var(--primary-color);
+}
+
+.mui-select__menu {
+  background: var(--secondary-bg-color);
+}
+
+.mui-select__menu > .mui--is-selected {
+  background: var(--primary-darker-color) !important;
+}
+
+.mui-select__menu > div:hover {
+  background: var(--primary-color) !important;;
+}
+
+.mui-select > select {
+  background-image: none;
+}
