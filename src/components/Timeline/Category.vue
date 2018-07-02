@@ -7,7 +7,7 @@
     </div>
     <div class="rows-container">
       <div
-        v-for="task in category.tasks"
+        v-for="task in getTasks(category.id)"
         v-bind:key="task.title"
         class="row">
         <div
@@ -23,8 +23,13 @@
 </template>
 
 <script>
+import { mapGetters } from 'vuex';
+
 export default {
-  props: ['category']
+  props: ['category'],
+  computed: mapGetters('roadmap', {
+    getTasks: 'tasksByCategory'
+  })
 };
 </script>
 

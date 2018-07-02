@@ -18,13 +18,18 @@
 </template>
 
 <script>
+import { mapState, mapGetters } from 'vuex';
 import Category from './Category';
 
 export default {
-  props: ['categories'],
-  data: () => ({
-    months: ['June', 'July', 'August']
-  }),
+  computed: {
+    ...mapState({
+      categories: state => state.roadmap.current.categories
+    }),
+    ...mapGetters('roadmap', {
+      months: 'roadmapMonths'
+    })
+  },
   components: {
     Category
   }
