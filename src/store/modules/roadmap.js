@@ -24,14 +24,15 @@ const initialState = {
       }
     ],
     tasks: [
-      { id: '4', title: 'Do mobile', category: '1' },
-      { id: '5', title: 'Compile', category: '1' },
-      { id: '6', title: 'Deploy', category: '1' },
-      { id: '7', title: 'Do web', category: '2' },
-      { id: '8', title: 'Deploy', category: '2' },
-      { id: '9', title: 'How to design?', category: '3' }
+      { id: '4', title: 'Do mobile', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
+      { id: '5', title: 'Compile', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
+      { id: '6', title: 'Deploy', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
+      { id: '7', title: 'Do web', category: '2', startDate: moment(), endDate: moment().add(5, 'days') },
+      { id: '8', title: 'Deploy', category: '2', startDate: moment(), endDate: moment().add(5, 'days') },
+      { id: '9', title: 'How to design?', category: '3', startDate: moment(), endDate: moment().add(5, 'days') }
     ]
-  }
+  },
+  editTaskId: null
 };
 
 const getters = {
@@ -47,6 +48,18 @@ const getters = {
     }
 
     return months;
+  },
+  taskToEdit: (state) => {
+    if (!state.editTaskId) {
+      return null;
+    }
+
+    const task = state.current.tasks.find(t => t.id === state.editTaskId);
+    return {
+      ...task,
+      startDate: task.startDate.toDate(),
+      endDate: task.endDate.toDate()
+    };
   }
 };
 
@@ -61,6 +74,12 @@ const actions = {
     }
     // example to commit action to another module
     // commit('products/decrementProductInventory', { id: product.id }, { root: true })
+  },
+  editTask({ commit }, { taskId, modal }) {
+    if (taskId) {
+      modal.show('addTask');
+    }
+    commit('mEditTask', taskId);
   }
 };
 
@@ -73,7 +92,14 @@ const mutations = {
   },
   mUpdateTask(state, task) {
     const i = state.current.tasks.findIndex(t => t.id === task.id);
-    state.current.tasks.$set(i, task);
+    state.current.tasks = [
+      ...state.current.tasks.slice(0, i),
+      task,
+      ...state.current.tasks.slice(i + 1)
+    ];
+  },
+  mEditTask(state, taskId) {
+    state.editTaskId = taskId;
   }
 };
 

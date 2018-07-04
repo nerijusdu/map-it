@@ -29,7 +29,7 @@
       </md-datepicker>
     </form>
     <div class="modal-footer">
-      <md-button class="md-raised md-accent" @click="() => $modal.hide('addTask')">Cancel</md-button>
+      <md-button class="md-raised md-accent" @click="onClose">Cancel</md-button>
       <md-button class="md-raised md-primary" @click="validateTask">Save</md-button>
     </div>
   </modal>
@@ -37,17 +37,20 @@
 
 <script>
 import moment from 'moment';
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
 import * as messages from '@/util/messages';
 
 export default {
-  name: 'FormValidation',
+  name: 'AddEditTask',
   mixins: [validationMixin],
-  computed: mapState({
-    categories: state => state.roadmap.current.categories
-  }),
+  computed: {
+    ...mapState({
+      categories: state => state.roadmap.current.categories,
+    }),
+    ...mapGetters('roadmap', ['taskToEdit'])
+  },
   data: () => ({
     task: {
       id: '',
@@ -61,7 +64,8 @@ export default {
   }),
   methods: {
     ...mapActions('roadmap', {
-      saveTaskToStore: 'saveTask'
+      saveTaskToStore: 'saveTask',
+      editTask: 'editTask'
     }),
     saveTask() {
       this.saveTaskToStore({
@@ -70,6 +74,16 @@ export default {
         endDate: moment(this.task.endDate)
       });
       this.clearForm();
+      if (this.taskToEdit) {
+        this.editTask({ taskId: null, modal: this.$modal });
+      }
+      this.$modal.hide('addTask');
+    },
+    onClose() {
+      if (this.taskToEdit) {
+        this.clearForm();
+        this.editTask({ taskId: null, modal: this.$modal });
+      }
       this.$modal.hide('addTask');
     },
     getValidationClass(fieldName) {
@@ -98,6 +112,11 @@ export default {
       title: { required },
       description: { maxLength: maxLength(500) },
       category: { required }
+    }
+  },
+  watch: {
+    taskToEdit(val) {
+      this.task = { ...val };
     }
   }
 };

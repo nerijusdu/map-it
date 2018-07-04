@@ -2,19 +2,20 @@
   <div class="category">
     <div
       class="label flex-center"
-      v-bind:style="{backgroundColor: category.color}">
+      :style="{backgroundColor: category.color}">
       {{category.title}}
     </div>
     <div class="rows-container">
       <div
         v-for="task in getTasks(category.id)"
-        v-bind:key="task.title"
+        :key="task.title"
         class="row">
         <div
           class="item flex-center"
-          v-bind:style="{
+          :style="{
             backgroundColor: category.color,
-          }">
+          }"
+          @click="() => editTask({ taskId: task.id, modal: $modal })">
           <span>{{task.title}}</span>
         </div>
       </div>
@@ -23,13 +24,14 @@
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   props: ['category'],
   computed: mapGetters('roadmap', {
     getTasks: 'tasksByCategory'
-  })
+  }),
+  methods: mapActions('roadmap', ['editTask'])
 };
 </script>
 
