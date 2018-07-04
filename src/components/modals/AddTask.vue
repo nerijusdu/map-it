@@ -4,36 +4,101 @@
       <div>Add new task</div>
     </div>
     <form class="modal-content">
-      <md-field>
+      <md-field :class="getValidationClass('title')">
         <label>Title</label>
-        <md-input></md-input>
+        <md-input v-model="task.title"/>
+        <span class="md-error" v-if="!$v.task.title.required">{{ messages.requiredMsg() }}</span>
       </md-field>
-      <md-field>
+      <md-field :class="getValidationClass('description')">
         <label>Description</label>
-        <md-textarea></md-textarea>
+        <md-textarea v-model="task.description"/>
+        <span class="md-error" v-if="!$v.task.description.required">{{ messages.maxLengthMsg(500) }}</span>
       </md-field>
-      <md-field>
+      <md-field :class="getValidationClass('category')">
         <label for="category">Category</label>
-        <md-select name="category" id="category">
-          <md-option value="1">Web</md-option>
-          <md-option value="2">Mobile</md-option>
-          <md-option value="3">Design</md-option>
+        <md-select name="category" id="category" v-model="task.category">
+          <md-option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
         </md-select>
+        <span class="md-error" v-if="!$v.task.category.required">{{ messages.requiredMsg() }}</span>
       </md-field>
-      <md-datepicker md-immediately>
+      <md-datepicker md-immediately v-model="task.startDate">
         <label>Start date</label>
       </md-datepicker>
-      <md-datepicker md-immediately>
+      <md-datepicker md-immediately v-model="task.endDate">
         <label>End date</label>
       </md-datepicker>
     </form>
     <div class="modal-footer">
       <md-button class="md-raised md-accent" @click="() => $modal.hide('addTask')">Cancel</md-button>
-      <md-button class="md-raised md-primary">Save</md-button>
+      <md-button class="md-raised md-primary" @click="validateTask">Save</md-button>
     </div>
   </modal>
 </template>
 
 <script>
-export default {};
+import moment from 'moment';
+import { mapState, mapActions } from 'vuex';
+import { validationMixin } from 'vuelidate';
+import { required, maxLength } from 'vuelidate/lib/validators';
+import * as messages from '@/util/messages';
+
+export default {
+  name: 'FormValidation',
+  mixins: [validationMixin],
+  computed: mapState({
+    categories: state => state.roadmap.current.categories
+  }),
+  data: () => ({
+    task: {
+      id: '',
+      title: '',
+      description: '',
+      category: '',
+      startDate: moment().toDate(),
+      endDate: moment().toDate()
+    },
+    messages
+  }),
+  methods: {
+    ...mapActions('roadmap', {
+      saveTaskToStore: 'saveTask'
+    }),
+    saveTask() {
+      this.saveTaskToStore({
+        ...this.task,
+        startDate: moment(this.task.startDate),
+        endDate: moment(this.task.endDate)
+      });
+      this.clearForm();
+      this.$modal.hide('addTask');
+    },
+    getValidationClass(fieldName) {
+      const field = this.$v.task[fieldName];
+
+      return field ? { 'md-invalid': field.$invalid && field.$dirty } : {};
+    },
+    validateTask() {
+      this.$v.$touch();
+
+      if (!this.$v.$invalid) {
+        this.saveTask();
+      }
+    },
+    clearForm() {
+      this.$v.$reset();
+      this.task.title = '';
+      this.task.description = '';
+      this.task.category = '';
+      this.task.startDate = moment().toDate();
+      this.task.endDate = moment().toDate();
+    }
+  },
+  validations: {
+    task: {
+      title: { required },
+      description: { maxLength: maxLength(500) },
+      category: { required }
+    }
+  }
+};
 </script>

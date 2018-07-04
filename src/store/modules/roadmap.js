@@ -73,7 +73,7 @@ const mutations = {
   },
   mUpdateTask(state, task) {
     const i = state.current.tasks.findIndex(t => t.id === task.id);
-    state.current.tasks[i] = task;
+    state.current.tasks.$set(i, task);
   }
 };
 
