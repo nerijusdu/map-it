@@ -49,6 +49,7 @@ module.exports = {
     'linebreak-style': 'off',
     'comma-dangle': 'off',
     'max-len': 'off',
-    'no-console': 'off'
+    'no-console': 'off',
+    'import/prefer-default-export': 'off'
   }
 }

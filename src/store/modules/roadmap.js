@@ -32,7 +32,8 @@ const initialState = {
       { id: '9', title: 'How to design?', category: '3', startDate: moment(), endDate: moment().add(5, 'days') }
     ]
   },
-  editTaskId: null
+  editTaskId: null,
+  previewTaskId: null
 };
 
 const getters = {
@@ -60,6 +61,17 @@ const getters = {
       startDate: task.startDate.toDate(),
       endDate: task.endDate.toDate()
     };
+  },
+  taskToPreview: (state) => {
+    if (!state.previewTaskId) {
+      return null;
+    }
+
+    const task = state.current.tasks.find(t => t.id === state.previewTaskId);
+    return {
+      ...task,
+      category: state.current.categories.find(c => c.id === task.category)
+    };
   }
 };
 
@@ -75,11 +87,20 @@ const actions = {
     // example to commit action to another module
     // commit('products/decrementProductInventory', { id: product.id }, { root: true })
   },
-  editTask({ commit }, { taskId, modal }) {
+  editTask({ state, commit }, { taskId, modal }) {
     if (taskId) {
       modal.show('addTask');
+      modal.hide('previewTask');
+    } else if (state.previewTaskId) {
+      modal.show('previewTask');
     }
     commit('mEditTask', taskId);
+  },
+  previewTask({ commit }, { taskId, modal }) {
+    if (taskId) {
+      modal.show('previewTask');
+    }
+    commit('mPreviewTask', taskId);
   }
 };
 
@@ -100,6 +121,9 @@ const mutations = {
   },
   mEditTask(state, taskId) {
     state.editTaskId = taskId;
+  },
+  mPreviewTask(state, taskId) {
+    state.previewTaskId = taskId;
   }
 };
 

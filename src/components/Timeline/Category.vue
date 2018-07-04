@@ -15,7 +15,7 @@
           :style="{
             backgroundColor: category.color,
           }"
-          @click="() => editTask({ taskId: task.id, modal: $modal })">
+          @click="() => previewTask({ taskId: task.id, modal: $modal })">
           <span>{{task.title}}</span>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default {
   computed: mapGetters('roadmap', {
     getTasks: 'tasksByCategory'
   }),
-  methods: mapActions('roadmap', ['editTask'])
+  methods: mapActions('roadmap', ['previewTask'])
 };
 </script>
 

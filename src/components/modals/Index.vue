@@ -1,13 +1,18 @@
 <template>
-  <AddTask />
+  <div>
+    <AddTask />
+    <PreviewTask />
+  </div>
 </template>
 
 <script>
 import AddTask from './AddTask';
+import PreviewTask from './PreviewTask';
 
 export default {
   components: {
-    AddTask
+    AddTask,
+    PreviewTask
   }
 };
 </script>
