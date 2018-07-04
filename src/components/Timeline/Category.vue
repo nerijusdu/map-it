@@ -60,9 +60,12 @@ export default {
   height: 30px;
   flex-grow: 1;
   background: lightgrey;
-  margin-top: 3px;
-  margin-bottom: 3px;
+  margin-bottom: 5px;
   border-radius: 1px;
+}
+
+.row:last-of-type {
+  margin-bottom: 0px;
 }
 
 .item {

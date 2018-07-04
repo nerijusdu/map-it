@@ -6,28 +6,22 @@
       <div class="flex-center">Colors</div>
     </div>
     <div class="flex">
-      <Button label="Item" icon="plus.svg" type="positive" />
-      <Button label="Category" icon="plus.svg" type="positive" />
-      <Button label="Export" icon="export.svg" disabled="true"/>
+      <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addTask')">
+        <i class="fas fa-plus"/>
+      </md-button>
     </div>
   </div>
 </template>
 
 <script>
-import Button from '@/components/common/Button';
-
-export default {
-  components: {
-    Button
-  }
-};
+export default {};
 </script>
 
 
 <style scoped>
 .menu-bar {
   width: 99%;
-  height: 40px;
+  height: 50px;
   padding-top: 5px;
   padding-bottom: 5px;
   display: flex;

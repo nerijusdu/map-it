@@ -47,17 +47,10 @@ body {
   border-right: none;
 }
 
-.modal {
-  position: absolute;
-  top: 40px;
-  left: 40px;
-  right: 40px;
-  margin: auto !important;
-  bottom: 40px;
+.v--modal {
   background: var(--main-bg-color);
   overflow: initial;
   border-radius: 2px;
-  outline: currentcolor none medium;
   display: flex;
   flex-direction: column;
 }
@@ -80,6 +73,7 @@ body {
 
 .modal-footer {
   display: flex;
+  justify-content: flex-end;
 }
 
 .modal-footer > .button {
@@ -87,52 +81,40 @@ body {
   height: 50px;
 }
 
-.ReactModal__Overlay {
-  background: var(--modal-overlay-color ) !important;
+.md-field > .md-icon ~ .md-input {
+  margin-left: 5px !important;
 }
 
-.mui-textfield > input,
-.mui-textfield > textarea,
-.mui-textfield > textarea::placeholder,
-.mui-select > select,
-.mui-textfield > label,
-.mui-select > label {
-  color: white;
-  border-bottom-color: white;
+.md-field > .md-icon ~ label {
+  left: 28px;
 }
 
-.mui-textfield--float-label > input:not(:focus).mui--is-not-empty ~ label,
-.mui-textfield--float-label > textarea:not(:focus).mui--is-not-empty ~ label,
-.mui-select > select:not(:focus).mui--is-not-empty ~ label {
-  color: white;
+.md-datepicker-dialog,
+.md-select-menu {
+  z-index: 1000 !important;
 }
 
-.mui-textfield > input:focus ~ label,
-.mui-textfield > textarea:focus ~ label,
-.mui-select > select:focus ~ label,
-.mui-select:focus > label {
-  color: var(--primary-color);
+.md-select-menu > div > .md-list,
+.md-datepicker-dialog,
+.md-datepicker-dialog .md-datepicker-body-header::after,
+.md-datepicker-dialog .md-datepicker-body-header::before,
+.md-datepicker-dialog .md-datepicker-body-footer {
+  background: var(--main-bg-color) !important;
 }
 
-.mui-textfield > input:focus,
-.mui-textfield > textarea:focus,
-.mui-select:focus > select,
-.mui-select > select:focus {
-  border-bottom-color: var(--primary-color);
+.md-datepicker-dialog .md-datepicker-header {
+  background: var(--secondary-bg-color) !important;
 }
 
-.mui-select__menu {
-  background: var(--secondary-bg-color);
+.md-datepicker > i > svg > path:last-of-type,
+.md-select > i > svg > path:last-of-type,
+.md-datepicker > button.md-clear > div > div > i > svg > path:last-of-type,
+.md-datepicker-body-header > button > div > div > i > svg > path:last-of-type {
+  display: none;
 }
 
-.mui-select__menu > .mui--is-selected {
-  background: var(--primary-darker-color) !important;
-}
-
-.mui-select__menu > div:hover {
-  background: var(--primary-color) !important;;
-}
-
-.mui-select > select {
-  background-image: none;
+.md-datepicker .md-icon {
+  height: 15px !important;
+  margin-top: 0px !important;
+  align-self: center;
 }
