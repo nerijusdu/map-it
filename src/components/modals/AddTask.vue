@@ -21,10 +21,10 @@
         </md-select>
         <span class="md-error" v-if="!$v.task.category.required">{{ messages.requiredMsg() }}</span>
       </md-field>
-      <md-datepicker md-immediately v-model="task.startDate">
+      <md-datepicker md-immediately v-model="task.startDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
         <label>Start date</label>
       </md-datepicker>
-      <md-datepicker md-immediately v-model="task.endDate">
+      <md-datepicker md-immediately v-model="task.endDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
         <label>End date</label>
       </md-datepicker>
     </form>
@@ -49,7 +49,7 @@ export default {
     ...mapState({
       categories: state => state.roadmap.current.categories,
     }),
-    ...mapGetters('roadmap', ['taskToEdit'])
+    ...mapGetters('roadmap', ['taskToEdit', 'roadmapTimeFrame'])
   },
   data: () => ({
     task: {
@@ -105,6 +105,11 @@ export default {
       this.task.category = '';
       this.task.startDate = moment().toDate();
       this.task.endDate = moment().toDate();
+    },
+    disabledDates: timeFrame => (date) => {
+      const d = moment(date);
+
+      return !(d.isSameOrAfter(timeFrame.startDate, 'day') && d.isSameOrBefore(timeFrame.endDate, 'day'));
     }
   },
   validations: {
