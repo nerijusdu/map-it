@@ -14,6 +14,8 @@
           class="item flex-center"
           :style="{
             backgroundColor: category.color,
+            width: `${calculateWidthPercentage(timeFrame, {startDate: task.startDate, endDate: task.endDate})}%`,
+            marginLeft: `${calculateWidthPercentage(timeFrame, {startDate: timeFrame.startDate, endDate: task.startDate})}%`
           }"
           @click="() => previewTask({ taskId: task.id, modal: $modal })">
           <span>{{task.title}}</span>
@@ -25,13 +27,18 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
+import { calculateWidthPercentage } from '@/util/functions';
 
 export default {
   props: ['category'],
   computed: mapGetters('roadmap', {
-    getTasks: 'tasksByCategory'
+    getTasks: 'tasksByCategory',
+    timeFrame: 'roadmapTimeFrame'
   }),
-  methods: mapActions('roadmap', ['previewTask'])
+  methods: {
+    ...mapActions('roadmap', ['previewTask']),
+    calculateWidthPercentage
+  }
 };
 </script>
 

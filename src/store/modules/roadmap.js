@@ -24,8 +24,8 @@ const initialState = {
       }
     ],
     tasks: [
-      { id: '4', title: 'Do mobile', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
-      { id: '5', title: 'Compile', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
+      { id: '4', title: 'Do mobile', category: '1', startDate: moment('2018-06-01'), endDate: moment().add(5, 'days') },
+      { id: '5', title: 'Compile', category: '1', startDate: moment().add(5, 'days'), endDate: moment().add(15, 'days') },
       { id: '6', title: 'Deploy', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
       { id: '7', title: 'Do web', category: '2', startDate: moment(), endDate: moment().add(5, 'days') },
       { id: '8', title: 'Deploy', category: '2', startDate: moment(), endDate: moment().add(5, 'days') },
@@ -72,7 +72,11 @@ const getters = {
       ...task,
       category: state.current.categories.find(c => c.id === task.category)
     };
-  }
+  },
+  roadmapTimeFrame: state => ({
+    startDate: state.current.startDate,
+    endDate: state.current.endDate
+  })
 };
 
 const actions = {
