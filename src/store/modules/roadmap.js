@@ -105,6 +105,15 @@ const actions = {
       modal.show('previewTask');
     }
     commit('mPreviewTask', taskId);
+  },
+  saveCategory({ state, commit }, category) {
+    const item = state.current.categories.find(c => c.id === category.id);
+
+    if (!item) {
+      commit('mAddCategory', category);
+    } else {
+      commit('mUpdateCategory', category);
+    }
   }
 };
 
@@ -128,7 +137,21 @@ const mutations = {
   },
   mPreviewTask(state, taskId) {
     state.previewTaskId = taskId;
-  }
+  },
+  mAddCategory(state, category) {
+    state.current.categories.push({
+      ...category,
+      id: shortId.generate()
+    });
+  },
+  mUpdateCategory(state, category) {
+    const i = state.current.categories.findIndex(c => c.id === category.id);
+    state.current.categories = [
+      ...state.current.categories.slice(0, i),
+      category,
+      ...state.current.categories.slice(i + 1)
+    ];
+  },
 };
 
 export default {

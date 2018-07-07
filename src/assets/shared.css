@@ -98,7 +98,8 @@ body {
 .md-datepicker-dialog,
 .md-datepicker-dialog .md-datepicker-body-header::after,
 .md-datepicker-dialog .md-datepicker-body-header::before,
-.md-datepicker-dialog .md-datepicker-body-footer {
+.md-datepicker-dialog .md-datepicker-body-footer,
+.md-tabs, .md-tab, .md-tabs-navigation {
   background: var(--main-bg-color) !important;
 }
 
