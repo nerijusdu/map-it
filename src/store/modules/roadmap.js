@@ -79,7 +79,7 @@ const getters = {
   })
 };
 
-const actions = {
+export const actions = {
   saveTask({ state, commit }, task) {
     const item = state.current.tasks.find(t => t.id === task.id);
 
@@ -117,7 +117,7 @@ const actions = {
   }
 };
 
-const mutations = {
+export const mutations = {
   mAddTask(state, task) {
     state.current.tasks.push({
       ...task,
