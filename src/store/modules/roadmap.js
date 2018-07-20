@@ -1,5 +1,6 @@
 import moment from 'moment';
 import shortId from 'shortid';
+import { roadmapMonthFormat } from '@/util/constants';
 
 const initialState = {
   current: {
@@ -36,7 +37,7 @@ const initialState = {
   previewTaskId: null
 };
 
-const getters = {
+export const getters = {
   tasksByCategory: state => categoryId => state.current.tasks.filter(t => t.category === categoryId),
   roadmapMonths: (state) => {
     const months = [];
@@ -44,7 +45,7 @@ const getters = {
     const end = moment(state.current.endDate).endOf('month');
 
     while (start.isSameOrBefore(end)) {
-      months.push(start.format('MMM YYYY'));
+      months.push(start.format(roadmapMonthFormat));
       start.add(1, 'month');
     }
 
@@ -56,6 +57,10 @@ const getters = {
     }
 
     const task = state.current.tasks.find(t => t.id === state.editTaskId);
+    if (!task) {
+      return null;
+    }
+
     return {
       ...task,
       startDate: task.startDate.toDate(),
@@ -68,6 +73,10 @@ const getters = {
     }
 
     const task = state.current.tasks.find(t => t.id === state.previewTaskId);
+    if (!task) {
+      return null;
+    }
+
     return {
       ...task,
       category: state.current.categories.find(c => c.id === task.category)

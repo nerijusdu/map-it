@@ -1,4 +1,6 @@
-import { mutations, actions } from '@/store/modules/roadmap';
+import moment from 'moment';
+import { mutations, actions, getters } from '@/store/modules/roadmap';
+import { roadmapMonthFormat } from '@/util/constants';
 
 const getMockForAction = (state, commitName, param) => ({
   state,
@@ -80,6 +82,22 @@ describe('Roadmap mutations', () => {
     const updatedCategory = state.current.categories.find(x => x.id === 1);
 
     expect(updatedCategory.title).toBe(newTitle);
+  });
+
+  it('mEditTask', () => {
+    const state = { editTaskId: 1 };
+
+    mutations.mEditTask(state, 2);
+
+    expect(state.editTaskId).toBe(2);
+  });
+
+  it('mPreviewTask', () => {
+    const state = { previewTaskId: 1 };
+
+    mutations.mPreviewTask(state, 2);
+
+    expect(state.previewTaskId).toBe(2);
   });
 });
 
@@ -198,5 +216,177 @@ describe('Roadmap actions', () => {
     ] } }, 'mUpdateCategory', category);
 
     actions.saveCategory(mock, category);
+  });
+});
+
+describe('Roadmap getters', () => {
+  it('roadmapTimeFrame', () => {
+    const state = {
+      current: {
+        startDate: moment('2018-07-20'),
+        endDate: moment('2018-07-21')
+      }
+    };
+
+    const result = getters.roadmapTimeFrame(state);
+    
+    expect(result).toBeDefined();
+    expect(result.startDate).toBe(state.current.startDate);
+    expect(result.endDate).toBe(state.current.endDate);
+  });
+
+  it('taskToPreview > when previewTaskId is null', () => {
+    const state = {
+      previewTaskId: null,
+      current: {
+        tasks: [{ id: 1 }]
+      }
+    };
+
+    const task = getters.taskToPreview(state);
+
+    expect(task).toBeNull();
+  });
+
+  it('taskToPreview > when previewTaskId is valid', () => {
+    const state = {
+      previewTaskId: 1,
+      current: {
+        tasks: [{ id: 1, category: 2 }],
+        categories: [{ id: 2 }]
+      }
+    };
+
+    const task = getters.taskToPreview(state);
+
+    expect(task).toBeDefined();
+    expect(task.id).toBe(state.previewTaskId);
+    expect(task.category).toBeDefined();
+    expect(task.category.id).toBe(2);
+  });
+
+  it('taskToPreview > when previewTaskId is invalid', () => {
+    const state = {
+      previewTaskId: 2,
+      current: {
+        tasks: [{ id: 1 }],
+        categories: []
+      }
+    };
+
+    const task = getters.taskToPreview(state);
+
+    expect(task).toBeNull();
+  });
+  
+  it('taskToEdit > when editTaskId is null', () => {
+    const state = {
+      editTaskId: null,
+      current: {
+        tasks: [{ id: 1 }]
+      }
+    };
+
+    const task = getters.taskToEdit(state);
+
+    expect(task).toBeNull();
+  });
+
+  it('taskToEdit > when editTaskId is valid', () => {
+    const stateTask = {
+      id: 1,
+      startDate: moment('2017-07-07'),
+      endDate: moment('2018-08-08')
+    };
+    const state = {
+      editTaskId: 1,
+      current: {
+        tasks: [stateTask]
+      }
+    };
+
+    const task = getters.taskToEdit(state);
+
+    expect(task).toBeDefined();
+    expect(task.id).toBe(state.editTaskId);
+    expect(task.startDate.toDateString()).toBe(stateTask.startDate.toDate().toDateString());
+    expect(task.endDate.toDateString()).toBe(stateTask.endDate.toDate().toDateString());
+  });
+
+  it('taskToEdit > when editTaskId is invalid', () => {
+    const state = {
+      editTaskId: 2,
+      current: {
+        tasks: [{ id: 1 }]
+      }
+    };
+
+    const task = getters.taskToEdit(state);
+
+    expect(task).toBeNull();
+  });
+
+  it('tasksByCategory', () => {
+    const category = 1;
+    const state = {
+      current: {
+        tasks: [
+          { id: 1, category },
+          { id: 2, category },
+          { id: 3, category: 2 },
+        ]
+      }
+    };
+
+    const tasks = getters.tasksByCategory(state)(category);
+
+    expect(tasks.length).toBe(2);
+    expect(tasks.find(x => x.id === 1)).toBeDefined();
+    expect(tasks.find(x => x.id === 2)).toBeDefined();
+    expect(tasks.find(x => x.id === 3)).toBeUndefined();
+  });
+
+  it('roadmapMonths', () => {
+    const state = {
+      current: {
+        startDate: moment('2000-01-01'),
+        endDate: moment('2000-05-01')
+      }
+    };
+
+    const months = getters.roadmapMonths(state);
+
+    expect(months.length).toBe(5);
+    expect(months[0]).toBe(state.current.startDate.format(roadmapMonthFormat));
+    expect(months[4]).toBe(state.current.endDate.format(roadmapMonthFormat));
+  });
+
+  it('roadmapMonths > when months are not full', () => {
+    const state = {
+      current: {
+        startDate: moment('2000-01-10'),
+        endDate: moment('2000-05-05')
+      }
+    };
+
+    const months = getters.roadmapMonths(state);
+
+    expect(months.length).toBe(5);
+    expect(months[0]).toBe(state.current.startDate.format(roadmapMonthFormat));
+    expect(months[4]).toBe(state.current.endDate.format(roadmapMonthFormat));
+  });
+  
+  it('roadmapMonths > when dates are the same', () => {
+    const state = {
+      current: {
+        startDate: moment('2000-01-01'),
+        endDate: moment('2000-01-01')
+      }
+    };
+
+    const months = getters.roadmapMonths(state);
+
+    expect(months.length).toBe(1);
+    expect(months[0]).toBe(state.current.startDate.format(roadmapMonthFormat));
   });
 });

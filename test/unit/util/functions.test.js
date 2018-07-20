@@ -56,3 +56,23 @@ describe('Functions.calculateWidthPercentage', () => {
     expect(res).toBe(0);
   });
 });
+
+describe('Functions.getParagraphs', () => {
+  it('when text is given', () => {
+    const text = "Test\nText\nFour\nLines";
+
+    const result = functions.getParagraphs(text);
+
+    expect(result).toBeDefined();
+    expect(result.length).toBe(4);
+  });
+
+  it('when null is given', () => {
+    const text = null;
+
+    const result = functions.getParagraphs(text);
+
+    expect(result).toBeDefined();
+    expect(result.length).toBe(1);
+  });
+});
