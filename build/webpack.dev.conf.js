@@ -46,6 +46,12 @@ const devWebpackConfig = merge(baseWebpackConfig, {
     },
     before (app) {
       app.use('/__open-in-editor', openInEditor('code'))
+    },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8081',
+        pathRewrite: {'^/api' : ''}
+      }
     }
   },
   plugins: [
