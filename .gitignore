@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 /test/unit/coverage/
 build
+.secret.*
 
 # Editor directories and files
 .idea
