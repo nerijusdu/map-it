@@ -1,4 +1,5 @@
 import { Document, model, Schema } from 'mongoose';
+import authService from '../services/authService';
 
 export interface IUser extends Document {
   email: string;
@@ -11,7 +12,7 @@ const UserSchema = new Schema({
 });
 
 UserSchema.methods.comparePasswords = function(pass: string) {
-  return pass === this.password;
+  return authService.verifyPassword(pass, this.password);
 };
 
 export default model<IUser>('User', UserSchema);

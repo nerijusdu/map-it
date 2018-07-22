@@ -1,7 +1,8 @@
+import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JWTSecret } from '../.secret';
 import { JWTAge } from '../config';
-import user, { IUser } from '../models/user';
+import { IUser } from '../models/user';
 
 const verifyToken = (token: string | undefined) => {
   return new Promise<IUser>((resolve, reject) => {
@@ -19,14 +20,29 @@ const createToken = (data: ITokenData) => {
     data.maxAge = JWTAge;
   }
 
-  const token = jwt.sign({ data: data.payload }, JWTSecret, { expiresIn: data.maxAge });
+  const token = jwt.sign({ data: {
+    _id: data.payload._id,
+    email: data.payload.email
+  } }, JWTSecret, { expiresIn: data.maxAge });
 
   return token;
 };
 
+const encryptPassword = (password: string) => {
+  return bcrypt.genSalt(10)
+    .then((salt) => bcrypt.hash(password, salt))
+    .catch((err) => console.log(err));
+};
+
+const verifyPassword = (inputPass: string, encryptedPass: string) => {
+  return bcrypt.compare(inputPass, encryptedPass);
+};
+
 export default {
   verifyToken,
-  createToken
+  createToken,
+  verifyPassword,
+  encryptPassword
 };
 
 interface ITokenData {

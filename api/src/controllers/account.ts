@@ -10,9 +10,13 @@ router.post('/login', (req: Request, res: Response) => {
   User
     .findOne()
     .where('email', email)
-    .then((user) => {
-      if (!user || !user.comparePasswords(password)) {
-        throw new Error('Email or password is incorrect.');
+    .then(async (user) => {
+      if (!user) {
+        throw new Error('Email is incorrect.');
+      }
+      const pass = await user.comparePasswords(password);
+      if (!user || !pass) {
+        throw new Error('Password is incorrect.');
       }
       return user;
     })
