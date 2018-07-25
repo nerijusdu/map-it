@@ -1,15 +1,25 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import Timeline from '@/components/Timeline';
+import Login from '@/components/Login';
+import Navigation from '@/components/Navigation';
 
 Vue.use(Router);
 
 export default new Router({
   routes: [
     {
-      path: '/',
+      path: '/timeline',
       name: 'Timeline',
-      component: Timeline,
+      components: {
+        default: Timeline,
+        navigation: Navigation
+      }
     },
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    }
   ],
 });
