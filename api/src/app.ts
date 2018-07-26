@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import cors from 'cors';
 import express from 'express';
 import {PORT} from './config';
 import {AccountController, RoadmapController} from './controllers';
@@ -10,6 +11,7 @@ database.init();
 
 const app: express.Application = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 app.use(auth.verifyUser);
 

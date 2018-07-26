@@ -22,6 +22,7 @@ router.post('/login', (req: Request, res: Response) => {
     })
     .then((user) => {
       res.send({
+        email: user.email,
         token: authService.createToken({ payload: user })
       });
     })

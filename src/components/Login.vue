@@ -2,13 +2,13 @@
   <div class="container flex-center">
     <form class="login-form">
       <div class="login-form-content">
-        <md-field :class="getValidationClass('email')">
+        <md-field :class="getValidationClass('email')" @keyup.native.enter="validateForm">
           <label>Email</label>
           <md-input v-model="user.email"/>
           <span class="md-error" v-if="!$v.user.email.required">{{ messages.requiredMsg() }}</span>
           <span class="md-error" v-if="!$v.user.email.email">{{ messages.invalidEmailMsg() }}</span>
         </md-field>
-        <md-field :md-toggle-password="false" :class="getValidationClass('password')">
+        <md-field :md-toggle-password="false" :class="getValidationClass('password')" @keyup.native.enter="validateForm">
           <label>Password</label>
           <md-input v-model="user.password" type="password"/>
           <span class="md-error" v-if="!$v.user.password.required">{{ messages.requiredMsg() }}</span>
@@ -16,7 +16,10 @@
       </div>
       <div class="login-form-footer">
         <md-button class="md-raised">Register</md-button>
-        <md-button class="md-raised md-primary" @click="validateForm">Login</md-button>
+        <md-button class="md-raised md-primary" @click="validateForm">
+          <div v-if="!isLoading">Login</div>
+          <md-progress-spinner v-if="isLoading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+        </md-button>
       </div>
     </form>
   </div>
@@ -25,7 +28,9 @@
 <script>
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
+import { mapActions } from 'vuex';
 import * as messages from '@/util/messages';
+import api from '@/util/api';
 
 export default {
   mixins: [validationMixin],
@@ -34,11 +39,19 @@ export default {
       email: '',
       password: ''
     },
-    messages
+    messages,
+    isLoading: false
   }),
   methods: {
+    ...mapActions('app', ['saveUser']),
     submit() {
-
+      this.isLoading = true;
+      api
+        .login(this.user)
+        .then((user) => {
+          this.isLoading = false;
+          this.saveUser(user);
+        });
     },
     register() { },
     getValidationClass(fieldName) {
@@ -84,5 +97,11 @@ export default {
 .login-form-footer {
   display: flex;
   justify-content: flex-end;
+}
+
+.spinner {
+  height: 30px;
+  width: 30px;
+  align-self: center;
 }
 </style>
