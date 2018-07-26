@@ -25,10 +25,11 @@ const handleErrors = (res) => {
     console.log('error: ', res.data.message);
     return null;
   }
-  return res.data;
+  return res;
 };
 
-export default (url, options) => {
+export default (url, settings) => {
+  const options = settings || {};
   const headers = options.headers || defaultHeaders;
   appendToken(headers);
 

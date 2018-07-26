@@ -1,4 +1,6 @@
 import moment from 'moment';
+import store from '@/store';
+import { loginUrl, publicUrls } from './constants';
 
 export const getParagraphs = text => (text || '').split('\n');
 
@@ -27,4 +29,12 @@ export const calculateWidthPercentage = (allTimeFrame, objectTimeframe) => {
   const objectDays = Math.abs(b.startDate.diff(b.endDate, 'hours'));
 
   return Math.round((objectDays / allDays) * 100);
+};
+
+export const authorizeRoutes = (to, from, next) => {
+  if (publicUrls.includes(to.path) || store.getters['app/getToken']) {
+    next();
+    return;
+  }
+  next(loginUrl);
 };

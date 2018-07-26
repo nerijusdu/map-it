@@ -50,7 +50,8 @@ export default {
         .login(this.user)
         .then((user) => {
           this.isLoading = false;
-          this.saveUser(user);
+          this.saveUser(user.data);
+          this.$router.push({ name: 'Timeline' });
         });
     },
     register() { },

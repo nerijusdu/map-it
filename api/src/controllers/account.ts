@@ -31,4 +31,15 @@ router.post('/login', (req: Request, res: Response) => {
     });
 });
 
+router.get('/verify', (req: Request, res: Response) => {
+  const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
+
+  const user = authService.getPayload(tokenStr);
+
+  res.send({
+    email: user.email,
+    token: tokenStr
+  });
+});
+
 export const AccountController = router;

@@ -6,5 +6,8 @@ export default {
       method: 'POST',
       body: JSON.stringify(userInfo)
     });
+  },
+  getUserInfo() {
+    return apiCall('/account/verify');
   }
 };

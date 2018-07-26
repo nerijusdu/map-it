@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import Router from 'vue-router';
+import { authorizeRoutes } from '@/util/functions';
 import Timeline from '@/components/Timeline';
 import Login from '@/components/Login';
 import Navigation from '@/components/Navigation';
 
 Vue.use(Router);
 
-export default new Router({
+const router = new Router({
   routes: [
     {
       path: '/timeline',
@@ -23,3 +24,7 @@ export default new Router({
     }
   ],
 });
+
+router.beforeResolve(authorizeRoutes);
+
+export default router;
