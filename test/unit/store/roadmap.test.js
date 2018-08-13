@@ -1,29 +1,8 @@
 import moment from 'moment';
 import { mutations, actions, getters } from '@/store/modules/roadmap';
 import { roadmapMonthFormat } from '@/util/constants';
-
-const getMockForAction = (state, commitName, param) => ({
-  state,
-  commit: (commitParam1, commitParam2) => {
-    if (commitName) {
-      expect(commitParam1).toBe(commitName);
-      expect(commitParam2).toBe(param);
-    }
-  }
-});
-const getModalMock = (showName, hideName) => ({
-  _showName: undefined,
-  _hideName: undefined,
-  show(name) { this._showName = name },
-  hide(name) { this._hideName = name },
-  checkIfMethodsCalled() {
-    const expectedShowName = showName || undefined;
-    const expectedHideName = hideName || undefined;
-    
-    expect(this._showName).toBe(expectedShowName);
-    expect(this._hideName).toBe(expectedHideName);
-  }
-});
+import getMockForAction from '../mocks/store-action';
+import getModalMock from '../mocks/modal';
 
 describe('Roadmap mutations', () => {
   it('mAddTask', () => {

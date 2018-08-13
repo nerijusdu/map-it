@@ -1,5 +1,6 @@
 import moment from 'moment';
 import * as functions from '@/util/functions.js';
+import { publicUrls, loginUrl } from '@/util/constants.js';
 
 describe('Functions.calculateWidthPercentage', () => {
   it('should be 100%', () => {
@@ -74,5 +75,37 @@ describe('Functions.getParagraphs', () => {
 
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
+  });
+});
+
+describe('Functions.authorizeRoutes', () => {
+  it('should allow public urls', () => {
+    const next = (x) => expect(x).toBeUndefined();
+
+    publicUrls.forEach(x => {
+      functions.authorizeRoutes({ path: x }, null, next);
+    })
+  });
+
+  it('should redirect to login when accessing non public url and no token is saved', () => {
+    jest.mock('@/store', () => ({
+      getters: {
+        'app/getToken': null
+      }
+    }));
+    const next = (x) => expect(x).toBe(loginUrl);
+
+    functions.authorizeRoutes({ path: '/timeline' }, null, next);
+  });
+
+  it('should allow non public urls when token is saved', () => {
+    jest.mock('@/store', () => ({
+      getters: {
+        'app/getToken': 'TestToken'
+      }
+    }));
+    const next = (x) => expect(x).toBe(loginUrl);
+
+    functions.authorizeRoutes({ path: '/timeline' }, null, next);
   });
 });

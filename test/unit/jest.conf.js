@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  collectCoverage: true,
+  automock: false,
   rootDir: path.resolve(__dirname, '../../'),
   moduleFileExtensions: [
     'js',
