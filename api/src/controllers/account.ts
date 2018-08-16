@@ -1,10 +1,10 @@
-import { Request, Response, Router } from 'express';
+import { Router } from 'express';
 import { User } from '../models';
 import authService from '../services/authService';
 
 const router = Router();
 
-router.post('/login', (req: Request, res: Response) => {
+router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   User
@@ -32,7 +32,7 @@ router.post('/login', (req: Request, res: Response) => {
     });
 });
 
-router.get('/verify', (req: Request, res: Response) => {
+router.get('/verify', (req, res) => {
   const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
 
   const user = authService.getPayload(tokenStr);

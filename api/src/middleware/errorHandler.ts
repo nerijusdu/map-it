@@ -1,6 +1,6 @@
-import { ErrorRequestHandler, NextFunction, Request, Response } from 'express';
+import { ErrorRequestHandler } from 'express';
 
-export default ((err: any, req: Request, res: Response, next: NextFunction) => {
+export default ((err, req, res, next) => {
   console.log(err);
   res.status(500).send(err);
 }) as ErrorRequestHandler;

@@ -1,6 +1,6 @@
 import { Document, model, Schema } from 'mongoose';
 import authService from '../services/authService';
-import { IRoadmap } from './roadmap';
+import { IRoadmap } from './';
 
 export interface IUser extends Document {
   email: string;

@@ -1,4 +1,4 @@
-import { NextFunction, Request, RequestHandler, Response } from 'express';
+import { RequestHandler } from 'express';
 import auth from '../services/authService';
 
 const publicUrls = [
@@ -6,7 +6,7 @@ const publicUrls = [
   '/account/register'
 ];
 
-export const verifyUser = ((req: Request, res: Response, next: NextFunction) => {
+export const verifyUser = ((req, res, next) => {
   if (publicUrls.find((x) => x === req.url)) {
     next();
     return;
