@@ -13,4 +13,4 @@ const RoadmapSchema = new Schema({
   description: String
 });
 
-export default model('Roadmap', RoadmapSchema);
+export const Roadmap = model<IRoadmap>('Roadmap', RoadmapSchema);

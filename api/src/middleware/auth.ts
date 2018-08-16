@@ -1,6 +1,4 @@
-import { NextFunction, RequestHandler, Response } from 'express';
-import { PublicRequest } from '../models/publicRequest';
-import { IUser } from '../models/user';
+import { NextFunction, Request, RequestHandler, Response } from 'express';
 import auth from '../services/authService';
 
 const publicUrls = [
@@ -8,7 +6,7 @@ const publicUrls = [
   '/account/register'
 ];
 
-export const verifyUser = ((req: PublicRequest, res: Response, next: NextFunction) => {
+export const verifyUser = ((req: Request, res: Response, next: NextFunction) => {
   if (publicUrls.find((x) => x === req.url)) {
     next();
     return;
@@ -17,8 +15,8 @@ export const verifyUser = ((req: PublicRequest, res: Response, next: NextFunctio
   const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
 
   auth.verifyToken(tokenStr)
-    .then((token: IUser) => {
-      req.user = token;
+    .then((token: any) => {
+      req.user = token.data;
       next();
     })
     .catch((err) => {

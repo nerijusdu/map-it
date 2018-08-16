@@ -1,12 +1,14 @@
 import { Request, Response, Router } from 'express';
-import Roadmap from '../models/roadmap';
+import { User } from '../models';
 
 const router = Router();
 
 router.get('/', (req: Request, res: Response) => {
-  Roadmap
-    .findOne()
-    .then((response) => res.send(response));
+  User
+    .findById(req.user!._id)
+    .select('roadmaps')
+    .populate('roadmaps')
+    .then((response) => res.send(response!.roadmaps));
 });
 
 export const RoadmapController = router;
