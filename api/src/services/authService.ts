@@ -2,23 +2,23 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JWTSecret } from '../.secret';
 import { JWTAge } from '../config';
-import { IUser } from '../models/user';
+import { User } from '../models/user';
 
-const getPayload = (token: string): IUser => {
+const getPayload = (token: string): User => {
   const payload = jwt.decode(token) as {[key: string]: any};
   if (!payload) {
     throw new Error('Invalid token');
   }
-  return payload.data as IUser;
+  return payload.data as User;
 };
 
 const verifyToken = (token: string | undefined) => {
-  return new Promise<IUser>((resolve, reject) => {
+  return new Promise<User>((resolve, reject) => {
     jwt.verify(token as string, JWTSecret, (err, decodedToken) => {
       if (err || !decodedToken) {
         return reject(err);
       }
-      resolve(decodedToken as IUser);
+      resolve(decodedToken as User);
     });
   });
 };
@@ -29,7 +29,7 @@ const createToken = (data: ITokenData) => {
   }
 
   const token = jwt.sign({ data: {
-    _id: data.payload._id,
+    _id: data.payload.id,
     email: data.payload.email
   } }, JWTSecret, { expiresIn: data.maxAge });
 
@@ -55,6 +55,6 @@ export default {
 };
 
 interface ITokenData {
-  payload: IUser;
+  payload: User;
   maxAge?: number;
 }

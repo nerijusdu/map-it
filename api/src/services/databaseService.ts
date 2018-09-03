@@ -1,12 +1,19 @@
-import mongoose from 'mongoose';
-import { DbConnectionString } from '../.secret';
+import "reflect-metadata";
+import { Connection, createConnection } from 'typeorm';
+import { ORMConfig } from "../config";
+import { User } from "../models";
+
+let con: Connection;
 
 export const init = () => {
-  mongoose.connect(DbConnectionString, { useNewUrlParser: true });
-
-  mongoose.Promise = global.Promise;
-
-  const db = mongoose.connection;
-
-  db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+  createConnection({
+    ...ORMConfig,
+    entities: [
+      User
+    ]
+  })
+    .then((data) => { con = data; })
+    .catch((e) => console.log('connection failed', e));
 };
+
+export const connection = () => con;

@@ -1,16 +1,16 @@
 import { Router } from 'express';
 import { User } from '../models';
 import authService from '../services/authService';
+import { connection } from '../services/databaseService';
 
 const router = Router();
 
 router.post('/login', (req, res) => {
   const { email, password } = req.body;
 
-  User
-    .findOne()
-    .where('email', email)
-    .select('+password')
+  connection()
+    .manager
+    .findOne(User, { email })
     .then(async (user) => {
       if (!user) {
         throw new Error('Email is incorrect.');
