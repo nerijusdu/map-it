@@ -1,31 +1,11 @@
-import { Document, model, Schema } from 'mongoose';
-import { ICategory, ITask } from './';
+import { Column, Entity } from "typeorm";
+import { OwnedEntity } from "./ownedEntity";
 
-export interface IRoadmap extends Document {
-  title: string;
-  description?: string;
-  tasks: [ITask];
-  categories: [ICategory];
+@Entity()
+export class Roadmap extends OwnedEntity {
+  @Column()
+  public title: string;
+
+  @Column({nullable: true})
+  public description: string;
 }
-
-const RoadmapSchema = new Schema({
-  title: {
-    type: String,
-    required: [true, 'Title is required.']
-  },
-  description: String,
-  tasks: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Task'
-  }],
-  categories: [{
-    type: Schema.Types.ObjectId,
-    ref: 'Category'
-  }],
-  ownerId: {
-    type: String,
-    select: false
-  }
-});
-
-export const Roadmap = model<IRoadmap>('Roadmap', RoadmapSchema);

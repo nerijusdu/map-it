@@ -29,7 +29,7 @@ const createToken = (data: ITokenData) => {
   }
 
   const token = jwt.sign({ data: {
-    _id: data.payload.id,
+    id: data.payload.id,
     email: data.payload.email
   } }, JWTSecret, { expiresIn: data.maxAge });
 

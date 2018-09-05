@@ -1,22 +1,20 @@
 import { Router } from 'express';
-import { Roadmap } from '../models';
+import roadmapService from '../services/roadmapService';
 
 const router = Router();
 
-router.get('/', (req, res) => {
-  Roadmap
-    .find({ ownerId: req.user!._id })
-    .select('-categories -tasks')
-    .then((response) => res.send(response));
+router.get('/', (req, res, next) => {
+  roadmapService(req.user)
+    .getAll()
+    .then((response) => res.send(response))
+    .catch(next);
 });
 
-router.get('/:id', (req, res) => {
-  Roadmap
-    .findById(req.params.id)
-    .where({ ownerId: req.user!._id })
-    .populate('tasks')
-    .populate('categories')
-    .then((response) => res.send(response));
+router.get('/:id', (req, res, next) => {
+  roadmapService(req.user)
+    .getById(req.params.id)
+    .then((result) => res.send(result))
+    .catch(next);
 });
 
 export const RoadmapController = router;

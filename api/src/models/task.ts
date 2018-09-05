@@ -1,30 +1,24 @@
-import { Document, model, Schema } from 'mongoose';
-import { ICategory } from './';
+import { Column, Entity, ManyToOne } from "typeorm";
+import { OwnedEntity } from "./ownedEntity";
+import { Roadmap } from "./roadmap";
 
-export interface ITask extends Document {
-  title: string;
-  description?: string;
-  category: ICategory;
-  startDate: Date;
-  endDate: Date;
+@Entity()
+export class Task extends OwnedEntity {
+  @Column()
+  public title: string;
+
+  @Column({ nullable: true })
+  public description: string;
+
+  @Column({ type: Date })
+  public startDate: Date;
+
+  @Column({ type: Date })
+  public endDate: Date;
+
+  @Column({ nullable: true })
+  public roadmapId: number;
+
+  @ManyToOne(() => Roadmap)
+  public roadmap: Roadmap;
 }
-
-const TaskSchema = new Schema({
-  title: {
-    type: String,
-    required: [true, 'Title is required.']
-  },
-  description: String,
-  startDate: Schema.Types.Date,
-  endDate: Schema.Types.Date,
-  category: {
-    type: Schema.Types.ObjectId,
-    ref: 'Category'
-  },
-  ownerId: {
-    type: String,
-    select: false
-  }
-});
-
-export const Task = model<ITask>('Task', TaskSchema);

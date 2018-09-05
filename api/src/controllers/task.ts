@@ -1,14 +1,20 @@
 import { Router } from 'express';
-import { Task } from '../models';
+import taskService from '../services/taskService';
 
 const router = Router();
 
-router.get('/:id', (req, res) => {
-  Task
-    .findById(req.params.id)
-    .where({ ownerId: req.user!._id })
-    .populate('category')
-    .then((response) => res.send(response));
+router.get('/', (req, res, next) => {
+  taskService(req.user)
+    .getAll()
+    .then((response) => res.send(response))
+    .catch(next);
+});
+
+router.get('/:id', (req, res, next) => {
+  taskService(req.user)
+    .getById(req.params.id)
+    .then((result) => res.send(result))
+    .catch(next);
 });
 
 export const TaskController = router;

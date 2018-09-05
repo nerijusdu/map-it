@@ -1,7 +1,7 @@
 import "reflect-metadata";
 import { Connection, createConnection } from 'typeorm';
 import { ORMConfig } from "../config";
-import { User } from "../models";
+import { Roadmap, Task, User } from "../models";
 
 let con: Connection;
 
@@ -9,7 +9,9 @@ export const init = () => {
   createConnection({
     ...ORMConfig,
     entities: [
-      User
+      User,
+      Roadmap,
+      Task
     ]
   })
     .then((data) => { con = data; })
