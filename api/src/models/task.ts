@@ -16,7 +16,7 @@ export class Task extends OwnedEntity {
   @Column({ type: Date })
   public endDate: Date;
 
-  @Column({ nullable: true })
+  @Column()
   public roadmapId: number;
 
   @ManyToOne(() => Roadmap)

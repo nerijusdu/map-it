@@ -10,7 +10,7 @@ export class OwnedEntity {
   @CreateDateColumn()
   public createdOn: Date;
 
-  @Column({ nullable: true })
+  @Column()
   public userId: number;
 
   @ManyToOne(() => User)

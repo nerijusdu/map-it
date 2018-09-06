@@ -2,12 +2,13 @@ import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { JWTSecret } from '../.secret';
 import { JWTAge } from '../config';
+import { HttpError } from '../models';
 import { User } from '../models/user';
 
 const getPayload = (token: string): User => {
   const payload = jwt.decode(token) as {[key: string]: any};
   if (!payload) {
-    throw new Error('Invalid token');
+    throw new HttpError('Invalid token', 401);
   }
   return payload.data as User;
 };
