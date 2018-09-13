@@ -1,13 +1,19 @@
 import apiCall from './apiCall';
 
 export default {
-  login(userInfo) {
+  login(userInfo, options) {
     return apiCall('/account/login', {
       method: 'POST',
       body: JSON.stringify(userInfo)
-    });
+    }, options);
   },
-  getUserInfo() {
-    return apiCall('/account/verify');
+  getUserInfo(options) {
+    return apiCall('/account/verify', options);
+  },
+  getRoadmapById(id, options) {
+    return apiCall(`/roadmap/${id}`, options);
+  },
+  getRoadmaps(options) {
+    return apiCall('/roadmap', options);
   }
 };

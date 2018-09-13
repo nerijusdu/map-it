@@ -50,6 +50,7 @@ module.exports = {
     'comma-dangle': 'off',
     'max-len': 'off',
     'no-console': 'off',
-    'import/prefer-default-export': 'off'
+    'import/prefer-default-export': 'off',
+    'no-confusing-arrow': 'off'
   }
 }

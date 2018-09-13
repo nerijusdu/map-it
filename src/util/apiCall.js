@@ -10,13 +10,21 @@ export class ApiCall {
     'Content-Type': 'application/json'
   })
 
-  call = (url, settings) => {
-    const options = settings || {};
-    const headers = options.headers || this.defaultHeaders;
+  call = (url, requestSettings, options) => {
+    // eslint-disable-next-line
+    options = options || {};
+    // eslint-disable-next-line
+    requestSettings = requestSettings || {};
+    const headers = requestSettings.headers || this.defaultHeaders;
+
+    if (!options.ignoreLoading) {
+      this.store.commit('app/mToggleLoading', true);
+    }
+
     this.appendToken(headers);
 
     return fetch(`${apiUrl}${url}`, {
-      ...options,
+      ...requestSettings,
       headers
     })
       .then(this.parseResponse)
@@ -24,6 +32,11 @@ export class ApiCall {
       .catch((err) => {
         console.warn('Unhandled error: ', err);
         return null;
+      })
+      .finally(() => {
+        if (!options.ignoreLoading) {
+          this.store.commit('app/mToggleLoading', false);
+        }
       });
   }
 

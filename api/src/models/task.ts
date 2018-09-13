@@ -1,4 +1,5 @@
 import { Column, Entity, ManyToOne } from "typeorm";
+import { Category } from "./category";
 import { OwnedEntity } from "./ownedEntity";
 import { Roadmap } from "./roadmap";
 
@@ -21,4 +22,10 @@ export class Task extends OwnedEntity {
 
   @ManyToOne(() => Roadmap)
   public roadmap: Roadmap;
+
+  @Column()
+  public categoryId: number;
+
+  @ManyToOne(() => Category)
+  public category: Category;
 }

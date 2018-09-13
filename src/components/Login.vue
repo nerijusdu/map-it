@@ -44,7 +44,7 @@ export default {
   }),
   methods: {
     ...mapActions('app', ['saveUser']),
-    submit() {
+    submit() { // TODO: load roadmap on login
       this.isLoading = true;
       api
         .login(this.user)

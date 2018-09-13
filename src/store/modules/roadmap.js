@@ -3,42 +3,13 @@ import shortId from 'shortid';
 import { roadmapMonthFormat } from '@/util/constants';
 
 const initialState = {
-  current: {
-    title: 'SomeRoadmap',
-    startDate: moment('2018-06-01'),
-    endDate: moment('2018-08-31'),
-    categories: [
-      {
-        id: '1',
-        title: 'Mobile',
-        color: 'red'
-      },
-      {
-        id: '2',
-        title: 'Web',
-        color: 'orange'
-      },
-      {
-        id: '3',
-        title: 'Design',
-        color: 'lime'
-      }
-    ],
-    tasks: [
-      { id: '4', title: 'Do mobile', category: '1', startDate: moment('2018-06-01'), endDate: moment().add(5, 'days') },
-      { id: '5', title: 'Compile', category: '1', startDate: moment().add(5, 'days'), endDate: moment().add(15, 'days') },
-      { id: '6', title: 'Deploy', category: '1', startDate: moment(), endDate: moment().add(5, 'days') },
-      { id: '7', title: 'Do web', category: '2', startDate: moment(), endDate: moment().add(5, 'days') },
-      { id: '8', title: 'Deploy', category: '2', startDate: moment(), endDate: moment().add(5, 'days') },
-      { id: '9', title: 'How to design?', category: '3', startDate: moment(), endDate: moment().add(5, 'days') }
-    ]
-  },
+  current: {},
   editTaskId: null,
   previewTaskId: null
 };
 
 export const getters = {
-  tasksByCategory: state => categoryId => state.current.tasks.filter(t => t.category === categoryId),
+  tasksByCategory: state => categoryId => state.current.tasks.filter(t => t.categoryId === categoryId),
   roadmapMonths: (state) => {
     const months = [];
     const start = moment(state.current.startDate).startOf('month');
@@ -79,7 +50,7 @@ export const getters = {
 
     return {
       ...task,
-      category: state.current.categories.find(c => c.id === task.category)
+      categoryId: state.current.categories.find(c => c.id === task.categoryId)
     };
   },
   roadmapTimeFrame: state => ({
@@ -97,8 +68,6 @@ export const actions = {
     } else {
       commit('mUpdateTask', task);
     }
-    // example to commit action to another module
-    // commit('products/decrementProductInventory', { id: product.id }, { root: true })
   },
   editTask({ state, commit }, { taskId, modal }) {
     if (taskId) {
@@ -161,6 +130,18 @@ export const mutations = {
       ...state.current.categories.slice(i + 1)
     ];
   },
+  mSelectRoadmap(state, roadmap) {
+    state.current = {
+      ...roadmap,
+      startDate: moment(roadmap.startDate),
+      endDate: moment(roadmap.endDate),
+      tasks: roadmap.tasks.map(task => ({
+        ...task,
+        startDate: moment(task.startDate),
+        endDate: moment(task.endDate)
+      }))
+    };
+  }
 };
 
 export default {
