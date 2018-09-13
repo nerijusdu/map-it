@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-    <Modals />
+    <modals />
+    <error-message />
     <router-view name="navigation" />
     <router-view v-if="!isLoading"/>
-    <Loading v-if="isLoading"/>
+    <loading v-if="isLoading"/>
   </div>
 </template>
 
@@ -12,12 +13,14 @@ import { mapMutations, mapActions, mapState } from 'vuex';
 import api from '@/util/api';
 import Modals from './components/modals';
 import Loading from './components/Loading';
+import ErrorMessage from './components/ErrorMessage';
 
 export default {
   name: 'App',
   components: {
     Modals,
-    Loading
+    Loading,
+    ErrorMessage
   },
   computed: {
     ...mapState({
@@ -38,6 +41,8 @@ export default {
             this.saveUser(res.data);
             this.initData();
             this.$router.push('Timeline');
+          } else {
+            window.localStorage.removeItem('token');
           }
         });
     }

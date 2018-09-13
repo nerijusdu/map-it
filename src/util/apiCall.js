@@ -30,7 +30,8 @@ export class ApiCall {
       .then(this.parseResponse)
       .then(this.handleErrors)
       .catch((err) => {
-        console.warn('Unhandled error: ', err);
+        this.store.dispatch('app/showError', 'Something went wrong!');
+        console.error(err);
         return null;
       })
       .finally(() => {
@@ -56,7 +57,7 @@ export class ApiCall {
 
   handleErrors = (res) => {
     if (!res.ok) {
-      console.warn('error: ', res.data.message);
+      this.store.dispatch('app/showError', res.data.message);
       return null;
     }
     return res;

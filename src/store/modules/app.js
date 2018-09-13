@@ -1,11 +1,13 @@
 import api from '@/util/api';
+import { errorTime } from '@/util/constants';
 
 const initialState = {
   user: {
     token: null,
     email: null
   },
-  isLoading: false
+  isLoading: false,
+  error: ''
 };
 
 export const getters = {
@@ -34,6 +36,12 @@ export const actions = {
         }
       })
       .finally(() => commit('mToggleLoading', false));
+  },
+  showError({ commit }, error) {
+    if (error) {
+      setTimeout(() => commit('mShowError', ''), errorTime);
+    }
+    commit('mShowError', error);
   }
 };
 
@@ -46,6 +54,9 @@ export const mutations = {
   },
   mToggleLoading(state, isLoading) {
     state.isLoading = isLoading;
+  },
+  mShowError(state, error) {
+    state.error = error;
   }
 };
 
