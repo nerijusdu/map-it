@@ -1,4 +1,5 @@
 import { errorTime } from '@/util/constants';
+import router from '@/router';
 
 const initialState = {
   user: {
@@ -27,6 +28,11 @@ export const actions = {
       setTimeout(() => commit('mShowError', ''), errorTime);
     }
     commit('mShowError', error);
+  },
+  logout({ commit }) {
+    window.localStorage.removeItem('token');
+    commit('mSaveUser', { token: null, email: null });
+    router.push('Login');
   }
 };
 

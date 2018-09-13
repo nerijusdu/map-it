@@ -11,17 +11,26 @@
         <div class="navigation-item-icon"><img src="@/assets/settings.svg"/></div>
         <div>Settings</div>
       </div>
-      <div class="navigation-item flex-center">
-        <div class="navigation-item-icon"><img src="@/assets/user.svg"/></div>
-        <div>Profile</div>
-      </div>
+      <md-menu class="navigation-item flex-center" md-size="small" md-align-trigger>
+        <div class="flex-center" md-menu-trigger>
+          <div class="navigation-item-icon"><img src="@/assets/user.svg"/></div>
+          <div>Profile</div>
+        </div>
+        <md-menu-content>
+          <md-menu-item @click="logout">Logout</md-menu-item>
+        </md-menu-content>
+    </md-menu>
     </div>
   </div>
 </template>
 
 <script>
-export default {
+import { mapActions } from 'vuex';
 
+export default {
+  methods: {
+    ...mapActions('app', ['logout'])
+  }
 };
 </script>
 
@@ -57,6 +66,10 @@ export default {
   height: 50px;
   border-right: 1px solid var(--primary-color);
   margin-right: 10px;
+}
+
+.md-menu-content:last-of-type {
+  right: 0 !important;
 }
 </style>
 
