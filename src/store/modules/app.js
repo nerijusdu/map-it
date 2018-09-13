@@ -1,4 +1,3 @@
-import api from '@/util/api';
 import { errorTime } from '@/util/constants';
 
 const initialState = {
@@ -22,20 +21,6 @@ export const actions = {
 
     window.localStorage.setItem('token', data.token);
     commit('mSaveUser', data);
-  },
-  initData({ commit }) {
-    commit('mToggleLoading', true);
-    api.getRoadmaps({ ignoreLoading: true })
-      .then(res => res && res.data.length > 0
-        ? api.getRoadmapById(res.data[0].id, { ignoreLoading: true })
-        : null
-      )
-      .then((res) => {
-        if (res) {
-          commit('roadmap/mSelectRoadmap', res.data, { root: true });
-        }
-      })
-      .finally(() => commit('mToggleLoading', false));
   },
   showError({ commit }, error) {
     if (error) {

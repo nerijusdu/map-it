@@ -1,5 +1,6 @@
 import moment from 'moment';
 import shortId from 'shortid';
+import api from '@/util/api';
 import { roadmapMonthFormat } from '@/util/constants';
 
 const initialState = {
@@ -92,7 +93,21 @@ export const actions = {
     } else {
       commit('mUpdateCategory', category);
     }
-  }
+  },
+  init({ commit }) {
+    commit('app/mToggleLoading', true, { root: true });
+    api.getRoadmaps({ ignoreLoading: true })
+      .then(res => res && res.data.length > 0
+        ? api.getRoadmapById(res.data[0].id, { ignoreLoading: true })
+        : null
+      )
+      .then((res) => {
+        if (res) {
+          commit('mSelectRoadmap', res.data);
+        }
+      })
+      .finally(() => commit('app/mToggleLoading', false, { root: true }));
+  },
 };
 
 export const mutations = {

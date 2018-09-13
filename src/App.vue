@@ -39,7 +39,6 @@ export default {
         .then((res) => {
           if (res && res.data.token) {
             this.saveUser(res.data);
-            this.initData();
             this.$router.push('Timeline');
           } else {
             window.localStorage.removeItem('token');
