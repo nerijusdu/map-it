@@ -4,13 +4,13 @@
       <div class="login-form-content">
         <md-field :class="getValidationClass('email')" @keyup.native.enter="validateForm">
           <label>Email</label>
-          <md-input v-model="user.email"/>
+          <md-input v-model="user.email" name="email"/>
           <span class="md-error" v-if="!$v.user.email.required">{{ messages.requiredMsg() }}</span>
           <span class="md-error" v-if="!$v.user.email.email">{{ messages.invalidEmailMsg() }}</span>
         </md-field>
         <md-field :md-toggle-password="false" :class="getValidationClass('password')" @keyup.native.enter="validateForm">
           <label>Password</label>
-          <md-input v-model="user.password" type="password"/>
+          <md-input v-model="user.password" type="password" name="password"/>
           <span class="md-error" v-if="!$v.user.password.required">{{ messages.requiredMsg() }}</span>
         </md-field>
       </div>
@@ -47,7 +47,7 @@ export default {
     submit() {
       this.isLoading = true;
       api
-        .login(this.user)
+        .login(this.user, { ignoreLoading: true })
         .then((user) => {
           this.isLoading = false;
           this.saveUser(user.data);
