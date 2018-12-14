@@ -51,6 +51,7 @@ module.exports = {
     'max-len': 'off',
     'no-console': 'off',
     'import/prefer-default-export': 'off',
-    'no-confusing-arrow': 'off'
+    'no-confusing-arrow': 'off',
+    'import/no-unresolved': 'off'
   }
 }
