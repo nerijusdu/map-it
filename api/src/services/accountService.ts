@@ -1,3 +1,4 @@
+import validate from '../helpers/validate';
 import { HttpError, User } from "../models";
 import authService from "./authService";
 import { connection } from "./databaseService";
@@ -37,6 +38,28 @@ class AccountService extends EntityServiceBase<User> {
       email: user.email,
       token: tokenStr
     };
+  }
+
+  public register(newUser: User) {
+    return validate(newUser)
+      .then(() => connection().manager.findOne(User, { email: newUser.email }))
+      .then((existingUser) => {
+        if (existingUser) {
+          throw new HttpError("User with this email already exists", 400);
+        }
+        return authService.encryptPassword(newUser.password)
+      })
+      .then((pass) => {
+        if (!pass) {
+          throw new Error("Password hashing failed");
+        }
+        newUser.password = pass;
+
+        return connection()
+          .getRepository(User)
+          .insert(newUser);
+      })
+      .then((result) => result.identifiers[0]);
   }
 }
 
