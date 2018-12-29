@@ -17,4 +17,18 @@ router.get('/:id', (req, res, next) => {
     .catch(next);
 });
 
+router.post('/', (req, res, next) => {
+  roadmapService(req.user)
+    .save(req.body)
+    .then((result) => res.send(result))
+    .catch(next);
+});
+
+router.delete('/:id', (req, res, next) => {
+  roadmapService(req.user)
+    .delete(req.params.id)
+    .then((result) => res.send(result))
+    .catch(next);
+});
+
 export const RoadmapController = router;

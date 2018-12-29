@@ -1,4 +1,4 @@
-import { IsDateString, IsDefined, Length } from 'class-validator';
+import { IsDateString, IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Category } from './category';
 import { OwnedEntity } from './ownedEntity';
@@ -13,6 +13,8 @@ export class Task extends OwnedEntity {
   public title: string;
 
   @Column({ nullable: true })
+  @Length(0, 500)
+  @IsOptional()
   public description: string;
 
   @Column({ type: Date })

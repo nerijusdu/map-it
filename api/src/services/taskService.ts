@@ -11,7 +11,6 @@ class TaskService extends EntityServiceBase<Task> {
     const taskInstance = new Task(task);
     taskInstance.userId = this.user!.id;
 
-    // TODO: handle when category is created with task
     return categoryService(this.user)
       .getAll({
         id: task.categoryId,

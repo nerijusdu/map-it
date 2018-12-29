@@ -1,4 +1,4 @@
-import { IsDefined, Length } from 'class-validator';
+import { IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { EntityBase } from './entityBase';
 import { Roadmap } from './roadmap';
@@ -10,6 +10,11 @@ export class Category extends EntityBase {
   @IsDefined()
   @Length(3)
   public title: string;
+
+  @Column({ nullable: true })
+  @Length(0, 500)
+  @IsOptional()
+  public description: string;
 
   @Column()
   @IsDefined()
