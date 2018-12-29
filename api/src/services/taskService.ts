@@ -1,6 +1,6 @@
-import { Task, User } from '../models';
+import { HttpError, Task, User } from '../models';
+import categoryService from './categoryService';
 import { EntityServiceBase } from './entityServiceBase';
-import roadmapService from './roadmapService';
 
 class TaskService extends EntityServiceBase<Task> {
   constructor(user?: User) {
@@ -8,9 +8,21 @@ class TaskService extends EntityServiceBase<Task> {
   }
 
   public save(task: Task) {
-    return roadmapService(this.user)
-      .getById(task.roadmapId)
-      .then(() => super.save(task));
+    const taskInstance = new Task(task);
+    taskInstance.userId = this.user!.id;
+
+    // TODO: handle when category is created with task
+    return categoryService(this.user)
+      .getAll({
+        id: task.categoryId,
+        roadmapId: task.roadmapId
+      })
+      .then((res) => {
+        if (!res || res.length === 0) {
+          throw new HttpError('Category associated with selected Roadmap was not found', 400);
+        }
+        return super.save(taskInstance);
+      });
   }
 }
 

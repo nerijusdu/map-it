@@ -57,9 +57,12 @@ class AccountService extends EntityServiceBase<User> {
 
         return connection()
           .getRepository(User)
-          .insert(newUser);
+          .save(newUser);
       })
-      .then((result) => result.identifiers[0]);
+      .then((res) => {
+        delete res.password;
+        return res;
+      });
   }
 }
 
