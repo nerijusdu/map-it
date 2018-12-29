@@ -15,5 +15,11 @@ export default {
   },
   getRoadmaps(options) {
     return apiCall('/roadmap', options);
+  },
+  register(userInfo, options) {
+    return apiCall('/account/register', {
+      method: 'POST',
+      body: JSON.stringify(userInfo)
+    }, options);
   }
 };

@@ -23,6 +23,7 @@ router.post('/register', (req, res, next) => {
   const user = new User();
   user.email = req.body.email;
   user.password = req.body.password;
+  user.name = req.body.name;
 
   accountService()
     .register(user)

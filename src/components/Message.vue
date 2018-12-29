@@ -1,6 +1,6 @@
 <template>
-  <md-snackbar :md-position="'left'" :md-duration="400" :md-active="!!errorMessage" md-persistent>
-    <span>{{errorMessage}}</span>
+  <md-snackbar :class="isError ? 'error' : ''" :md-position="'left'" :md-duration="400" :md-active="!!text" md-persistent>
+    <span>{{text}}</span>
     <md-button class="md-icon-button close-button" @click="hide">
       <i class="fas fa-times"></i>
     </md-button>
@@ -13,21 +13,25 @@ import { mapState, mapMutations } from 'vuex';
 export default {
   computed: {
     ...mapState({
-      errorMessage: state => state.app.error
+      text: state => state.app.message.text,
+      isError: state => state.app.message.isError
     })
   },
   methods: {
-    ...mapMutations('app', ['mShowError']),
+    ...mapMutations('app', ['mShowMessage']),
     hide() {
-      this.mShowError('');
+      this.mShowMessage({ text: '' });
     }
   }
 };
 </script>
 
 <style scoped>
-.md-snackbar {
+.md-snackbar.error {
   background: var(--accent-color) !important;
+}
+.md-snackbar {
+  background: var(--primary-color) !important;
 }
 .close-button {
   margin-left: 20px !important;

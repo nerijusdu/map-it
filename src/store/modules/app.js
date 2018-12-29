@@ -7,7 +7,10 @@ const initialState = {
     email: null
   },
   isLoading: false,
-  error: ''
+  message: {
+    text: '',
+    isError: false
+  }
 };
 
 export const getters = {
@@ -25,9 +28,21 @@ export const actions = {
   },
   showError({ commit }, error) {
     if (error) {
-      setTimeout(() => commit('mShowError', ''), errorTime);
+      setTimeout(() => commit('mShowMessage', { text: '' }), errorTime);
     }
-    commit('mShowError', error);
+    commit('mShowMessage', {
+      text: error,
+      isError: true
+    });
+  },
+  showMessage({ commit }, message) {
+    if (message) {
+      setTimeout(() => commit('mShowMessage', { text: '' }), errorTime);
+    }
+    commit('mShowMessage', {
+      text: message,
+      isError: false
+    });
   },
   logout({ commit }) {
     window.localStorage.removeItem('token');
@@ -46,8 +61,8 @@ export const mutations = {
   mToggleLoading(state, isLoading) {
     state.isLoading = isLoading;
   },
-  mShowError(state, error) {
-    state.error = error;
+  mShowMessage(state, error) {
+    state.message = error;
   }
 };
 

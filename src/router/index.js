@@ -3,6 +3,7 @@ import Router from 'vue-router';
 import { authorizeRoutes } from '@/util/functions';
 import Timeline from '@/components/Timeline';
 import Login from '@/components/Login';
+import Register from '@/components/Register';
 import Navigation from '@/components/Navigation';
 
 Vue.use(Router);
@@ -21,6 +22,11 @@ const router = new Router({
       path: '/login',
       name: 'Login',
       component: Login
+    },
+    {
+      path: '/register',
+      name: 'Register',
+      component: Register
     }
   ],
 });

@@ -1,7 +1,7 @@
 <template>
   <div class="container flex-center">
     <form class="form">
-      <div class="form-header">Login</div>
+      <div class="form-header">Register</div>
       <div class="form-content">
         <md-field :class="getValidationClass('email')" @keyup.native.enter="validateForm">
           <label>Email</label>
@@ -9,16 +9,29 @@
           <span class="md-error" v-if="!$v.user.email.required">{{ messages.requiredMsg() }}</span>
           <span class="md-error" v-if="!$v.user.email.email">{{ messages.invalidEmailMsg() }}</span>
         </md-field>
+        <md-field :class="getValidationClass('name')" @keyup.native.enter="validateForm">
+          <label>Name</label>
+          <md-input v-model="user.name" name="name"/>
+          <span class="md-error" v-if="!$v.user.name.required">{{ messages.requiredMsg() }}</span>
+          <span class="md-error" v-if="!$v.user.name.minLength">{{ messages.minLengthMsg($v.user.name.$params.minLength.min) }}</span>
+        </md-field>
         <md-field :md-toggle-password="false" :class="getValidationClass('password')" @keyup.native.enter="validateForm">
           <label>Password</label>
           <md-input v-model="user.password" type="password" name="password"/>
           <span class="md-error" v-if="!$v.user.password.required">{{ messages.requiredMsg() }}</span>
+          <div class="md-error" v-if="!$v.user.password.minLength">{{ messages.minLengthMsg($v.user.password.$params.minLength.min) }}</div>
+        </md-field>
+        <md-field :md-toggle-password="false" :class="getValidationClass('repeatPassword')" @keyup.native.enter="validateForm">
+          <label>Repeat password</label>
+          <md-input v-model="user.repeatPassword" type="password" name="repeatPassword"/>
+          <span class="md-error" v-if="!$v.user.repeatPassword.required">{{ messages.requiredMsg() }}</span>
+          <div class="md-error" v-if="!$v.user.repeatPassword.sameAs">Passwords don't match</div>
         </md-field>
       </div>
       <div class="form-footer">
-        <md-button class="md-raised" @click="register">Register</md-button>
+        <md-button class="md-raised" @click="back">Back</md-button>
         <md-button class="md-raised md-primary" @click="validateForm">
-          <div v-if="!isLoading">Login</div>
+          <div v-if="!isLoading">Register</div>
           <md-progress-spinner v-if="isLoading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
         </md-button>
       </div>
@@ -28,7 +41,7 @@
 
 <script>
 import { validationMixin } from 'vuelidate';
-import { required, email } from 'vuelidate/lib/validators';
+import { required, email, minLength, sameAs } from 'vuelidate/lib/validators';
 import { mapActions } from 'vuex';
 import * as messages from '@/util/messages';
 import api from '@/util/api';
@@ -38,25 +51,32 @@ export default {
   data: () => ({
     user: {
       email: '',
-      password: ''
+      name: '',
+      password: '',
+      repeatPassword: ''
     },
     messages,
     isLoading: false
   }),
   methods: {
-    ...mapActions('app', ['saveUser']),
+    ...mapActions('app', ['saveUser', 'showMessage']),
     submit() {
       this.isLoading = true;
       api
-        .login(this.user, { ignoreLoading: true })
-        .then((user) => {
+        .register(this.user, {
+          ignoreLoading: true
+        })
+        .then((res) => {
           this.isLoading = false;
-          this.saveUser(user.data);
-          this.$router.push({ name: 'Timeline' });
+
+          if (res) {
+            this.showMessage('Registration successful! Please login.');
+            this.$router.push({ name: 'Login' });
+          }
         });
     },
-    register() {
-      this.$router.push({ name: 'Register' });
+    back() {
+      this.$router.push({ name: 'Login' });
     },
     getValidationClass(fieldName) {
       const field = this.$v.user[fieldName];
@@ -72,8 +92,22 @@ export default {
   },
   validations: {
     user: {
-      email: { required, email },
-      password: { required }
+      email: {
+        required,
+        email
+      },
+      name: {
+        required,
+        minLength: minLength(3)
+      },
+      password: {
+        required,
+        minLength: minLength(6)
+      },
+      repeatPassword: {
+        required,
+        sameAs: sameAs('password')
+      }
     }
   }
 };
@@ -88,7 +122,7 @@ export default {
 
 .form {
   width: 280px;
-  height: 250px;
+  height: 400px;
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
@@ -98,16 +132,16 @@ export default {
   justify-content: space-between;
 }
 
-.form-footer {
-  display: flex;
-  justify-content: flex-end;
-}
-
 .form-header {
   width: 100%;
   text-align: center;
   margin-top: 20px;
   font-size: large;
+}
+
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .spinner {

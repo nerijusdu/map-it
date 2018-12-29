@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <modals />
-    <error-message />
+    <message />
     <router-view name="navigation" />
     <router-view v-if="!isLoading"/>
     <loading v-if="isLoading"/>
@@ -13,14 +13,14 @@ import { mapMutations, mapActions, mapState } from 'vuex';
 import api from '@/util/api';
 import Modals from './components/modals';
 import Loading from './components/Loading';
-import ErrorMessage from './components/ErrorMessage';
+import Message from './components/Message';
 
 export default {
   name: 'App',
   components: {
     Modals,
     Loading,
-    ErrorMessage
+    Message
   },
   computed: {
     ...mapState({
