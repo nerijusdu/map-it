@@ -1,5 +1,5 @@
-import { HttpError, User } from "../models";
-import { connection } from "./databaseService";
+import { HttpError, User } from '../models';
+import { connection } from './databaseService';
 
 export class EntityServiceBase<TEntity> {
   // tslint:disable-next-line:ban-types
@@ -31,7 +31,7 @@ export class EntityServiceBase<TEntity> {
       .manager
       .save(this.entity, entity)
       .catch(() => {
-        throw new HttpError("Request data is incorrect.", 400);
+        throw new HttpError('Request data is incorrect.', 400);
       });
   }
 

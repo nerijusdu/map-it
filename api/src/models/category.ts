@@ -1,6 +1,6 @@
-import { Column, Entity, ManyToOne } from "typeorm";
-import { EntityBase } from "./entityBase";
-import { Roadmap } from "./roadmap";
+import { Column, Entity, ManyToOne } from 'typeorm';
+import { EntityBase } from './entityBase';
+import { Roadmap } from './roadmap';
 
 @Entity()
 export class Category extends EntityBase {

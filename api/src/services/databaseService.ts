@@ -1,7 +1,7 @@
-import "reflect-metadata";
+import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
-import { ORMConfig } from "../config";
-import { Category, Roadmap, Task, User } from "../models";
+import { ORMConfig } from '../config';
+import { Category, Roadmap, Task, User } from '../models';
 
 let con: Connection;
 

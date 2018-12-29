@@ -1,6 +1,6 @@
-import { Task, User } from "../models";
-import { EntityServiceBase } from "./entityServiceBase";
-import roadmapService from "./roadmapService";
+import { Task, User } from '../models';
+import { EntityServiceBase } from './entityServiceBase';
+import roadmapService from './roadmapService';
 
 class TaskService extends EntityServiceBase<Task> {
   constructor(user?: User) {

@@ -1,5 +1,5 @@
-import { validate } from "class-validator";
-import { HttpError, User } from "../models";
+import { validate } from 'class-validator';
+import { HttpError, User } from '../models';
 
 export default (newUser: User) => validate(newUser)
   .then((err) => {
@@ -9,6 +9,6 @@ export default (newUser: User) => validate(newUser)
         errors: Object.keys(x.constraints).map((key) => x.constraints[key])
       }));
 
-      throw new HttpError("Invalid request", 400, errors);
+      throw new HttpError('Invalid request', 400, errors);
     }
   });

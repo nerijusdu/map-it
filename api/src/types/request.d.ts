@@ -1,9 +1,10 @@
-import { User } from "../models";
+import { User } from '../models';
 
-declare global{
+declare global {
   namespace Express {
+    // tslint:disable-next-line:interface-name
     interface Request {
-       user?: User
+       user?: User;
     }
   }
 }

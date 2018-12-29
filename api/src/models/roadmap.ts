@@ -1,7 +1,7 @@
-import { Column, Entity, OneToMany } from "typeorm";
-import { Category } from "./category";
-import { OwnedEntity } from "./ownedEntity";
-import { Task } from "./task";
+import { Column, Entity, OneToMany } from 'typeorm';
+import { Category } from './category';
+import { OwnedEntity } from './ownedEntity';
+import { Task } from './task';
 
 @Entity()
 export class Roadmap extends OwnedEntity {

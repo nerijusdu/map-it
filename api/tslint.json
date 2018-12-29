@@ -5,7 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
-        "quotemark": ["single"],
+        "quotemark": [true, "single"],
         "no-console": false,
         "object-literal-sort-keys": false,
         "trailing-comma": false
