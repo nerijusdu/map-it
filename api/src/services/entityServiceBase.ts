@@ -1,3 +1,4 @@
+import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
 import { connection } from './databaseService';
 
@@ -27,12 +28,8 @@ export class EntityServiceBase<TEntity> {
   }
 
   public save(entity: TEntity) {
-    return connection()
-      .manager
-      .save(this.entity, entity)
-      .catch(() => {
-        throw new HttpError('Request data is incorrect.', 400);
-      });
+    return validate(entity)
+      .then(() => connection().manager.save(this.entity, entity));
   }
 
   public delete(id: number) {

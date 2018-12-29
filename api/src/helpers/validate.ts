@@ -1,7 +1,7 @@
 import { validate } from 'class-validator';
-import { HttpError, User } from '../models';
+import { HttpError } from '../models';
 
-export default (newUser: User) => validate(newUser)
+export default (entity: any) => validate(entity)
   .then((err) => {
     if (err.length > 0) {
       const errors = err.map((x) => ({

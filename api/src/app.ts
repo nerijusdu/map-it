@@ -2,7 +2,7 @@ import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
 import {PORT} from './config';
-import {AccountController, RoadmapController, TaskController} from './controllers';
+import {AccountController, CategoryController, RoadmapController, TaskController} from './controllers';
 import * as auth from './middleware/auth';
 import ErrorHandler from './middleware/errorHandler';
 import * as database from './services/databaseService';
@@ -15,9 +15,10 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(auth.verifyUser);
 
-app.use('/roadmap', RoadmapController);
+app.use('/roadmaps', RoadmapController);
 app.use('/account', AccountController);
-app.use('/task', TaskController);
+app.use('/tasks', TaskController);
+app.use('/categories', CategoryController);
 
 app.use(ErrorHandler);
 
