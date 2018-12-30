@@ -22,4 +22,8 @@ app.use('/categories', CategoryController);
 
 app.use(ErrorHandler);
 
-app.listen(PORT, () => console.log(`Listening at http://localhost:${PORT}/`));
+if (process.env.NODE_ENV!.trim() !== 'test') {
+  app.listen(PORT, () => console.log(`Listening at http://localhost:${PORT}/`));
+}
+
+export default app;

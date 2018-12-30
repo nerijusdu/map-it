@@ -1,13 +1,19 @@
 import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
-import { ORMConfig } from '../config';
+import { ORMConfigs } from '../config';
 import { Category, Roadmap, Task, User } from '../models';
 
 let con: Connection;
+export let initPromise: Promise<void>;
 
 export const init = () => {
-  createConnection({
-    ...ORMConfig,
+  if (con) {
+    return;
+  }
+  const config = ORMConfigs.find((x) => x.env === process.env.NODE_ENV!.trim()) || ORMConfigs[0];
+
+  initPromise = createConnection({
+    ...config,
     entities: [
       User,
       Roadmap,
@@ -18,5 +24,7 @@ export const init = () => {
     .then((data) => { con = data; })
     .catch((e) => console.log('connection failed', e));
 };
+
+export const close = () => con.close();
 
 export const connection = () => con;
