@@ -6,7 +6,7 @@
   "scripts": {
     "start": "SET NODE_ENV=development & npm run watch",
     "start-unix": "NODE_ENV=development npm run watch",
-    "test": "SET NODE_ENV=test & mocha --require ts-node/register src/tests/**/*.ts & exit 0",
+    "test": "SET NODE_ENV=test & nyc mocha --require ts-node/register src/tests/**/*.ts",
     "test-watch": "SET NODE_ENV=test & mocha --require ts-node/register src/tests/**/*.ts --watch-extensions ts --watch",
     "tsc": "tsc",
     "watch-ts": "tsc -w",
@@ -14,6 +14,20 @@
     "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint-fix": "tslint -c tslint.json 'src/**/*.ts' --fix"
+  },
+  "nyc": {
+    "extension": [
+      ".ts"
+    ],
+    "exclude": [
+      "**/*.d.ts",
+      "build/*",
+      "coverage/*"
+    ],
+    "reporter": [
+      "html"
+    ],
+    "all": true  
   },
   "keywords": [],
   "author": "",
@@ -31,6 +45,7 @@
     "concurrently": "^3.5.1",
     "mocha": "^5.2.0",
     "nodemon": "^1.18.3",
+    "nyc": "^13.1.0",
     "supertest": "^3.3.0",
     "tslint": "^5.11.0"
   },

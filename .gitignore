@@ -6,6 +6,8 @@ yarn-debug.log*
 yarn-error.log*
 /test/unit/coverage/
 build
+coverage
+.nyc_output
 .secret.*
 
 # Editor directories and files
