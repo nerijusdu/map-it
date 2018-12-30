@@ -27,7 +27,7 @@
     "reporter": [
       "html"
     ],
-    "all": true  
+    "all": true
   },
   "keywords": [],
   "author": "",
@@ -52,6 +52,7 @@
   "dependencies": {
     "@types/cors": "^2.8.4",
     "@types/pg": "^7.4.10",
+    "@types/shortid": "0.0.29",
     "bcrypt": "3.0.2",
     "body-parser": "^1.18.3",
     "class-validator": "^0.9.1",
@@ -59,6 +60,7 @@
     "express": "^4.16.3",
     "jsonwebtoken": "^8.3.0",
     "pg": "^7.4.3",
+    "shortid": "^2.2.14",
     "ts-node": "^7.0.1",
     "typeorm": "^0.2.7",
     "typescript": "^2.9.2"
