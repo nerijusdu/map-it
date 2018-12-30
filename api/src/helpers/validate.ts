@@ -1,5 +1,6 @@
 import { validate } from 'class-validator';
 import { HttpError } from '../models';
+import resources from '../resources';
 
 export default (entity: any) => validate(entity)
   .then((err) => {
@@ -9,6 +10,6 @@ export default (entity: any) => validate(entity)
         errors: Object.keys(x.constraints).map((key) => x.constraints[key])
       }));
 
-      throw new HttpError('Invalid request', 400, errors);
+      throw new HttpError(resources.Generic_ValidationError, 400, errors);
     }
   });

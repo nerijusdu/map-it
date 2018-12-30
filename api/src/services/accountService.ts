@@ -1,5 +1,6 @@
 import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
+import resources from '../resources';
 import authService from './authService';
 import { connection } from './databaseService';
 import { EntityServiceBase } from './entityServiceBase';
@@ -15,11 +16,11 @@ class AccountService extends EntityServiceBase<User> {
       .findOne(User, { email })
       .then(async (user) => {
         if (!user) {
-          throw new HttpError('Email is incorrect.', 400);
+          throw new HttpError(resources.Login_EmailIncorrect, 400);
         }
         const pass = await user.comparePasswords(password);
         if (!user || !pass) {
-          throw new HttpError('Password is incorrect.', 400);
+          throw new HttpError(resources.Login_PasswordIncorrect, 400);
         }
         return user;
       })
@@ -45,7 +46,7 @@ class AccountService extends EntityServiceBase<User> {
       .then(() => connection().manager.findOne(User, { email: newUser.email }))
       .then((existingUser) => {
         if (existingUser) {
-          throw new HttpError('User with this email already exists', 400);
+          throw new HttpError(resources.Registration_EmailExists, 400);
         }
         return authService.encryptPassword(newUser.password);
       })

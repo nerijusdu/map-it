@@ -1,4 +1,5 @@
 import { RequestHandler } from 'express';
+import resources from '../resources';
 import auth from '../services/authService';
 
 const publicUrls = [
@@ -22,6 +23,6 @@ export const verifyUser = ((req, res, next) => {
     .catch((err) => {
       res
         .status(401)
-        .json({ message: 'Please login.' });
+        .json({ message: resources.Generic_PleaseLogin });
     });
 }) as RequestHandler;

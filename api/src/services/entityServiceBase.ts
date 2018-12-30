@@ -1,5 +1,6 @@
 import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
+import resources from '../resources';
 import { connection } from './databaseService';
 
 export class EntityServiceBase<TEntity> {
@@ -21,7 +22,7 @@ export class EntityServiceBase<TEntity> {
       .findOne(this.entity, id, { where: { userId: this.user!.id }, ...options })
       .then((res) => {
         if (!res) {
-          throw new HttpError(this.entity.name + ' not found', 400);
+          throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);
         }
         return res;
       });

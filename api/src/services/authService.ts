@@ -4,11 +4,12 @@ import { JWTSecret } from '../.secret';
 import { JWTAge } from '../config';
 import { HttpError } from '../models';
 import { User } from '../models/user';
+import resources from '../resources';
 
 const getPayload = (token: string): User => {
   const payload = jwt.decode(token) as {[key: string]: any};
   if (!payload) {
-    throw new HttpError('Invalid token', 401);
+    throw new HttpError(resources.Generic_InvalidToken, 401);
   }
   return payload.data as User;
 };

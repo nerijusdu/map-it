@@ -1,4 +1,5 @@
 import { HttpError, Task, User } from '../models';
+import resources from '../resources';
 import categoryService from './categoryService';
 import { EntityServiceBase } from './entityServiceBase';
 
@@ -18,7 +19,7 @@ class TaskService extends EntityServiceBase<Task> {
       })
       .then((res) => {
         if (!res || res.length === 0) {
-          throw new HttpError('Category associated with selected Roadmap was not found', 400);
+          throw new HttpError(resources.Task_CategoryNotFound, 400);
         }
         return super.save(taskInstance);
       });
