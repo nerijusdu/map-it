@@ -1,9 +1,10 @@
 import chai from 'chai';
 import 'mocha';
-import shortid = require('shortid');
+import shortid from 'shortid';
 import supertest from 'supertest';
 import app from '../../../app';
 import { Category, Roadmap, Task, User } from '../../../models';
+import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 import '../../helpers/requestType';
@@ -60,6 +61,49 @@ describe('Task post tests', () => {
     createdTask!.startDate.toISOString().should.equal(task.startDate.toISOString());
     createdTask!.endDate.toISOString().should.equal(task.endDate.toISOString());
     createdTask!.userId.should.equal(user.id);
+  });
+
+  it('should fail when category is incorrect', async () => {
+    const differentRoadmap = await entityFactory.createRoadmap(user.id);
+    const differentCategory = await entityFactory.createCategory(differentRoadmap.id);
+
+    const task = new Task();
+    task.title = shortid.generate();
+    task.roadmapId = roadmap.id;
+    task.categoryId = differentCategory.id;
+    task.startDate = new Date();
+    const endDate = new Date();
+    endDate.setMonth(task.startDate.getMonth() + 3);
+    task.endDate = endDate;
+
+    const response = await server
+      .post('/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send(task);
+
+    response.status.should.equal(400);
+    response.body.message.should.equal(resources.Task_CategoryNotFound);
+  });
+
+  it('should fail when roadmap is incorrect', async () => {
+    const differentRoadmap = await entityFactory.createRoadmap(user.id);
+
+    const task = new Task();
+    task.title = shortid.generate();
+    task.roadmapId = differentRoadmap.id;
+    task.categoryId = category.id;
+    task.startDate = new Date();
+    const endDate = new Date();
+    endDate.setMonth(task.startDate.getMonth() + 3);
+    task.endDate = endDate;
+
+    const response = await server
+      .post('/tasks')
+      .set('Authorization', `Bearer ${token}`)
+      .send(task);
+
+    response.status.should.equal(400);
+    response.body.message.should.equal(resources.Task_CategoryNotFound);
   });
 
   it('should edit task', async () => {

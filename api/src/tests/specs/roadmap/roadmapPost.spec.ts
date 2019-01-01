@@ -1,6 +1,6 @@
 import chai from 'chai';
 import 'mocha';
-import shortid = require('shortid');
+import shortid from 'shortid';
 import supertest from 'supertest';
 import app from '../../../app';
 import { Roadmap, User } from '../../../models';
