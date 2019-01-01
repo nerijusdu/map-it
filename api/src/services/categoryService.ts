@@ -9,6 +9,7 @@ class CategoryService extends EntityServiceBase<Category> {
 
   public save(category: Category) {
     const categoryInstance = new Category(category);
+    categoryInstance.userId = this.user!.id;
 
     return roadmapService(this.user)
       .getById(category.roadmapId)

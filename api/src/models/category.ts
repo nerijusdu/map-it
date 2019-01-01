@@ -1,10 +1,10 @@
 import { IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { EntityBase } from './entityBase';
+import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
 
 @Entity()
-export class Category extends EntityBase {
+export class Category extends OwnedEntity {
 
   @Column()
   @IsDefined()
