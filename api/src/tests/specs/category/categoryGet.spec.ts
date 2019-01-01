@@ -41,7 +41,7 @@ describe('Category get all tests', () => {
   });
 });
 
-describe('category get by id tests', () => {
+describe('Category get by id tests', () => {
   it('should get category by id', async () => {
     const usersRoadmap = await entityFactory.createRoadmap(user.id);
     const usersCategory = await entityFactory.createCategory(usersRoadmap.id);
