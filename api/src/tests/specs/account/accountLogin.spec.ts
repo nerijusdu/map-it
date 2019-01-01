@@ -22,46 +22,40 @@ after(async () => {
 });
 
 describe('Account login tests', () => {
-  it('should login to existing account', (done) => {
-    server
+  it('should login to existing account', async () => {
+    const response = await server
       .post('/account/login')
       .send({
         email: existingUser.email,
         password: entityFactory.defaultPassword
-      })
-      .then((res) => {
-        res.status.should.equal(200);
-        res.body.email.should.equal(existingUser.email);
-        res.body.token.should.be.a('string');
-      })
-      .finally(() => done());
+      });
+
+    response.status.should.equal(200);
+    response.body.email.should.equal(existingUser.email);
+    response.body.token.should.be.a('string');
   });
 
-  it('should fail when email is incorrect', (done) => {
-    server
+  it('should fail when email is incorrect', async () => {
+    const response = await server
       .post('/account/login')
       .send({
         email: 'a' + existingUser.email,
         password: entityFactory.defaultPassword
-      })
-      .then((res) => {
-        res.status.should.equal(400);
-        res.body.message.should.equal(resources.Login_EmailIncorrect);
-      })
-      .finally(() => done());
+      });
+
+    response.status.should.equal(400);
+    response.body.message.should.equal(resources.Login_EmailIncorrect);
   });
 
-  it('should fail when password is incorrect', (done) => {
-    server
+  it('should fail when password is incorrect', async () => {
+    const response = await server
       .post('/account/login')
       .send({
         email: existingUser.email,
         password: 'a' + entityFactory.defaultPassword
-      })
-      .then((res) => {
-        res.status.should.equal(400);
-        res.body.message.should.equal(resources.Login_PasswordIncorrect);
-      })
-      .finally(() => done());
+      });
+
+    response.status.should.equal(400);
+    response.body.message.should.equal(resources.Login_PasswordIncorrect);
   });
 });

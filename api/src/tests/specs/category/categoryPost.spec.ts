@@ -47,11 +47,11 @@ describe('Category post tests', () => {
       .findOne(Category, id);
 
     chai.should().exist(createdCategory);
-    createdCategory!.title = category.title;
-    createdCategory!.color = category.color;
-    createdCategory!.description = category.description;
-    createdCategory!.roadmapId = category.roadmapId;
-    createdCategory!.userId = category.userId;
+    createdCategory!.title.should.equal(category.title);
+    createdCategory!.color.should.equal(category.color);
+    createdCategory!.description.should.equal(category.description);
+    createdCategory!.roadmapId.should.equal(category.roadmapId);
+    createdCategory!.userId.should.equal(user.id);
   });
 
   it('should edit category', async () => {
@@ -72,7 +72,7 @@ describe('Category post tests', () => {
       .findOne(Category, category.id);
 
     chai.should().exist(editedCategory);
-    editedCategory!.title = category.title;
+    editedCategory!.title.should.equal(category.title);
   });
 });
 

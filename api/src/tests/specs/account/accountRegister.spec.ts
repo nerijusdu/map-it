@@ -20,74 +20,64 @@ after(async () => {
 });
 
 describe('Account registration tests', () =>  {
-  it('should create user account', (done) => {
+  it('should create user account', async () => {
     const user = {
       email: 'test@account.com',
       name: 'name',
       password: 'password'
     };
 
-    server
+    const response = await server
       .post('/account/register')
-      .send(user)
-      .then((res) => {
-        res.status.should.equal(200);
-      })
-      .then(() => database.connection().manager.findOne(User, {
+      .send(user);
+
+    response.status.should.equal(200);
+    const createdUser =  await database
+      .connection()
+      .manager
+      .findOne(User, {
         email: user.email,
         name: user.name
-      }))
-      .then((createdUser) => {
-        chai.should().exist(createdUser);
-        return createdUser!.comparePasswords(user.password);
-      })
-      .then((pass) => {
-        pass.should.equal(true);
-      })
-      .finally(() => done());
+      });
+
+    chai.should().exist(createdUser);
+    const passCorrect = await createdUser!.comparePasswords(user.password);
+    passCorrect.should.equal(true);
   });
 
-  it('should validate user data correctly', (done) => {
-    server
-      .post('/account/register')
-      .then((res) => {
-        res.status.should.equal(400);
-        res.body.message.should.equal(resources.Generic_ValidationError);
-        res.body.data.should.be.an('array');
+  it('should validate user data correctly', async () => {
+    const response = await server.post('/account/register');
 
-        const emailErrors = res.body.data.find((x: any) => x.property === 'email');
-        chai.should().exist(emailErrors);
-        emailErrors.errors.should.have.lengthOf(2);
+    response.status.should.equal(400);
+    response.body.message.should.equal(resources.Generic_ValidationError);
+    response.body.data.should.be.an('array');
 
-        const nameErrors = res.body.data.find((x: any) => x.property === 'name');
-        chai.should().exist(nameErrors);
-        nameErrors.errors.should.have.lengthOf(2);
+    const emailErrors = response.body.data.find((x: any) => x.property === 'email');
+    chai.should().exist(emailErrors);
+    emailErrors.errors.should.have.lengthOf(2);
 
-        const passwordErrors = res.body.data.find((x: any) => x.property === 'password');
-        chai.should().exist(passwordErrors);
-        passwordErrors.errors.should.have.lengthOf(2);
-      })
-      .finally(() => done());
+    const nameErrors = response.body.data.find((x: any) => x.property === 'name');
+    chai.should().exist(nameErrors);
+    nameErrors.errors.should.have.lengthOf(2);
+
+    const passwordErrors = response.body.data.find((x: any) => x.property === 'password');
+    chai.should().exist(passwordErrors);
+    passwordErrors.errors.should.have.lengthOf(2);
   });
 
-  it('should not create account with existing email', (done) => {
+  it('should not create account with existing email', async () => {
     const user = {
       email: '',
       name: 'name',
       password: 'password'
     };
 
-    entityFactory
-      .createAccount()
-      .then((existingUser) => {
-        user.email = existingUser.email;
+    const existingUser = await entityFactory.createAccount();
+    user.email = existingUser.email;
 
-        return server.post('/account/register').send(user);
-      })
-      .then((res) => {
-        res.status.should.equal(400);
-        res.body.message.should.equal(resources.Registration_EmailExists);
-      })
-      .finally(() => done());
+    const response = await server.post('/account/register').send(user);
+
+    response.status.should.equal(400);
+    response.body.message.should.equal(resources.Registration_EmailExists);
   });
 });
