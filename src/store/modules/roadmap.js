@@ -2,6 +2,7 @@ import moment from 'moment';
 import shortId from 'shortid';
 import api from '@/util/api';
 import { roadmapMonthFormat } from '@/util/constants';
+import converters from '@/util/converters';
 
 const initialState = {
   current: {},
@@ -51,7 +52,7 @@ export const getters = {
 
     return {
       ...task,
-      categoryId: state.current.categories.find(c => c.id === task.categoryId)
+      category: state.current.categories.find(c => c.id === task.categoryId)
     };
   },
   roadmapTimeFrame: state => ({
@@ -61,14 +62,23 @@ export const getters = {
 };
 
 export const actions = {
-  saveTask({ state, commit }, task) {
-    const item = state.current.tasks.find(t => t.id === task.id);
+  async saveTask({ state, commit }, task) {
+    task.roadmapId = state.current.id;
 
-    if (!item) {
+    const isNew = !task.id;
+    const result = await api.saveTask(task);
+    if (!result || !result.ok) {
+      return false;
+    }
+
+    task = converters.taskFromApi(result.data);
+    if (isNew) {
       commit('mAddTask', task);
     } else {
       commit('mUpdateTask', task);
     }
+
+    return true;
   },
   editTask({ state, commit }, { taskId, modal }) {
     if (taskId) {
@@ -112,10 +122,7 @@ export const actions = {
 
 export const mutations = {
   mAddTask(state, task) {
-    state.current.tasks.push({
-      ...task,
-      id: shortId.generate()
-    });
+    state.current.tasks.push(task);
   },
   mUpdateTask(state, task) {
     const i = state.current.tasks.findIndex(t => t.id === task.id);

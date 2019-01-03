@@ -16,12 +16,12 @@
             <md-textarea v-model="task.description"/>
             <span class="md-error" v-if="!$v.task.description.required">{{ messages.maxLengthMsg(500) }}</span>
           </md-field>
-          <md-field :class="getValidationClass('category')">
-            <label for="category">Category</label>
-            <md-select name="category" id="category" v-model="task.category">
+          <md-field :class="getValidationClass('categoryId')">
+            <label for="categoryId">Category</label>
+            <md-select name="categoryId" id="categoryId" v-model="task.categoryId">
               <md-option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
-            <span class="md-error" v-if="!$v.task.category.required">{{ messages.requiredMsg() }}</span>
+            <span class="md-error" v-if="!$v.task.categoryId.required">{{ messages.requiredMsg() }}</span>
           </md-field>
           <md-datepicker md-immediately v-model="task.startDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
             <label>Start date</label>
@@ -77,7 +77,7 @@ export default {
       id: '',
       title: '',
       description: '',
-      category: '',
+      categoryId: '',
       startDate: moment().toDate(),
       endDate: moment().toDate()
     },
@@ -96,15 +96,20 @@ export default {
       editTask: 'editTask',
       saveCategoryToStore: 'saveCategory'
     }),
-    save() {
+    async save() {
+      let success = false;
       if (!this.isCategory) {
-        this.saveTaskToStore({
+        success = await this.saveTaskToStore({
           ...this.task,
           startDate: moment(this.task.startDate),
           endDate: moment(this.task.endDate)
         });
       } else {
         this.saveCategoryToStore(this.category);
+      }
+
+      if (!success) {
+        return;
       }
 
       this.clearForm();
@@ -137,7 +142,7 @@ export default {
       this.$v.$reset();
       this.task.title = '';
       this.task.description = '';
-      this.task.category = '';
+      this.task.categoryId = '';
       this.task.startDate = moment().toDate();
       this.task.endDate = moment().toDate();
       this.category.title = '';
@@ -154,7 +159,7 @@ export default {
     task: {
       title: { required },
       description: { maxLength: maxLength(500) },
-      category: { required }
+      categoryId: { required }
     },
     category: {
       title: { required },

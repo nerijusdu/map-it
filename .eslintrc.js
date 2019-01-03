@@ -52,6 +52,7 @@ module.exports = {
     'no-console': 'off',
     'import/prefer-default-export': 'off',
     'no-confusing-arrow': 'off',
-    'import/no-unresolved': 'off'
+    'import/no-unresolved': 'off',
+    'no-param-reassign': 'off'
   }
 }

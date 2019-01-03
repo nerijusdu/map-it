@@ -29,6 +29,7 @@ export default {
 <style scoped>
 .md-snackbar.error {
   background: var(--accent-color) !important;
+  z-index: 1000;
 }
 .md-snackbar {
   background: var(--primary-color) !important;
