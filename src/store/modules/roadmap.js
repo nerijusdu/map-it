@@ -5,6 +5,7 @@ import converters from '@/util/converters';
 
 const initialState = {
   current: {},
+  all: [],
   editTaskId: null,
   previewTaskId: null
 };
@@ -113,10 +114,17 @@ export const actions = {
   init({ commit }) {
     commit('app/mToggleLoading', true, { root: true });
     api.getRoadmaps({ ignoreLoading: true })
-      .then(res => res && res.data.length > 0
-        ? api.getRoadmapById(res.data[0].id, { ignoreLoading: true })
-        : null
-      )
+      .then((res) => {
+        if (!res) {
+          return null;
+        }
+
+        commit('mSetRoadmaps', res.data.map(x => converters.roadmapFromApi(x)));
+
+        return res.data.length > 0
+          ? api.getRoadmapById(res.data[0].id, { ignoreLoading: true })
+          : null;
+      })
       .then((res) => {
         if (res) {
           commit('mSelectRoadmap', res.data);
@@ -166,6 +174,9 @@ export const mutations = {
         endDate: moment(task.endDate)
       }))
     };
+  },
+  mSetRoadmaps(state, roadmaps) {
+    state.all = roadmaps;
   }
 };
 

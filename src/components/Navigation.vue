@@ -1,12 +1,16 @@
 <template>
   <div class="navigation-bar">
-    <div class="navigation-logo flex-center">
+    <div class="navigation-logo flex-center" @click="$router.push({ name: 'Timeline' })">
       <span>MapIt</span>
     </div>
     <div class="grow flex-center-v">
       <!-- Roadmap selection goes here -->
     </div>
     <div class="flex">
+      <div class="navigation-item flex-center" @click="$router.push({ name: 'Roadmaps' })">
+        <div class="navigation-item-icon"><img src="@/assets/map.svg"/></div>
+        <div>Roadmaps</div>
+      </div>
       <div class="navigation-item flex-center">
         <div class="navigation-item-icon"><img src="@/assets/settings.svg"/></div>
         <div>Settings</div>

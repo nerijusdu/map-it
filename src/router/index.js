@@ -5,6 +5,7 @@ import Timeline from '@/components/Timeline';
 import Login from '@/components/Login';
 import Register from '@/components/Register';
 import Navigation from '@/components/Navigation';
+import Roadmaps from '@/components/Roadmaps';
 
 Vue.use(Router);
 
@@ -27,6 +28,14 @@ const router = new Router({
       path: '/register',
       name: 'Register',
       component: Register
+    },
+    {
+      path: '/roadmaps',
+      name: 'Roadmaps',
+      components: {
+        default: Roadmaps,
+        navigation: Navigation
+      }
     }
   ],
 });
