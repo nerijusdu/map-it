@@ -23,9 +23,8 @@ export default {
     }, options);
   },
   saveTask(task, options) {
-    const url = task.id ? `/tasks/${task.id}` : '/tasks';
     task.id = task.id || null;
-    return apiCall(url, {
+    return apiCall('/tasks', {
       method: 'POST',
       body: JSON.stringify(task)
     }, options);
