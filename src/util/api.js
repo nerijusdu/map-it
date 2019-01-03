@@ -28,5 +28,12 @@ export default {
       method: 'POST',
       body: JSON.stringify(task)
     }, options);
+  },
+  saveCategory(category, options) {
+    category.id = category.id || null;
+    return apiCall('/categories', {
+      method: 'POST',
+      body: JSON.stringify(category)
+    }, options);
   }
 };

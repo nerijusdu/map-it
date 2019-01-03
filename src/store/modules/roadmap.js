@@ -1,5 +1,4 @@
 import moment from 'moment';
-import shortId from 'shortid';
 import api from '@/util/api';
 import { roadmapMonthFormat } from '@/util/constants';
 import converters from '@/util/converters';
@@ -95,14 +94,21 @@ export const actions = {
     }
     commit('mPreviewTask', taskId);
   },
-  saveCategory({ state, commit }, category) {
-    const item = state.current.categories.find(c => c.id === category.id);
+  async saveCategory({ state, commit }, category) {
+    category.roadmapId = state.current.id;
 
-    if (!item) {
-      commit('mAddCategory', category);
-    } else {
-      commit('mUpdateCategory', category);
+    const isNew = !category.id;
+    const result = await api.saveCategory(category);
+    if (!result || !result.ok) {
+      return false;
     }
+
+    if (isNew) {
+      commit('mAddCategory', result.data);
+    } else {
+      commit('mUpdateCategory', result.data);
+    }
+    return true;
   },
   init({ commit }) {
     commit('app/mToggleLoading', true, { root: true });
@@ -139,10 +145,7 @@ export const mutations = {
     state.previewTaskId = taskId;
   },
   mAddCategory(state, category) {
-    state.current.categories.push({
-      ...category,
-      id: shortId.generate()
-    });
+    state.current.categories.push(category);
   },
   mUpdateCategory(state, category) {
     const i = state.current.categories.findIndex(c => c.id === category.id);

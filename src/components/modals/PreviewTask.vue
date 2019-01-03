@@ -6,7 +6,6 @@
     <div class="modal-content">
       <div class="preview-item-description">
         <p v-for="(par, i) in getParagraphs(task.description)" :key="i">{{ par }}</p>
-        {{ task.description }}
       </div>
       <div class="preview-item-category" :style="{background: task.category.color}">
         {{ task.category.title }}

@@ -97,16 +97,9 @@ export default {
       saveCategoryToStore: 'saveCategory'
     }),
     async save() {
-      let success = false;
-      if (!this.isCategory) {
-        success = await this.saveTaskToStore({
-          ...this.task,
-          startDate: moment(this.task.startDate),
-          endDate: moment(this.task.endDate)
-        });
-      } else {
-        this.saveCategoryToStore(this.category);
-      }
+      const success = !this.isCategory
+        ? await this.saveTaskToStore(this.task)
+        : await this.saveCategoryToStore(this.category);
 
       if (!success) {
         return;
