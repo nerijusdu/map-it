@@ -40,6 +40,10 @@ body {
   flex-grow: 1;
 }
 
+.clickable {
+    cursor: pointer;
+}
+
 .border-between-children > * {
   border-right: 1px solid white;
 }

@@ -7,7 +7,8 @@ const initialState = {
   current: {},
   all: [],
   editTaskId: null,
-  previewTaskId: null
+  previewTaskId: null,
+  editRoadmapId: null
 };
 
 export const getters = {
@@ -53,6 +54,22 @@ export const getters = {
     return {
       ...task,
       category: state.current.categories.find(c => c.id === task.categoryId)
+    };
+  },
+  roadmapToEdit: (state) => {
+    if (!state.editRoadmapId) {
+      return null;
+    }
+
+    const roadmap = state.all.find(r => r.id === state.editRoadmapId);
+    if (!roadmap) {
+      return null;
+    }
+
+    return {
+      ...roadmap,
+      startDate: roadmap.startDate.toDate(),
+      endDate: roadmap.endDate.toDate()
     };
   },
   roadmapTimeFrame: state => ({
@@ -127,6 +144,10 @@ export const actions = {
 
     return true;
   },
+  editRoadmap({ commit }, { roadmapId, modal }) {
+    modal.show('addRoadmap');
+    commit('mEditRoadmap', roadmapId);
+  },
   init({ commit }) {
     commit('app/mToggleLoading', true, { root: true });
     api.getRoadmaps({ ignoreLoading: true })
@@ -178,6 +199,9 @@ export const mutations = {
       roadmap,
       ...state.all.slice(i + 1)
     ];
+  },
+  mEditRoadmap(state, roadmapId) {
+    state.editRoadmapId = roadmapId;
   },
   mAddCategory(state, category) {
     state.current.categories.push(category);

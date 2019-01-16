@@ -9,10 +9,14 @@
         <md-table-head>Date Created</md-table-head>
       </md-table-row>
       <md-table-row v-for="r in roadmaps" v-bind:key="r.id">
-        <md-table-cell>{{ r.title }}</md-table-cell>
-        <md-table-cell>{{ r.createdDate.format(datePreviewFormat) }}</md-table-cell>
-        <md-table-cell class="controls">
-          <img src="@/assets/edit.svg"/>
+        <md-table-cell class="clickable">{{ r.title }}</md-table-cell>
+        <md-table-cell class="clickable">{{ r.createdDate.format(datePreviewFormat) }}</md-table-cell>
+        <md-table-cell>
+          <div class="controls">
+            <img src="@/assets/edit.svg" class="clickable" @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"/>
+            <!-- select -->
+            <!-- remove -->
+          </div>
         </md-table-cell>
       </md-table-row>
     </md-table>
@@ -25,7 +29,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { datePreviewFormat } from '@/util/constants';
 
 export default {
@@ -33,6 +37,9 @@ export default {
     ...mapState({
       roadmaps: state => state.roadmap.all
     })
+  },
+  methods: {
+    ...mapActions('roadmap', ['editRoadmap'])
   },
   data: () => ({
     datePreviewFormat,
@@ -43,9 +50,6 @@ export default {
 <style scoped>
 .md-table {
   margin: 10px;
-}
-.md-table-row:not(.header) {
-  cursor: pointer;
 }
 .controls {
   display: flex;

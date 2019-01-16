@@ -30,7 +30,7 @@
 
 <script>
 import moment from 'moment';
-import { mapActions } from 'vuex';
+import { mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
 import * as messages from '@/util/messages';
@@ -48,6 +48,9 @@ export default {
     },
     messages
   }),
+  computed: {
+    ...mapGetters('roadmap', ['roadmapToEdit'])
+  },
   methods: {
     ...mapActions('roadmap', {
       saveRoadmapToStore: 'saveRoadmap',

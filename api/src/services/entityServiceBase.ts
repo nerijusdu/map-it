@@ -12,7 +12,13 @@ export class EntityServiceBase<TEntity> {
     options = options || {};
     return connection()
       .manager
-      .find(this.entity, { userId: this.user!.id, ...options });
+      .find(this.entity, {
+        userId: this.user!.id,
+        order: {
+          id: 'ASC'
+        },
+        ...options
+      });
   }
 
   public getById(id: number, options?: any) {
