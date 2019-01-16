@@ -111,6 +111,22 @@ export const actions = {
     }
     return true;
   },
+  async saveRoadmap({ commit }, roadmap) {
+    const isNew = !roadmap.id;
+    const result = await api.saveRoadmap(roadmap);
+    if (!result || !result.ok) {
+      return false;
+    }
+
+    roadmap = converters.roadmapFromApi(result.data);
+    if (isNew) {
+      commit('mAddRoadmap', roadmap);
+    } else {
+      commit('mUpdateRoadmap', roadmap);
+    }
+
+    return true;
+  },
   init({ commit }) {
     commit('app/mToggleLoading', true, { root: true });
     api.getRoadmaps({ ignoreLoading: true })
@@ -151,6 +167,17 @@ export const mutations = {
   },
   mPreviewTask(state, taskId) {
     state.previewTaskId = taskId;
+  },
+  mAddRoadmap(state, roadmap) {
+    state.all.push(roadmap);
+  },
+  mUpdateRoadmap(state, roadmap) {
+    const i = state.all.findIndex(r => r.id === roadmap.id);
+    state.all = [
+      ...state.all.slice(0, i),
+      roadmap,
+      ...state.all.slice(i + 1)
+    ];
   },
   mAddCategory(state, category) {
     state.current.categories.push(category);

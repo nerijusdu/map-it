@@ -35,5 +35,12 @@ export default {
       method: 'POST',
       body: JSON.stringify(category)
     }, options);
+  },
+  saveRoadmap(roadmap, options) {
+    roadmap.id = roadmap.id || null;
+    return apiCall('/roadmaps', {
+      method: 'POST',
+      body: JSON.stringify(roadmap)
+    }, options);
   }
 };
