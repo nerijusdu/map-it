@@ -1,5 +1,6 @@
 import apiCall from './apiCall';
 
+// TODO: refactor to separate objects
 export default {
   login(userInfo, options) {
     return apiCall('/account/login', {
@@ -42,5 +43,8 @@ export default {
       method: 'POST',
       body: JSON.stringify(roadmap)
     }, options);
+  },
+  deleteRoadmap(roadmapId, options) {
+    return apiCall(`/roadmaps/${roadmapId}`, { method: 'DELETE' }, options);
   }
 };

@@ -29,13 +29,13 @@ export class Task extends OwnedEntity {
   @IsDefined()
   public roadmapId: number;
 
-  @ManyToOne(() => Roadmap)
+  @ManyToOne(() => Roadmap, { onDelete: 'CASCADE' })
   public roadmap: Roadmap;
 
   @Column()
   @IsDefined()
   public categoryId: number;
 
-  @ManyToOne(() => Category)
+  @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   public category: Category;
 }

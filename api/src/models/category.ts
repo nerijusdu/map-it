@@ -24,6 +24,6 @@ export class Category extends OwnedEntity {
   @IsDefined()
   public roadmapId: number;
 
-  @ManyToOne(() => Roadmap)
+  @ManyToOne(() => Roadmap, { onDelete: 'CASCADE' })
   public roadmap: Roadmap;
 }

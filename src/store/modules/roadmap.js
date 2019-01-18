@@ -148,6 +148,15 @@ export const actions = {
     modal.show('addRoadmap');
     commit('mEditRoadmap', roadmapId);
   },
+  async deleteRoadmap({ commit }, { roadmapId }) {
+    const result = await api.deleteRoadmap(roadmapId);
+    if (!result || !result.ok) {
+      return false;
+    }
+
+    commit('mDeleteRoadmap', roadmapId);
+    return true;
+  },
   init({ commit }) {
     commit('app/mToggleLoading', true, { root: true });
     api.getRoadmaps({ ignoreLoading: true })
@@ -202,6 +211,13 @@ export const mutations = {
   },
   mEditRoadmap(state, roadmapId) {
     state.editRoadmapId = roadmapId;
+  },
+  mDeleteRoadmap(state, roadmapId) {
+    const i = state.all.findIndex(r => r.id === roadmapId);
+    state.all = [
+      ...state.all.slice(0, i),
+      ...state.all.slice(i + 1)
+    ];
   },
   mAddCategory(state, category) {
     state.current.categories.push(category);

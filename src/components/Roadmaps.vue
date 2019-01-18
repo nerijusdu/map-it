@@ -14,6 +14,8 @@
         <md-table-cell>
           <div class="controls">
             <img src="@/assets/edit.svg" class="clickable" @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"/>
+            <!-- TODO: add confirmation modal -->
+            <img src="@/assets/trash.svg" class="clickable" @click="() => deleteRoadmap({ roadmapId: r.id, modal: $modal })"/>
             <!-- select -->
             <!-- remove -->
           </div>
@@ -39,7 +41,7 @@ export default {
     })
   },
   methods: {
-    ...mapActions('roadmap', ['editRoadmap'])
+    ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap'])
   },
   data: () => ({
     datePreviewFormat,
@@ -54,6 +56,9 @@ export default {
 .controls {
   display: flex;
   justify-content: flex-end;
+}
+.controls > img {
+  margin-left: 10px;
 }
 .add-button {
   position: absolute;
