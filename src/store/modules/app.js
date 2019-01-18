@@ -6,6 +6,7 @@ const initialState = {
     token: null,
     email: null
   },
+  isInitialized: false,
   isLoading: false,
   message: {
     text: '',
@@ -14,6 +15,7 @@ const initialState = {
 };
 
 export const getters = {
+
 };
 
 export const actions = {
@@ -60,6 +62,14 @@ export const actions = {
     window.localStorage.removeItem('token');
     commit('mSaveUser', { token: null, email: null });
     router.push('Login');
+  },
+  init({ commit, dispatch, state }) {
+    if (state.isInitialized) {
+      return;
+    }
+
+    dispatch('roadmap/init', null, { root: true });
+    commit('mInit');
   }
 };
 
@@ -75,6 +85,9 @@ export const mutations = {
   },
   mShowMessage(state, error) {
     state.message = error;
+  },
+  mInit(state) {
+    state.isInitialized = true;
   }
 };
 

@@ -10,7 +10,7 @@
 
 <script>
 import { mapMutations, mapActions, mapState } from 'vuex';
-// import api from '@/util/api';
+import '@/util/api';
 import Modals from './components/modals';
 import Loading from './components/Loading';
 import Message from './components/Message';
@@ -29,9 +29,10 @@ export default {
   },
   methods: {
     ...mapMutations('app', ['mSaveUser']),
-    ...mapActions('app', ['saveUser', 'initData'])
+    ...mapActions('app', ['saveUser', 'init'])
   },
   created() {
+    this.init();
     // const token = window.localStorage.getItem('token');
     // if (token) {
     //   this.mSaveUser({ token });

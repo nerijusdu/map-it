@@ -58,6 +58,9 @@ export class ApiCall {
   handleErrors = (res) => {
     if (!res.ok) {
       this.store.dispatch('app/showError', res.data.message);
+      if (res.status === 401) {
+        this.store.dispatch('app/logout');
+      }
       return null;
     }
     return res;

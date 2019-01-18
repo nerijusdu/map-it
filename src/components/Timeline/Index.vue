@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState } from 'vuex';
 import TimelineView from './TimeLineView';
 import Menu from './Menu';
 
@@ -22,13 +22,7 @@ export default {
     ...mapState({
       roadmap: state => state.roadmap.current
     })
-  },
-  methods: {
-    ...mapActions('roadmap', ['init'])
-  },
-  beforeRouteEnter: (to, from, next) => {
-    next(vm => vm.init());
-  },
+  }
 };
 </script>
 
