@@ -32,9 +32,11 @@ export const calculateWidthPercentage = (allTimeFrame, objectTimeframe) => {
 };
 
 export const authorizeRoutes = (to, from, next) => {
-  if (publicUrls.includes(to.path) || store.getters['app/getToken']) {
+  if (publicUrls.includes(to.path)) {
     next();
-    return;
+  } else {
+    store
+      .dispatch('app/getToken')
+      .then(token => next(!token ? loginUrl : undefined));
   }
-  next(loginUrl);
 };

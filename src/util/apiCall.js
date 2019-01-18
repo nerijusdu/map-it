@@ -10,7 +10,7 @@ export class ApiCall {
     'Content-Type': 'application/json'
   })
 
-  call = (url, requestSettings, options) => {
+  call = async (url, requestSettings, options) => {
     // eslint-disable-next-line
     options = options || {};
     // eslint-disable-next-line
@@ -21,7 +21,7 @@ export class ApiCall {
       this.store.commit('app/mToggleLoading', true);
     }
 
-    this.appendToken(headers);
+    await this.appendToken(headers);
 
     return fetch(`${apiUrl}${url}`, {
       ...requestSettings,
@@ -41,8 +41,8 @@ export class ApiCall {
       });
   }
 
-  appendToken = (headers) => {
-    const token = this.store.getters['app/getToken'];
+  appendToken = async (headers) => {
+    const token = await this.store.dispatch('app/getToken');
     if (token) {
       headers.set('Authorization', `Bearer ${token}`);
     }

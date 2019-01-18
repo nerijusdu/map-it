@@ -14,10 +14,22 @@ const initialState = {
 };
 
 export const getters = {
-  getToken: state => state.user.token
 };
 
 export const actions = {
+  getToken({ state, commit }) {
+    if (state.user.token) {
+      return state.user.token;
+    }
+
+    const token = window.localStorage.getItem('token');
+    if (token) {
+      commit('mSaveUser', { token });
+      // TODO: validate and update token
+    }
+
+    return token;
+  },
   saveUser({ commit }, data) {
     if (!data || !data.token || !data.email) {
       return;
