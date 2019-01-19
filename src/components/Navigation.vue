@@ -4,7 +4,17 @@
       <span>MapIt</span>
     </div>
     <div class="grow flex-center-v">
-      <!-- Roadmap selection goes here -->
+      <md-field class="roadmap-select">
+        <md-select v-model="roadmapSelection" @md-selected="updateRoadmap()">
+          <md-option
+            v-for="r in roadmaps"
+            v-bind:key="r.id"
+            v-bind:value="r.id"
+          >
+            {{ r.title }}
+          </md-option>
+        </md-select>
+      </md-field>
     </div>
     <div class="flex">
       <div class="navigation-item flex-center" @click="$router.push({ name: 'Roadmaps' })">
@@ -29,11 +39,33 @@
 </template>
 
 <script>
-import { mapActions } from 'vuex';
+import { mapActions, mapState, mapGetters } from 'vuex';
 
 export default {
+  data: () => ({
+    roadmapSelection: null
+  }),
+  computed: {
+    ...mapState({
+      roadmaps: state => state.roadmap.all.map(r => ({ id: r.id, title: r.title }))
+    }),
+    ...mapGetters('roadmap', ['selectedRoadmap'])
+  },
   methods: {
-    ...mapActions('app', ['logout'])
+    ...mapActions({
+      logout: 'app/logout',
+      selectRoadmap: 'roadmap/selectRoadmap'
+    }),
+    updateRoadmap() {
+      if (this.roadmapSelection) {
+        this.selectRoadmap(this.roadmapSelection);
+      }
+    }
+  },
+  watch: {
+    selectedRoadmap(val) {
+      this.roadmapSelection = val;
+    }
   }
 };
 </script>
@@ -74,6 +106,11 @@ export default {
 
 .md-menu-content:last-of-type {
   right: 0 !important;
+}
+
+.roadmap-select {
+  max-width: 200px;
+  cursor: pointer;
 }
 </style>
 

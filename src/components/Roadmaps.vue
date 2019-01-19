@@ -15,8 +15,7 @@
           <div class="controls">
             <img src="@/assets/edit.svg" class="clickable" @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"/>
             <img src="@/assets/trash.svg" class="clickable" @click="() => confirmDelete(r.id)"/>
-            <!-- select -->
-            <!-- remove -->
+            <!-- select/preview -->
           </div>
         </md-table-cell>
       </md-table-row>

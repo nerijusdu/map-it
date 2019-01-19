@@ -75,7 +75,8 @@ export const getters = {
   roadmapTimeFrame: state => ({
     startDate: state.current.startDate,
     endDate: state.current.endDate
-  })
+  }),
+  selectedRoadmap: state => state.current.id
 };
 
 export const actions = {
@@ -155,6 +156,15 @@ export const actions = {
     }
 
     commit('mDeleteRoadmap', roadmapId);
+    return true;
+  },
+  async selectRoadmap({ commit }, roadmapId) {
+    const result = await api.getRoadmapById(roadmapId);
+    if (!result || !result.ok) {
+      return false;
+    }
+
+    commit('mSelectRoadmap', result.data);
     return true;
   },
   init({ commit }) {
