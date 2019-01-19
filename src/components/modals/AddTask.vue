@@ -133,11 +133,13 @@ export default {
     },
     clearForm() {
       this.$v.$reset();
+      this.task.id = '';
       this.task.title = '';
       this.task.description = '';
       this.task.categoryId = '';
       this.task.startDate = moment().toDate();
       this.task.endDate = moment().toDate();
+      this.category.id = '';
       this.category.title = '';
       this.category.description = '';
       this.category.color = '#1eb980';
@@ -162,7 +164,11 @@ export default {
   },
   watch: {
     taskToEdit(val) {
-      this.task = { ...val };
+      if (val) {
+        this.task = { ...val };
+      } else {
+        this.clearForm();
+      }
     }
   }
 };

@@ -91,6 +91,7 @@ export default {
     },
     clearForm() {
       this.$v.$reset();
+      this.roadmap.id = '';
       this.roadmap.title = '';
       this.roadmap.description = '';
       this.roadmap.startDate = moment().toDate();
@@ -112,7 +113,11 @@ export default {
   },
   watch: {
     roadmapToEdit(val) {
-      this.roadmap = { ...val };
+      if (val) {
+        this.roadmap = { ...val };
+      } else {
+        this.clearForm();
+      }
     }
   }
 };
