@@ -148,7 +148,7 @@ export const actions = {
     modal.show('addRoadmap');
     commit('mEditRoadmap', roadmapId);
   },
-  async deleteRoadmap({ commit }, { roadmapId }) {
+  async deleteRoadmap({ commit }, roadmapId) {
     const result = await api.deleteRoadmap(roadmapId);
     if (!result || !result.ok) {
       return false;

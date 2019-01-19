@@ -3,6 +3,7 @@
     <AddTask />
     <PreviewTask />
     <AddRoadmap />
+    <Confirmation />
   </div>
 </template>
 
@@ -10,12 +11,14 @@
 import AddTask from './AddTask';
 import PreviewTask from './PreviewTask';
 import AddRoadmap from './AddRoadmap';
+import Confirmation from './Confirmation';
 
 export default {
   components: {
     AddTask,
     PreviewTask,
-    AddRoadmap
+    AddRoadmap,
+    Confirmation
   }
 };
 </script>

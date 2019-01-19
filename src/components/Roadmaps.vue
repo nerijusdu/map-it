@@ -14,8 +14,7 @@
         <md-table-cell>
           <div class="controls">
             <img src="@/assets/edit.svg" class="clickable" @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"/>
-            <!-- TODO: add confirmation modal -->
-            <img src="@/assets/trash.svg" class="clickable" @click="() => deleteRoadmap({ roadmapId: r.id, modal: $modal })"/>
+            <img src="@/assets/trash.svg" class="clickable" @click="() => confirmDelete(r.id)"/>
             <!-- select -->
             <!-- remove -->
           </div>
@@ -41,7 +40,13 @@ export default {
     })
   },
   methods: {
-    ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap'])
+    ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap']),
+    confirmDelete(roadmapId) {
+      this.$modal.show('confirmation', {
+        content: 'This will delete all categories and tasks associated with this roadmap. Are you sure you want to delete this roadmap?',
+        confirmAction: () => this.deleteRoadmap(roadmapId)
+      });
+    }
   },
   data: () => ({
     datePreviewFormat,
