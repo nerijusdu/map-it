@@ -1,7 +1,7 @@
 import moment from 'moment';
-import api from '@/util/api';
-import { roadmapMonthFormat } from '@/util/constants';
-import converters from '@/util/converters';
+import api from '../../services/api';
+import { roadmapMonthFormat } from '../../constants';
+import converters from '../../services/converterService';
 
 const initialState = {
   current: {},

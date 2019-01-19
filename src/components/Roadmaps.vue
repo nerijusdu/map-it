@@ -31,7 +31,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex';
-import { datePreviewFormat } from '@/util/constants';
+import { datePreviewFormat } from '../constants';
+import resources from '../services/resourceService';
 
 export default {
   computed: {
@@ -43,7 +44,7 @@ export default {
     ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap']),
     confirmDelete(roadmapId) {
       this.$modal.show('confirmation', {
-        content: 'This will delete all categories and tasks associated with this roadmap. Are you sure you want to delete this roadmap?',
+        content: resources.deleteRoadmapMsg,
         confirmAction: () => this.deleteRoadmap(roadmapId)
       });
     }

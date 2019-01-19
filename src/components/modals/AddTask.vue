@@ -9,19 +9,19 @@
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
             <md-input v-model="task.title"/>
-            <span class="md-error" v-if="!$v.task.title.required">{{ messages.requiredMsg() }}</span>
+            <span class="md-error" v-if="!$v.task.title.required">{{ resources.requiredMsg }}</span>
           </md-field>
           <md-field :class="getValidationClass('description')">
             <label>Description</label>
             <md-textarea v-model="task.description"/>
-            <span class="md-error" v-if="!$v.task.description.required">{{ messages.maxLengthMsg(500) }}</span>
+            <span class="md-error" v-if="!$v.task.description.required">{{ resources.maxLengthMsg(500) }}</span>
           </md-field>
           <md-field :class="getValidationClass('categoryId')">
             <label for="categoryId">Category</label>
             <md-select name="categoryId" id="categoryId" v-model="task.categoryId">
               <md-option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
-            <span class="md-error" v-if="!$v.task.categoryId.required">{{ messages.requiredMsg() }}</span>
+            <span class="md-error" v-if="!$v.task.categoryId.required">{{ resources.requiredMsg }}</span>
           </md-field>
           <md-datepicker md-immediately v-model="task.startDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
             <label>Start date</label>
@@ -34,17 +34,17 @@
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
             <md-input v-model="category.title"/>
-            <span class="md-error" v-if="!$v.category.title.required">{{ messages.requiredMsg() }}</span>
+            <span class="md-error" v-if="!$v.category.title.required">{{ resources.requiredMsg }}</span>
           </md-field>
           <md-field :class="getValidationClass('description')">
             <label>Description</label>
             <md-textarea v-model="category.description"/>
-            <span class="md-error" v-if="!$v.category.description.required">{{ messages.maxLengthMsg(500) }}</span>
+            <span class="md-error" v-if="!$v.category.description.required">{{ resources.maxLengthMsg(500) }}</span>
           </md-field>
           <md-field :class="getValidationClass('color')">
             <label>Color</label>
             <md-input v-model="category.color" type="color"/>
-            <span class="md-error" v-if="!$v.category.color.required">{{ messages.requiredMsg() }}</span>
+            <span class="md-error" v-if="!$v.category.color.required">{{ resources.requiredMsg }}</span>
           </md-field>
         </md-tab>
       </md-tabs>
@@ -61,7 +61,7 @@ import moment from 'moment';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
-import * as messages from '@/util/messages';
+import resources from '../../services/resourceService';
 
 export default {
   name: 'AddEditTask',
@@ -87,7 +87,7 @@ export default {
       description: '',
       color: '#1eb980'
     },
-    messages,
+    resources,
     isCategory: false
   }),
   methods: {

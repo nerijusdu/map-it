@@ -10,7 +10,7 @@
 
 <script>
 import { mapMutations, mapActions, mapState } from 'vuex';
-import '@/util/api';
+import './services/api';
 import Modals from './components/modals';
 import Loading from './components/Loading';
 import Message from './components/Message';

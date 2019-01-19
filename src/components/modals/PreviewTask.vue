@@ -25,8 +25,8 @@
 <script>
 import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
-import { datePreviewFormat } from '@/util/constants';
-import { getParagraphs } from '@/util/functions';
+import { datePreviewFormat } from '../../constants';
+import formatService from '../../services/formatService';
 
 export default {
   computed: {
@@ -57,7 +57,7 @@ export default {
       this.editTask({ taskId: null, modal: this.$modal });
       this.$modal.hide('previewTask');
     },
-    getParagraphs
+    getParagraphs: formatService.getParagraphs
   }
 };
 </script>

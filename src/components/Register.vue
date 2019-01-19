@@ -6,25 +6,25 @@
         <md-field :class="getValidationClass('email')" @keyup.native.enter="validateForm">
           <label>Email</label>
           <md-input v-model="user.email" name="email"/>
-          <span class="md-error" v-if="!$v.user.email.required">{{ messages.requiredMsg() }}</span>
-          <span class="md-error" v-if="!$v.user.email.email">{{ messages.invalidEmailMsg() }}</span>
+          <span class="md-error" v-if="!$v.user.email.required">{{ resources.requiredMsg }}</span>
+          <span class="md-error" v-if="!$v.user.email.email">{{ resources.invalidEmailMsg }}</span>
         </md-field>
         <md-field :class="getValidationClass('name')" @keyup.native.enter="validateForm">
           <label>Name</label>
           <md-input v-model="user.name" name="name"/>
-          <span class="md-error" v-if="!$v.user.name.required">{{ messages.requiredMsg() }}</span>
-          <span class="md-error" v-if="!$v.user.name.minLength">{{ messages.minLengthMsg($v.user.name.$params.minLength.min) }}</span>
+          <span class="md-error" v-if="!$v.user.name.required">{{ resources.requiredMsg }}</span>
+          <span class="md-error" v-if="!$v.user.name.minLength">{{ resources.minLengthMsg($v.user.name.$params.minLength.min) }}</span>
         </md-field>
         <md-field :md-toggle-password="false" :class="getValidationClass('password')" @keyup.native.enter="validateForm">
           <label>Password</label>
           <md-input v-model="user.password" type="password" name="password"/>
-          <span class="md-error" v-if="!$v.user.password.required">{{ messages.requiredMsg() }}</span>
-          <div class="md-error" v-if="!$v.user.password.minLength">{{ messages.minLengthMsg($v.user.password.$params.minLength.min) }}</div>
+          <span class="md-error" v-if="!$v.user.password.required">{{ resources.requiredMsg }}</span>
+          <div class="md-error" v-if="!$v.user.password.minLength">{{ resources.minLengthMsg($v.user.password.$params.minLength.min) }}</div>
         </md-field>
         <md-field :md-toggle-password="false" :class="getValidationClass('repeatPassword')" @keyup.native.enter="validateForm">
           <label>Repeat password</label>
           <md-input v-model="user.repeatPassword" type="password" name="repeatPassword"/>
-          <span class="md-error" v-if="!$v.user.repeatPassword.required">{{ messages.requiredMsg() }}</span>
+          <span class="md-error" v-if="!$v.user.repeatPassword.required">{{ resources.requiredMsg }}</span>
           <div class="md-error" v-if="!$v.user.repeatPassword.sameAs">Passwords don't match</div>
         </md-field>
       </div>
@@ -43,8 +43,8 @@
 import { validationMixin } from 'vuelidate';
 import { required, email, minLength, sameAs } from 'vuelidate/lib/validators';
 import { mapActions } from 'vuex';
-import * as messages from '@/util/messages';
-import api from '@/util/api';
+import resources from '../services/resourceService';
+import api from '../services/api';
 
 export default {
   mixins: [validationMixin],
@@ -55,7 +55,7 @@ export default {
       password: '',
       repeatPassword: ''
     },
-    messages,
+    resources,
     isLoading: false
   }),
   methods: {

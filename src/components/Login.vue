@@ -6,13 +6,13 @@
         <md-field :class="getValidationClass('email')" @keyup.native.enter="validateForm">
           <label>Email</label>
           <md-input v-model="user.email" name="email"/>
-          <span class="md-error" v-if="!$v.user.email.required">{{ messages.requiredMsg() }}</span>
-          <span class="md-error" v-if="!$v.user.email.email">{{ messages.invalidEmailMsg() }}</span>
+          <span class="md-error" v-if="!$v.user.email.required">{{ resources.requiredMsg }}</span>
+          <span class="md-error" v-if="!$v.user.email.email">{{ resources.invalidEmailMsg }}</span>
         </md-field>
         <md-field :md-toggle-password="false" :class="getValidationClass('password')" @keyup.native.enter="validateForm">
           <label>Password</label>
           <md-input v-model="user.password" type="password" name="password"/>
-          <span class="md-error" v-if="!$v.user.password.required">{{ messages.requiredMsg() }}</span>
+          <span class="md-error" v-if="!$v.user.password.required">{{ resources.requiredMsg }}</span>
         </md-field>
       </div>
       <div class="form-footer">
@@ -30,8 +30,8 @@
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
 import { mapActions } from 'vuex';
-import * as messages from '@/util/messages';
-import api from '@/util/api';
+import resources from '../services/resourceService';
+import api from '../services/api';
 
 export default {
   mixins: [validationMixin],
@@ -40,19 +40,22 @@ export default {
       email: '',
       password: ''
     },
-    messages,
+    resources,
     isLoading: false
   }),
   methods: {
-    ...mapActions('app', ['saveUser']),
+    ...mapActions('app', ['saveUser', 'init']),
     submit() {
       this.isLoading = true;
       api
         .login(this.user, { ignoreLoading: true })
         .then((user) => {
           this.isLoading = false;
-          this.saveUser(user.data);
-          this.$router.push({ name: 'Timeline' });
+          if (user) {
+            this.saveUser(user.data);
+            this.init();
+            this.$router.push({ name: 'Timeline' });
+          }
         });
     },
     register() {

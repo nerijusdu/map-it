@@ -1,5 +1,5 @@
-import store from '@/store';
-import { apiUrl } from './constants';
+import store from '../../store';
+import { apiUrl } from '../../constants';
 
 export class ApiCall {
   constructor(_store) {

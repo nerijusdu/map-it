@@ -27,7 +27,7 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import { calculateWidthPercentage } from '@/util/functions';
+import formatService from '../../services/formatService';
 
 export default {
   props: ['category'],
@@ -37,7 +37,7 @@ export default {
   }),
   methods: {
     ...mapActions('roadmap', ['previewTask']),
-    calculateWidthPercentage
+    calculateWidthPercentage: formatService.calculateWidthPercentage
   }
 };
 </script>

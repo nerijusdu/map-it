@@ -1,5 +1,5 @@
-import { errorTime } from '@/util/constants';
-import router from '@/router';
+import { errorTime } from '../../constants';
+import router from '../../router';
 
 const initialState = {
   user: {
@@ -64,7 +64,7 @@ export const actions = {
     router.push('Login');
   },
   init({ commit, dispatch, state }) {
-    if (state.isInitialized) {
+    if (state.isInitialized || !state.user.token) {
       return;
     }
 

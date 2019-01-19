@@ -1,11 +1,11 @@
 import Vue from 'vue';
 import Router from 'vue-router';
-import { authorizeRoutes } from '@/util/functions';
-import Timeline from '@/components/Timeline';
-import Login from '@/components/Login';
-import Register from '@/components/Register';
-import Navigation from '@/components/Navigation';
-import Roadmaps from '@/components/Roadmaps';
+import authService from '../services/authService';
+import Timeline from '../components/Timeline';
+import Login from '../components/Login';
+import Register from '../components/Register';
+import Navigation from '../components/Navigation';
+import Roadmaps from '../components/Roadmaps';
 
 Vue.use(Router);
 
@@ -40,6 +40,6 @@ const router = new Router({
   ],
 });
 
-router.beforeResolve(authorizeRoutes);
+router.beforeResolve(authService.authorizeRoutes);
 
 export default router;
