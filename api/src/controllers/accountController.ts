@@ -19,6 +19,13 @@ router.get('/verify', (req, res) => {
   res.send(result);
 });
 
+router.post('/refresh', (req, res, next) => {
+  accountService()
+    .refresh(req.body.email, req.body.refreshToken)
+    .then((result) => res.send(result))
+    .catch(next);
+});
+
 router.post('/register', (req, res, next) => {
   const user = new User();
   user.email = req.body.email;

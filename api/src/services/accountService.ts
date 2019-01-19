@@ -1,3 +1,4 @@
+import shortid from 'shortid';
 import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
 import resources from '../resources';
@@ -5,6 +6,8 @@ import authService from './authService';
 import { connection } from './databaseService';
 import { EntityServiceBase } from './entityServiceBase';
 
+const tokenList: any = {};
+// TODO: implement logout to clear refresh token
 class AccountService extends EntityServiceBase<User> {
   constructor(user?: User) {
     super(User, user);
@@ -24,10 +27,16 @@ class AccountService extends EntityServiceBase<User> {
         }
         return user;
       })
-      .then((user) => ({
-          email: user.email,
-          token: authService.createToken({ payload: user })
-      }));
+      .then((user) => {
+        const refreshToken = this.generateLongToken();
+        tokenList[refreshToken] = user.email;
+
+        return {
+            email: user.email,
+            token: authService.createToken({ payload: user }),
+            refreshToken
+        };
+      });
   }
 
   public verify(token?: string) {
@@ -39,6 +48,31 @@ class AccountService extends EntityServiceBase<User> {
       email: user.email,
       token: tokenStr
     };
+  }
+
+  public refresh(email: string, refreshToken: string) {
+    if (tokenList[refreshToken] === email) {
+      delete tokenList[refreshToken];
+
+      return connection()
+        .manager
+        .findOne(User, { email })
+        .then((user) => {
+          if (!user) {
+            throw new HttpError(resources.Generic_ErrorMessage, 500);
+          }
+          const newRefreshToken = this.generateLongToken();
+          tokenList[newRefreshToken] = user.email;
+
+          return {
+              email: user.email,
+              token: authService.createToken({ payload: user }),
+              refreshToken: newRefreshToken
+          };
+        });
+    }
+
+    throw new HttpError(resources.Generic_PleaseLogin, 401);
   }
 
   public register(newUser: User) {
@@ -64,6 +98,10 @@ class AccountService extends EntityServiceBase<User> {
         delete res.password;
         return res;
       });
+  }
+
+  private generateLongToken() {
+    return `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
   }
 }
 

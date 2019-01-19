@@ -4,7 +4,8 @@ import auth from '../services/authService';
 
 const publicUrls = [
   '/account/login',
-  '/account/register'
+  '/account/register',
+  '/account/refresh'
 ];
 
 export const verifyUser = ((req, res, next) => {
