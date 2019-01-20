@@ -71,12 +71,12 @@ export default {
 
           if (res) {
             this.showMessage('Registration successful! Please login.');
-            this.$router.push({ name: 'Login' });
+            this.$router.push('/login');
           }
         });
     },
     back() {
-      this.$router.push({ name: 'Login' });
+      this.$router.push('/login');
     },
     getValidationClass(fieldName) {
       const field = this.$v.user[fieldName];

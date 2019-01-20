@@ -1,6 +1,6 @@
 <template>
   <div class="navigation-bar">
-    <div class="navigation-logo flex-center" @click="$router.push({ name: 'Timeline' })">
+    <div class="navigation-logo flex-center" @click="$router.push('/timeline')">
       <span>MapIt</span>
     </div>
     <div class="grow flex-center-v">
@@ -17,7 +17,7 @@
       </md-field>
     </div>
     <div class="flex">
-      <div class="navigation-item flex-center" @click="$router.push({ name: 'Roadmaps' })">
+      <div class="navigation-item flex-center" @click="$router.push('/roadmaps')">
         <div class="navigation-item-icon"><img src="@/assets/map.svg"/></div>
         <div>Roadmaps</div>
       </div>

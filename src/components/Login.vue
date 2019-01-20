@@ -54,12 +54,12 @@ export default {
           if (user) {
             this.saveUser(user.data);
             this.init();
-            this.$router.push({ name: 'Timeline' });
+            this.$router.push('/timeline');
           }
         });
     },
     register() {
-      this.$router.push({ name: 'Register' });
+      this.$router.push('/register');
     },
     getValidationClass(fieldName) {
       const field = this.$v.user[fieldName];

@@ -13,9 +13,22 @@
         <md-table-cell class="clickable">{{ r.createdDate.format(datePreviewFormat) }}</md-table-cell>
         <md-table-cell>
           <div class="controls">
-            <img src="@/assets/edit.svg" class="clickable" @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"/>
-            <img src="@/assets/trash.svg" class="clickable" @click="() => confirmDelete(r.id)"/>
-            <!-- select/preview -->
+            <img
+              src="@/assets/edit.svg"
+              class="clickable"
+              @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"
+              alt="Edit"
+              />
+            <img
+              src="@/assets/trash.svg"
+              class="clickable"
+              @click="() => confirmDelete(r.id)"
+              alt="Delete"/>
+            <img
+              src="@/assets/arrow-right.svg"
+              class="clickable"
+              @click="() => navigateToRoadmap(r.id)"
+              alt="Select"/>
           </div>
         </md-table-cell>
       </md-table-row>
@@ -40,12 +53,16 @@ export default {
     })
   },
   methods: {
-    ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap']),
+    ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap', 'selectRoadmap']),
     confirmDelete(roadmapId) {
       this.$modal.show('confirmation', {
         content: resources.deleteRoadmapMsg,
         confirmAction: () => this.deleteRoadmap(roadmapId)
       });
+    },
+    navigateToRoadmap(roadmapId) {
+      this.selectRoadmap(roadmapId);
+      this.$router.push('/timeline');
     }
   },
   data: () => ({
