@@ -188,6 +188,9 @@ export const actions = {
       })
       .finally(() => commit('app/mToggleLoading', false, { root: true }));
   },
+  reset({ commit }) {
+    commit('mReset');
+  }
 };
 
 export const mutations = {
@@ -254,6 +257,13 @@ export const mutations = {
   },
   mSetRoadmaps(state, roadmaps) {
     state.all = roadmaps;
+  },
+  mReset(state) {
+    state.all = [];
+    state.current = {};
+    state.editTaskId = null;
+    state.previewTaskId = null;
+    state.editRoadmapId = null;
   }
 };
 

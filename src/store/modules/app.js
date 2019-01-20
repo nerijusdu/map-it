@@ -87,10 +87,12 @@ export const actions = {
       isError: false
     });
   },
-  logout({ commit }) {
+  logout({ commit, dispatch }) {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('refreshToken');
     commit('mSaveUser', { token: null, refreshToken: null, email: null });
+    commit('mLogout');
+    dispatch('roadmap/reset', null, { root: true });
     router.push('Login');
   },
   init({ commit, dispatch, state }) {
@@ -120,6 +122,9 @@ export const mutations = {
   },
   mInit(state) {
     state.isInitialized = true;
+  },
+  mLogout(state) {
+    state.isInitialized = false;
   }
 };
 

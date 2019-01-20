@@ -13,7 +13,9 @@ export class EntityServiceBase<TEntity> {
     return connection()
       .manager
       .find(this.entity, {
-        userId: this.user!.id,
+        where: {
+          userId: this.user!.id
+        },
         order: {
           id: 'ASC'
         },
