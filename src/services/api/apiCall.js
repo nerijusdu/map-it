@@ -1,3 +1,4 @@
+import moment from 'moment';
 import store from '../../store';
 import { apiUrl } from '../../constants';
 
@@ -6,7 +7,7 @@ export class ApiCall {
     this.store = _store || store;
   }
 
-  defaultHeaders = new Headers({
+  defaultHeaders = () => new Headers({
     'Content-Type': 'application/json'
   })
 
@@ -15,13 +16,13 @@ export class ApiCall {
     options = options || {};
     // eslint-disable-next-line
     requestSettings = requestSettings || {};
-    const headers = requestSettings.headers || this.defaultHeaders;
+    const headers = requestSettings.headers || this.defaultHeaders();
 
     if (!options.ignoreLoading) {
       this.store.commit('app/mToggleLoading', true);
     }
 
-    await this.appendToken(headers);
+    await this.appendToken(headers, options);
 
     return fetch(`${apiUrl}${url}`, {
       ...requestSettings,
@@ -41,10 +42,21 @@ export class ApiCall {
       });
   }
 
-  appendToken = async (headers) => {
+  appendToken = async (headers, options) => {
+    if (options.ignoreAuth) {
+      return;
+    }
+
     const token = await this.store.dispatch('app/getToken');
-    if (token) {
+    const expiresAt = moment(this.store.state.app.user.expiresAt);
+    if (token && expiresAt && expiresAt.isAfter(moment(), 'second')) {
       headers.set('Authorization', `Bearer ${token}`);
+      return;
+    }
+
+    const newToken = await this.store.dispatch('app/refreshToken');
+    if (newToken) {
+      headers.set('Authorization', `Bearer ${newToken}`);
     }
   }
 

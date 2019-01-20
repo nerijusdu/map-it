@@ -1,10 +1,14 @@
+import moment from 'moment';
 import { errorTime } from '../../constants';
 import router from '../../router';
+import api from '../../services/api';
 
 const initialState = {
   user: {
     token: null,
-    email: null
+    refreshToken: null,
+    email: null,
+    expiresAt: moment()
   },
   isInitialized: false,
   isLoading: false,
@@ -26,11 +30,34 @@ export const actions = {
 
     const token = window.localStorage.getItem('token');
     if (token) {
-      commit('mSaveUser', { token });
+      const refreshToken = window.localStorage.getItem('refreshToken');
+      const email = window.localStorage.getItem('email');
+      commit('mSaveUser', { token, refreshToken, email });
       // TODO: validate and update token
     }
 
     return token;
+  },
+  async refreshToken({ state, dispatch }) {
+    let { email, refreshToken } = state.user;
+    if (!email || !refreshToken) {
+      refreshToken = window.localStorage.getItem('refreshToken');
+      email = window.localStorage.getItem('email');
+    }
+    if (!email || !refreshToken) {
+      return false;
+    }
+
+    const result = await api.refreshToken({
+      email,
+      refreshToken
+    });
+    if (!result || !result.ok) {
+      return false;
+    }
+
+    dispatch('saveUser', result.data);
+    return result.data.token;
   },
   saveUser({ commit }, data) {
     if (!data || !data.token || !data.email) {
@@ -38,6 +65,8 @@ export const actions = {
     }
 
     window.localStorage.setItem('token', data.token);
+    window.localStorage.setItem('refreshToken', data.refreshToken);
+    window.localStorage.setItem('email', data.email);
     commit('mSaveUser', data);
   },
   showError({ commit }, error) {
@@ -60,7 +89,8 @@ export const actions = {
   },
   logout({ commit }) {
     window.localStorage.removeItem('token');
-    commit('mSaveUser', { token: null, email: null });
+    window.localStorage.removeItem('refreshToken');
+    commit('mSaveUser', { token: null, refreshToken: null, email: null });
     router.push('Login');
   },
   init({ commit, dispatch, state }) {
@@ -77,7 +107,9 @@ export const mutations = {
   mSaveUser(state, data) {
     state.user = {
       token: data.token,
-      email: data.email
+      refreshToken: data.refreshToken,
+      email: data.email,
+      expiresAt: moment(data.expiresAt)
     };
   },
   mToggleLoading(state, isLoading) {

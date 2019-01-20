@@ -2,10 +2,10 @@ import apiCall from './apiCall';
 
 export default {
   getRoadmapById(id, options) {
-    return apiCall(`/roadmaps/${id}`, options);
+    return apiCall(`/roadmaps/${id}`, {}, options);
   },
   getRoadmaps(options) {
-    return apiCall('/roadmaps', options);
+    return apiCall('/roadmaps', {}, options);
   },
   saveRoadmap(roadmap, options) {
     roadmap.id = roadmap.id || null;

@@ -8,12 +8,21 @@ export default {
     }, options);
   },
   getUserInfo(options) {
-    return apiCall('/account/verify', options);
+    return apiCall('/account/verify', {}, options);
   },
   register(userInfo, options) {
     return apiCall('/account/register', {
       method: 'POST',
       body: JSON.stringify(userInfo)
     }, options);
+  },
+  refreshToken(userInfo, options) {
+    return apiCall('/account/refresh', {
+      method: 'POST',
+      body: JSON.stringify(userInfo)
+    }, {
+      ignoreAuth: true,
+      ...options
+    });
   }
 };

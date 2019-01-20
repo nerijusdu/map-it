@@ -1,4 +1,6 @@
+import moment from 'moment';
 import shortid from 'shortid';
+import { JWTAge } from '../config';
 import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
 import resources from '../resources';
@@ -30,11 +32,13 @@ class AccountService extends EntityServiceBase<User> {
       .then((user) => {
         const refreshToken = this.generateLongToken();
         tokenList[refreshToken] = user.email;
+        const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
 
         return {
             email: user.email,
             token: authService.createToken({ payload: user }),
-            refreshToken
+            refreshToken,
+            expiresAt
         };
       });
   }
@@ -63,11 +67,13 @@ class AccountService extends EntityServiceBase<User> {
           }
           const newRefreshToken = this.generateLongToken();
           tokenList[newRefreshToken] = user.email;
+          const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
 
           return {
               email: user.email,
               token: authService.createToken({ payload: user }),
-              refreshToken: newRefreshToken
+              refreshToken: newRefreshToken,
+              expiresAt
           };
         });
     }
