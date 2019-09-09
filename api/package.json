@@ -51,10 +51,12 @@
     "tslint": "^5.11.0"
   },
   "dependencies": {
+    "@types/bcryptjs": "^2.4.2",
     "@types/cors": "^2.8.4",
     "@types/pg": "^7.4.10",
     "@types/shortid": "0.0.29",
     "bcrypt": "3.0.2",
+    "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",
     "class-validator": "^0.9.1",
     "cors": "^2.8.4",

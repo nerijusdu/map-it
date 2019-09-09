@@ -5,7 +5,7 @@
       <div class="flex-center">Layout</div>
       <div class="flex-center">Colors</div>
     </div>
-    <div class="flex">
+    <div class="flex add-button">
       <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addTask')">
         <i class="fas fa-plus"/>
       </md-button>
@@ -58,6 +58,12 @@ export default {};
 
 .menu-bar-nav > div:hover {
   color: var(--primary-color);
+}
+
+.add-button {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
 }
 </style>
 
