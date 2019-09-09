@@ -5,7 +5,8 @@ import Timeline from '../components/Timeline';
 import Login from '../components/Login';
 import Register from '../components/Register';
 import Navigation from '../components/Navigation';
-import Roadmaps from '../components/Roadmaps';
+import RoadmapList from '../components/RoadmapList';
+import RoadmapPreview from '../components/RoadmapPreview';
 
 Vue.use(Router);
 
@@ -31,9 +32,17 @@ const router = new Router({
     },
     {
       path: '/roadmaps',
-      name: 'Roadmaps',
+      name: 'RoadmapList',
       components: {
-        default: Roadmaps,
+        default: RoadmapList,
+        navigation: Navigation
+      }
+    },
+    {
+      path: '/roadmaps/:id',
+      name: 'RoadmapPreview',
+      components: {
+        default: RoadmapPreview,
         navigation: Navigation
       }
     }

@@ -9,8 +9,8 @@
         <md-table-head>Date Created</md-table-head>
       </md-table-row>
       <md-table-row v-for="r in roadmaps" v-bind:key="r.id">
-        <md-table-cell class="clickable">{{ r.title }}</md-table-cell>
-        <md-table-cell class="clickable">{{ r.createdDate.format(datePreviewFormat) }}</md-table-cell>
+        <md-table-cell class="clickable" @click.native="() => previewRoadmap(r.id)">{{ r.title }}</md-table-cell>
+        <md-table-cell class="clickable" @click.native="() => previewRoadmap(r.id)">{{ r.createdDate.format(datePreviewFormat) }}</md-table-cell>
         <md-table-cell>
           <div class="controls">
             <img
@@ -63,6 +63,9 @@ export default {
     navigateToRoadmap(roadmapId) {
       this.selectRoadmap(roadmapId);
       this.$router.push('/timeline');
+    },
+    previewRoadmap(roadmapId) {
+      this.$router.push(`/roadmaps/${roadmapId}`);
     }
   },
   data: () => ({
