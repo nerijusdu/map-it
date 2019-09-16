@@ -84,5 +84,21 @@ export default {
   border-radius: 2px;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 600px) {
+  .category {
+    margin-bottom: 20px;
+    flex-direction: column;
+  }
+
+  .label {
+    width: auto;
+    margin: 10px;
+  }
+
+  .rows-container {
+    margin-left: 10px;
+  }
+}
 </style>
 

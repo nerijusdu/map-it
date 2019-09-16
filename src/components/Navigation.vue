@@ -112,5 +112,11 @@ export default {
   max-width: 200px;
   cursor: pointer;
 }
+
+@media only screen and (max-width: 600px) {
+  .roadmap-select {
+    display: none;
+  }
+}
 </style>
 

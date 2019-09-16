@@ -90,4 +90,10 @@ export default {
   bottom: 10px;
   right: 10px;
 }
+
+@media only screen and (max-width: 450px) {
+  .controls {
+    display: none;
+  }
+}
 </style>

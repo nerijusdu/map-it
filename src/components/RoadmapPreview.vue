@@ -129,4 +129,16 @@ export default {
   justify-content: center;
   width: 100%;
 }
+
+@media only screen and (max-width: 600px) {
+  .roadmap-details {
+    flex-direction: column;
+  }
+
+  .roadmap-info-container, .roadmap-controls-container {
+    width: 90%;
+    margin-left: 5%;
+    margin-right: 5%;
+  }
+}
 </style>

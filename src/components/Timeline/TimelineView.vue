@@ -57,5 +57,15 @@ export default {
   text-align: center;
   border-left: 1px solid white;
 }
+
+@media only screen and (max-width: 600px) {
+  .label-container {
+    margin-left: 10px;
+  }
+
+  .label:first-of-type {
+    border-left: none;
+  }
+}
 </style>
 
