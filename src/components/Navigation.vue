@@ -21,10 +21,10 @@
         <div class="navigation-item-icon"><img src="@/assets/map.svg"/></div>
         <div>Roadmaps</div>
       </div>
-      <div class="navigation-item flex-center">
+      <!-- <div class="navigation-item flex-center">
         <div class="navigation-item-icon"><img src="@/assets/settings.svg"/></div>
         <div>Settings</div>
-      </div>
+      </div> -->
       <md-menu class="navigation-item flex-center" md-size="small" md-align-trigger>
         <div class="flex-center" md-menu-trigger>
           <div class="navigation-item-icon"><img src="@/assets/user.svg"/></div>

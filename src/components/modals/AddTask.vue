@@ -5,7 +5,7 @@
     </div>
     <form class="modal-content">
       <md-tabs>
-        <md-tab id="tab-home" md-label="Task" @click="isCategory = false">
+        <md-tab id="tab-home" md-label="Task" @click="isCategory = false" v-if="categories && categories.length > 0">
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
             <md-input v-model="task.title"/>
@@ -30,7 +30,7 @@
             <label>End date</label>
           </md-datepicker>
         </md-tab>
-        <md-tab id="tab-category" md-label="Category" @click="isCategory = true">
+        <md-tab id="tab-category" md-label="Category" @click="isCategory = true" v-if="!task.id">
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
             <md-input v-model="category.title"/>
@@ -112,8 +112,8 @@ export default {
       this.$modal.hide('addTask');
     },
     onClose() {
+      this.clearForm();
       if (this.taskToEdit) {
-        this.clearForm();
         this.editTask({ taskId: null, modal: this.$modal });
       }
       this.$modal.hide('addTask');
