@@ -14,8 +14,10 @@ class TaskService extends EntityServiceBase<Task> {
 
     return categoryService(this.user)
       .getAll({
-        id: task.categoryId,
-        roadmapId: task.roadmapId
+        where: {
+          id: task.categoryId,
+          roadmapId: task.roadmapId
+        }
       })
       .then((res) => {
         if (!res || res.length === 0) {

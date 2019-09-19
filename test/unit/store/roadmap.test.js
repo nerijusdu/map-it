@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { mutations, actions, getters } from '@/store/modules/roadmap';
-import { roadmapMonthFormat } from '@/util/constants';
+import { roadmapMonthFormat } from '@/constants';
 import getMockForAction from '../mocks/store-action';
 import getModalMock from '../mocks/modal';
 
@@ -9,7 +9,7 @@ describe('Roadmap mutations', () => {
     const title = 'TestTaskTitle1';
     const state = { current: { tasks: [] } };
     const task = { title };
-    
+
     mutations.mAddTask(state, task);
 
     const foundTask = state.current.tasks.find(x => x.title === title);
@@ -24,7 +24,7 @@ describe('Roadmap mutations', () => {
         id: 1,
         title: 'OldTitle'
       }
-    ]}};
+    ] } };
     const task = { id: 1, title: newTitle };
 
     mutations.mUpdateTask(state, task);
@@ -38,7 +38,7 @@ describe('Roadmap mutations', () => {
     const title = 'TestTaskTitle1';
     const state = { current: { categories: [] } };
     const category = { title };
-    
+
     mutations.mAddCategory(state, category);
 
     const foundCategory = state.current.categories.find(x => x.title === title);
@@ -53,7 +53,7 @@ describe('Roadmap mutations', () => {
         id: 1,
         title: 'OldTitle'
       }
-    ]}};
+    ] } };
     const category = { id: 1, title: newTitle };
 
     mutations.mUpdateCategory(state, category);
@@ -126,7 +126,7 @@ describe('Roadmap actions', () => {
 
   it('editTask > should show previewTask modal', () => {
     const taskId = null;
-    const mock = getMockForAction({ previewTaskId: 1});
+    const mock = getMockForAction({ previewTaskId: 1 });
     const modal = getModalMock('previewTask');
 
     actions.editTask(mock, { taskId, modal });
@@ -208,7 +208,7 @@ describe('Roadmap getters', () => {
     };
 
     const result = getters.roadmapTimeFrame(state);
-    
+
     expect(result).toBeDefined();
     expect(result.startDate).toBe(state.current.startDate);
     expect(result.endDate).toBe(state.current.endDate);
@@ -257,7 +257,7 @@ describe('Roadmap getters', () => {
 
     expect(task).toBeNull();
   });
-  
+
   it('taskToEdit > when editTaskId is null', () => {
     const state = {
       editTaskId: null,
@@ -354,7 +354,7 @@ describe('Roadmap getters', () => {
     expect(months[0]).toBe(state.current.startDate.format(roadmapMonthFormat));
     expect(months[4]).toBe(state.current.endDate.format(roadmapMonthFormat));
   });
-  
+
   it('roadmapMonths > when dates are the same', () => {
     const state = {
       current: {

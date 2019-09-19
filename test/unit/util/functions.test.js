@@ -1,6 +1,6 @@
 import moment from 'moment';
-import * as functions from '@/util/functions.js';
-import { publicUrls, loginUrl } from '@/util/constants.js';
+import * as functions from '@/services/formatService';
+import { publicUrls, loginUrl } from '@/constants';
 
 describe('Functions.calculateWidthPercentage', () => {
   it('should be 100%', () => {
@@ -60,7 +60,7 @@ describe('Functions.calculateWidthPercentage', () => {
 
 describe('Functions.getParagraphs', () => {
   it('when text is given', () => {
-    const text = "Test\nText\nFour\nLines";
+    const text = 'Test\nText\nFour\nLines';
 
     const result = functions.getParagraphs(text);
 
@@ -80,11 +80,11 @@ describe('Functions.getParagraphs', () => {
 
 describe('Functions.authorizeRoutes', () => {
   it('should allow public urls', () => {
-    const next = (x) => expect(x).toBeUndefined();
+    const next = x => expect(x).toBeUndefined();
 
-    publicUrls.forEach(x => {
+    publicUrls.forEach((x) => {
       functions.authorizeRoutes({ path: x }, null, next);
-    })
+    });
   });
 
   it('should redirect to login when accessing non public url and no token is saved', () => {
@@ -93,7 +93,7 @@ describe('Functions.authorizeRoutes', () => {
         'app/getToken': null
       }
     }));
-    const next = (x) => expect(x).toBe(loginUrl);
+    const next = x => expect(x).toBe(loginUrl);
 
     functions.authorizeRoutes({ path: '/timeline' }, null, next);
   });
@@ -104,7 +104,7 @@ describe('Functions.authorizeRoutes', () => {
         'app/getToken': 'TestToken'
       }
     }));
-    const next = (x) => expect(x).toBe(loginUrl);
+    const next = x => expect(x).toBe(loginUrl);
 
     functions.authorizeRoutes({ path: '/timeline' }, null, next);
   });

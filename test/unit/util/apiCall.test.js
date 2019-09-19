@@ -1,14 +1,13 @@
 import shortId from 'shortid';
-import { ApiCall } from '@/util/apiCall';
-import { resolve } from 'url';
+import { ApiCall } from '@/services/api/apiCall';
 
 let instance;
 // TODO: update when error handling will be implemented
-global.console = {warn: jest.fn()};
+global.console = { warn: jest.fn() };
 
 describe('apiCall', () => {
   beforeEach(() => {
-    fetch.resetMocks()
+    fetch.resetMocks();
     instance = new ApiCall();
     console.warn.mockClear();
   });
@@ -18,7 +17,7 @@ describe('apiCall', () => {
     instance.handleErrors = x => x;
 
     const expectedResult = shortId.generate();
-    fetch.mockResponseOnce(JSON.stringify(expectedResult), {status: 200, ok: true});
+    fetch.mockResponseOnce(JSON.stringify(expectedResult), { status: 200, ok: true });
 
     const response = await instance.call('testurl');
 
@@ -32,7 +31,7 @@ describe('apiCall', () => {
     };
 
     const expectedResult = shortId.generate();
-    fetch.mockResponseOnce(JSON.stringify(expectedResult), {status: 200, ok: true});
+    fetch.mockResponseOnce(JSON.stringify(expectedResult), { status: 200, ok: true });
 
     const response = await instance.call('testurl');
 
@@ -73,13 +72,13 @@ describe('apiCall', () => {
     const res = {
       status: 200,
       ok: true,
-      json: () => new Promise((resolve, reject) => {
+      json: () => new Promise((resolve) => {
         resolve(expectedData);
       })
     };
 
     const result = await instance.parseResponse(res);
-    
+
     expect(result).toBeDefined();
     expect(result.status).toBe(res.status);
     expect(result.ok).toBe(res.ok);

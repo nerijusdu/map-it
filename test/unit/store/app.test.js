@@ -6,7 +6,7 @@ import getMockForAction from '../mocks/store-action';
 describe('App actions', () => {
   it('saveUser > should save token to local storage', () => {
     global.localStorage.clear();
-    
+
     const mock = getMockForAction({});
     const data = {
       token: shortId.generate(),
