@@ -1,6 +1,5 @@
 import moment from 'moment';
 import { errorTime } from '../../constants';
-import router from '../../router';
 import api from '../../services/api';
 
 const initialState = {
@@ -87,7 +86,7 @@ export const actions = {
       isError: false
     });
   },
-  logout({ commit, dispatch }) {
+  logout({ commit, dispatch }, router) {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('refreshToken');
     commit('mSaveUser', { token: null, refreshToken: null, email: null });

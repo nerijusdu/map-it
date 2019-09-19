@@ -1,8 +1,11 @@
 import moment from 'moment';
-import { mutations, actions, getters } from '@/store/modules/roadmap';
+import store from '@/store';
 import { roadmapMonthFormat } from '@/constants';
 import getMockForAction from '../mocks/store-action';
 import getModalMock from '../mocks/modal';
+
+// eslint-disable-next-line no-underscore-dangle
+const { mutations, actions, getters } = store._modulesNamespaceMap['roadmap/']._rawModule;
 
 describe('Roadmap mutations', () => {
   it('mAddTask', () => {
@@ -231,7 +234,7 @@ describe('Roadmap getters', () => {
     const state = {
       previewTaskId: 1,
       current: {
-        tasks: [{ id: 1, category: 2 }],
+        tasks: [{ id: 1, categoryId: 2 }],
         categories: [{ id: 2 }]
       }
     };
@@ -306,18 +309,18 @@ describe('Roadmap getters', () => {
   });
 
   it('tasksByCategory', () => {
-    const category = 1;
+    const categoryId = 1;
     const state = {
       current: {
         tasks: [
-          { id: 1, category },
-          { id: 2, category },
-          { id: 3, category: 2 },
+          { id: 1, categoryId },
+          { id: 2, categoryId },
+          { id: 3, categoryId: 2 },
         ]
       }
     };
 
-    const tasks = getters.tasksByCategory(state)(category);
+    const tasks = getters.tasksByCategory(state)(categoryId);
 
     expect(tasks.length).toBe(2);
     expect(tasks.find(x => x.id === 1)).toBeDefined();

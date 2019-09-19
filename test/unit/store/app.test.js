@@ -1,7 +1,9 @@
 import shortId from 'shortid';
-import { mutations, actions, getters } from '@/store/modules/app';
+import store from '@/store';
 import getMockForAction from '../mocks/store-action';
 
+// eslint-disable-next-line no-underscore-dangle
+const { mutations, actions } = store._modulesNamespaceMap['app/']._rawModule;
 
 describe('App actions', () => {
   it('saveUser > should save token to local storage', () => {
@@ -46,6 +48,17 @@ describe('App actions', () => {
 
     actions.saveUser(mock, data);
   });
+
+  it('getToken > should return token', () => {
+    const state = {
+      user: { token: shortId.generate() }
+    };
+
+    const mock = getMockForAction(state, 'mSaveUser');
+    const result = actions.getToken(mock);
+
+    expect(result).toBe(state.user.token);
+  });
 });
 
 describe('App mutations', () => {
@@ -60,17 +73,5 @@ describe('App mutations', () => {
 
     expect(state.user.token).toBe(data.token);
     expect(state.user.email).toBe(data.email);
-  });
-});
-
-describe('App getters', () => {
-  it('getToken', () => {
-    const state = {
-      user: { token: shortId.generate() }
-    };
-
-    const result = getters.getToken(state);
-
-    expect(result).toBe(state.user.token);
   });
 });

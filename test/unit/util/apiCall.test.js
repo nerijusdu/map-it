@@ -1,9 +1,14 @@
 import shortId from 'shortid';
+import moment from 'moment';
 import { ApiCall } from '@/services/api/apiCall';
+import MockStore from '../mocks/store';
 
 let instance;
 // TODO: update when error handling will be implemented
-global.console = { warn: jest.fn() };
+global.console = {
+  warn: jest.fn(),
+  error: jest.fn()
+};
 
 describe('apiCall', () => {
   beforeEach(() => {
@@ -36,7 +41,7 @@ describe('apiCall', () => {
     const response = await instance.call('testurl');
 
     expect(response).toBeNull();
-    expect(console.warn).toBeCalled();
+    expect(console.error).toBeCalled();
   });
 
   it('appendToken > when token is not set', () => {
@@ -53,16 +58,23 @@ describe('apiCall', () => {
     expect(headers.has('Authorization')).toBeFalsy();
   });
 
-  it('appendToken > when token is set', () => {
-    const store = {
-      getters: {
-        'app/getToken': 'TestToken'
+  it('appendToken > when token is set', async () => {
+    const store = new MockStore({
+      actions: {
+        'app/getToken': () => 'TestToken'
+      },
+      state: {
+        app: {
+          user: {
+            expiresAt: moment().add(1, 'hour')
+          }
+        }
       }
-    };
+    });
     instance = new ApiCall(store);
     const headers = new Headers();
 
-    instance.appendToken(headers);
+    await instance.appendToken(headers, {});
 
     expect(headers.get('Authorization')).toBe('Bearer TestToken');
   });
@@ -96,7 +108,6 @@ describe('apiCall', () => {
     const result = instance.handleErrors(res);
 
     expect(result).toBeNull();
-    expect(console.warn).toBeCalled();
   });
 
   it('handle errors > when OK', () => {
@@ -114,6 +125,6 @@ describe('apiCall', () => {
   });
 
   it('should have default headers', () => {
-    expect(instance.defaultHeaders.get('Content-Type')).toBe('application/json');
+    expect(instance.defaultHeaders().get('Content-Type')).toBe('application/json');
   });
 });

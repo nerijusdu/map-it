@@ -53,9 +53,12 @@ export default {
   },
   methods: {
     ...mapActions({
-      logout: 'app/logout',
+      logoutAction: 'app/logout',
       selectRoadmap: 'roadmap/selectRoadmap'
     }),
+    logout() {
+      this.logoutAction(this.$router);
+    },
     updateRoadmap() {
       if (this.roadmapSelection) {
         this.selectRoadmap(this.roadmapSelection);

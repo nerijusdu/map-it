@@ -1,5 +1,6 @@
 import moment from 'moment';
-import * as functions from '@/services/formatService';
+import formatService from '@/services/formatService';
+import authService from '@/services/authService';
 import { publicUrls, loginUrl } from '@/constants';
 
 describe('Functions.calculateWidthPercentage', () => {
@@ -9,7 +10,7 @@ describe('Functions.calculateWidthPercentage', () => {
       endDate: moment('2018-08-31')
     };
 
-    const res = functions.calculateWidthPercentage(allTimeFrame, allTimeFrame);
+    const res = formatService.calculateWidthPercentage(allTimeFrame, allTimeFrame);
 
     expect(res).toBe(100);
   });
@@ -24,7 +25,7 @@ describe('Functions.calculateWidthPercentage', () => {
       endDate: moment('2018-06-15')
     };
 
-    const res = functions.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
+    const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
 
     expect(res).toBe(50);
   });
@@ -37,9 +38,9 @@ describe('Functions.calculateWidthPercentage', () => {
       endDate: 'some string'
     };
 
-    expect(() => functions.calculateWidthPercentage(nullValue, nullValue)).toThrowError();
-    expect(() => functions.calculateWidthPercentage(emptyObject, emptyObject)).toThrowError();
-    expect(() => functions.calculateWidthPercentage(notMomentDates, notMomentDates)).toThrowError();
+    expect(() => formatService.calculateWidthPercentage(nullValue, nullValue)).toThrowError();
+    expect(() => formatService.calculateWidthPercentage(emptyObject, emptyObject)).toThrowError();
+    expect(() => formatService.calculateWidthPercentage(notMomentDates, notMomentDates)).toThrowError();
   });
 
   it('should be 0%', () => {
@@ -52,7 +53,7 @@ describe('Functions.calculateWidthPercentage', () => {
       endDate: moment('2018-06-01')
     };
 
-    const res = functions.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
+    const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
 
     expect(res).toBe(0);
   });
@@ -62,7 +63,7 @@ describe('Functions.getParagraphs', () => {
   it('when text is given', () => {
     const text = 'Test\nText\nFour\nLines';
 
-    const result = functions.getParagraphs(text);
+    const result = formatService.getParagraphs(text);
 
     expect(result).toBeDefined();
     expect(result.length).toBe(4);
@@ -71,7 +72,7 @@ describe('Functions.getParagraphs', () => {
   it('when null is given', () => {
     const text = null;
 
-    const result = functions.getParagraphs(text);
+    const result = formatService.getParagraphs(text);
 
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
@@ -83,7 +84,7 @@ describe('Functions.authorizeRoutes', () => {
     const next = x => expect(x).toBeUndefined();
 
     publicUrls.forEach((x) => {
-      functions.authorizeRoutes({ path: x }, null, next);
+      authService.authorizeRoutes({ path: x }, null, next);
     });
   });
 
@@ -95,7 +96,7 @@ describe('Functions.authorizeRoutes', () => {
     }));
     const next = x => expect(x).toBe(loginUrl);
 
-    functions.authorizeRoutes({ path: '/timeline' }, null, next);
+    authService.authorizeRoutes({ path: '/timeline' }, null, next);
   });
 
   it('should allow non public urls when token is saved', () => {
@@ -106,6 +107,6 @@ describe('Functions.authorizeRoutes', () => {
     }));
     const next = x => expect(x).toBe(loginUrl);
 
-    functions.authorizeRoutes({ path: '/timeline' }, null, next);
+    authService.authorizeRoutes({ path: '/timeline' }, null, next);
   });
 });

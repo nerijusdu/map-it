@@ -1,4 +1,4 @@
-import store from '../store';
+import store from '@/store';
 import { loginUrl, publicUrls } from '../constants';
 
 export default {
