@@ -1,6 +1,6 @@
 import moment from 'moment';
-import { errorTime } from '../../constants';
-import api from '../../services/api';
+import api from '@/services/api';
+import { errorTime } from '@/constants';
 
 const initialState = {
   user: {
@@ -89,6 +89,7 @@ export const actions = {
   logout({ commit, dispatch }, router) {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('refreshToken');
+    window.localStorage.removeItem('email');
     commit('mSaveUser', { token: null, refreshToken: null, email: null });
     commit('mLogout');
     dispatch('roadmap/reset', null, { root: true });
