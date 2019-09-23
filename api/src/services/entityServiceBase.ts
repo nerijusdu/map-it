@@ -41,6 +41,11 @@ export class EntityServiceBase<TEntity> {
       .then(() => connection().manager.save(this.entity, entity));
   }
 
+  public update(id: number, entity: TEntity) {
+    return validate(entity)
+      .then(() => connection().manager.update(this.entity, { id, userId: this.user!.id }, entity));
+  }
+
   public delete(id: number) {
     return connection()
       .manager

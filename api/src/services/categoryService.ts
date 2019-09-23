@@ -15,6 +15,16 @@ class CategoryService extends EntityServiceBase<Category> {
       .getById(category.roadmapId)
       .then(() => super.save(categoryInstance));
   }
+
+  public async update(id: number, updates: Category) {
+    await super.getById(id);
+    if (updates.roadmapId) {
+      await roadmapService(this.user).getById(updates.roadmapId);
+    }
+    delete updates.id;
+    delete updates.userId;
+    return super.update(id, updates);
+  }
 }
 
 export default (user?: User) => new CategoryService(user);

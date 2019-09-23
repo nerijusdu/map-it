@@ -24,6 +24,13 @@ router.post('/', (req, res, next) => {
     .catch(next);
 });
 
+router.put('/:id', (req, res, next) => {
+  categoryService(req.user)
+    .update(req.params.id, req.body)
+    .then((result) => res.send(result))
+    .catch(next);
+});
+
 router.delete('/:id', (req, res, next) => {
   categoryService(req.user)
     .delete(req.params.id)

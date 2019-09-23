@@ -9,7 +9,9 @@ export default ((err, req, res, next) => {
     });
     next();
   } else {
-    res.status(500).send(err);
+    res.status(400).send({
+      message: 'Something went wrong.'
+    });
     next(err);
   }
 }) as ErrorRequestHandler;
