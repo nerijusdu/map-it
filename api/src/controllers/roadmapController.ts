@@ -12,7 +12,7 @@ router.get('/', (req, res, next) => {
 
 router.get('/:id', (req, res, next) => {
   roadmapService(req.user)
-    .getById(req.params.id, { relations: ['tasks', 'categories']})
+    .getById(req.params.id)
     .then((result) => res.send(result))
     .catch(next);
 });

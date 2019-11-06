@@ -1,5 +1,6 @@
 import moment from 'moment';
 import store from '../../store';
+import router from '../../router';
 import { apiUrl } from '../../constants';
 
 export class ApiCall {
@@ -71,7 +72,7 @@ export class ApiCall {
     if (!res.ok) {
       this.store.dispatch('app/showError', res.data.message);
       if (res.status === 401) {
-        this.store.dispatch('app/logout');
+        this.store.dispatch('app/logout', router);
       }
       return null;
     }

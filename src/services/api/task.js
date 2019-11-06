@@ -7,5 +7,8 @@ export default {
       method: 'POST',
       body: JSON.stringify(task)
     }, options);
+  },
+  completeTask(id, isCompleted, options) {
+    return apiCall(`/tasks/${id}/complete?reverted=${!isCompleted}`, {}, options);
   }
 };

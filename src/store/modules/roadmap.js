@@ -167,6 +167,14 @@ export const actions = {
     commit('mSelectRoadmap', result.data);
     return true;
   },
+  async completeTask({ commit }, { id, isCompleted }) {
+    const result = await api.completeTask(id, isCompleted, { ignoreLoading: true });
+    if (!result || !result.ok) {
+      return;
+    }
+
+    commit('mCompleteTask', { id, isCompleted });
+  },
   init({ commit }) {
     commit('app/mToggleLoading', true, { root: true });
     api.getRoadmaps({ ignoreLoading: true })
@@ -194,6 +202,10 @@ export const actions = {
 };
 
 export const mutations = {
+  mCompleteTask(state, { id, isCompleted }) {
+    const i = state.current.tasks.findIndex(t => t.id === id);
+    state.current.tasks[i].isCompleted = isCompleted;
+  },
   mAddTask(state, task) {
     state.current.tasks.push(task);
   },

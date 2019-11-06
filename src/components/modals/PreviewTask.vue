@@ -1,7 +1,10 @@
 <template>
   <modal name="previewTask" height="auto">
     <div class="modal-title">
-      <div>{{ task.title }}</div>
+      <div class="title">{{ task.title }}</div>
+      <div class="checkbox">
+        <md-checkbox v-model="task.isCompleted" @change="complete" class="md-primary" />
+      </div>
     </div>
     <div class="modal-content">
       <div class="preview-item-description">
@@ -47,15 +50,19 @@ export default {
         color: '',
         title: ''
       },
+      isCompleted: false,
       startDate: moment(),
       endDate: moment()
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editTask']),
+    ...mapActions('roadmap', ['editTask', 'completeTask']),
     onClose() {
       this.editTask({ taskId: null, modal: this.$modal });
       this.$modal.hide('previewTask');
+    },
+    complete(isCompleted) {
+      this.completeTask({ id: this.task.id, isCompleted });
     },
     getParagraphs: formatService.getParagraphs
   }
@@ -87,5 +94,12 @@ export default {
   align-items: center;
   justify-content: center;
   height: 30px;
+}
+
+.modal-title > .title {
+  flex-grow: 1;
+  align-items: center;
+  display: flex;
+  justify-content: center;
 }
 </style>

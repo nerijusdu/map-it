@@ -38,4 +38,11 @@ router.delete('/:id', (req, res, next) => {
     .catch(next);
 });
 
+router.get('/:id/complete', (req, res, next) => {
+  taskService(req.user)
+    .complete(req.params.id, req.query.revert)
+    .then((result) => res.send(result))
+    .catch(next);
+});
+
 export const TaskController = router;

@@ -1,6 +1,7 @@
 import { HttpError, Task, User } from '../models';
 import resources from '../resources';
 import categoryService from './categoryService';
+import { connection } from './databaseService';
 import { EntityServiceBase } from './entityServiceBase';
 import roadmapService from './roadmapService';
 
@@ -39,6 +40,13 @@ class TaskService extends EntityServiceBase<Task> {
     delete updates.id;
     delete updates.userId;
     return super.update(id, updates);
+  }
+
+  public async complete(id: number, revert?: boolean) {
+    return connection()
+      .manager
+      .update(Task, { id, userId: this.user!.id }, { isCompleted: !revert })
+      .then(() => ({}));
   }
 }
 

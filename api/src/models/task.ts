@@ -25,6 +25,9 @@ export class Task extends OwnedEntity {
   @IsDateString()
   public endDate: Date;
 
+  @Column({ default: false })
+  public isCompleted: boolean;
+
   @Column()
   @IsDefined()
   public roadmapId: number;

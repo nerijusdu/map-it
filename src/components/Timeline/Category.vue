@@ -13,7 +13,7 @@
         <div
           class="item flex-center"
           :style="{
-            backgroundColor: category.color,
+            backgroundColor: task.isCompleted ? '#959595' : category.color,
             width: `${calculateWidthPercentage(timeFrame, {startDate: task.startDate, endDate: task.endDate})}%`,
             marginLeft: `${calculateWidthPercentage(timeFrame, {startDate: timeFrame.startDate, endDate: task.startDate})}%`
           }"
@@ -41,7 +41,6 @@ export default {
   }
 };
 </script>
-
 
 <style scoped>
 .category {
