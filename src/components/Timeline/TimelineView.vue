@@ -1,5 +1,12 @@
 <template>
   <div class="timeline">
+    <div
+      class="current-date-marker"
+      :style="{
+        height: currentDateMarkerHeigh,
+        'margin-left': `${(window.width - categoryLabelSize) * currentDateMarkerMargin / 100 + categoryLabelSize}px`
+      }"
+    ></div>
     <div class="label-container">
       <div
         v-for="m in months"
@@ -18,17 +25,54 @@
 </template>
 
 <script>
+import moment from 'moment';
 import { mapState, mapGetters } from 'vuex';
 import Category from './Category';
+import formatService from '../../services/formatService';
 
 export default {
   computed: {
     ...mapState({
-      categories: state => state.roadmap.current.categories
+      categories: state => state.roadmap.current.categories,
+      tasks: state => state.roadmap.current.tasks
     }),
     ...mapGetters('roadmap', {
-      months: 'roadmapMonths'
-    })
+      months: 'roadmapMonths',
+      timeFrame: 'roadmapTimeFrame'
+    }),
+    currentDateMarkerHeigh() {
+      return `${this.tasks.length * 35 + this.categories.length * 5 - 10}px`;
+    },
+    currentDateMarkerMargin() {
+      return formatService.calculateWidthPercentage(
+        this.timeFrame,
+        {
+          startDate: this.timeFrame.startDate,
+          endDate: moment()
+        });
+    },
+    categoryLabelSize() {
+      return this.window.width > 600 ? 200 : 10;
+    }
+  },
+  data: () => ({
+    window: {
+      width: 0,
+      height: 0
+    }
+  }),
+  created() {
+    window.addEventListener('resize', this.handleResize);
+    this.handleResize();
+  },
+  destroyed() {
+    window.removeEventListener('resize', this.handleResize);
+  },
+  methods: {
+    handleResize() {
+      this.window.width = window.innerWidth;
+      this.window.height = window.innerHeight;
+    }
   },
   components: {
     Category
@@ -56,6 +100,13 @@ export default {
   flex-grow: 1;
   text-align: center;
   border-left: 1px solid white;
+}
+
+.current-date-marker {
+  background: var(--primary-color);
+  position: absolute;
+  width: 2px;
+  margin-top: 50px;
 }
 
 @media only screen and (max-width: 600px) {

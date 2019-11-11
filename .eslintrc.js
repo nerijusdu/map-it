@@ -53,6 +53,7 @@ module.exports = {
     'import/prefer-default-export': 'off',
     'no-confusing-arrow': 'off',
     'import/no-unresolved': 'off',
-    'no-param-reassign': 'off'
+    'no-param-reassign': 'off',
+    'no-mixed-operators': 'off'
   }
 }

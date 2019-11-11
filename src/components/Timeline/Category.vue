@@ -86,13 +86,12 @@ export default {
 
 @media only screen and (max-width: 600px) {
   .category {
-    margin-bottom: 20px;
     flex-direction: column;
   }
 
   .label {
     width: auto;
-    margin: 10px;
+    margin: 0px 10px 10px 10px;
   }
 
   .rows-container {
