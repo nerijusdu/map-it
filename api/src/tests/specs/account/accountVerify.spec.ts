@@ -2,10 +2,8 @@ import chai from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
-import { User } from '../../../models';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
-import '../../helpers/requestType';
 
 chai.should();
 

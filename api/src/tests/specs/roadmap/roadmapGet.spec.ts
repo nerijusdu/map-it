@@ -6,7 +6,6 @@ import { Roadmap, User } from '../../../models';
 import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
-import '../../helpers/requestType';
 
 chai.should();
 

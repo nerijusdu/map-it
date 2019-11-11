@@ -6,8 +6,8 @@
   "scripts": {
     "start": "SET NODE_ENV=development & npm run watch",
     "start-unix": "NODE_ENV=development npm run watch",
-    "test": "SET NODE_ENV=test & nyc mocha --require ts-node/register src/tests/**/*.ts",
-    "test-watch": "SET NODE_ENV=test & mocha --require ts-node/register src/tests/**/*.ts --watch-extensions ts --watch",
+    "test": "SET NODE_ENV=test & nyc ts-mocha -p tsconfig.json src/tests/**/*.ts",
+    "test-watch": "SET NODE_ENV=test & ts-mocha -p tsconfig.json src/tests/**/*.ts --watch-extensions ts --watch",
     "tsc": "tsc",
     "watch-ts": "tsc -w",
     "watch-node": "nodemon --exec ts-node build/app.js",
@@ -48,6 +48,7 @@
     "nodemon": "^1.18.3",
     "nyc": "^13.1.0",
     "supertest": "^3.3.0",
+    "ts-mocha": "^6.0.0",
     "tslint": "^5.11.0"
   },
   "dependencies": {
