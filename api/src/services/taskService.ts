@@ -1,4 +1,5 @@
-import { HttpError, Task, User } from '../models';
+import moment from 'moment';
+import { HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
 import categoryService from './categoryService';
 import { connection } from './databaseService';
@@ -25,6 +26,17 @@ class TaskService extends EntityServiceBase<Task> {
         if (!res || res.length === 0) {
           throw new HttpError(resources.Task_CategoryNotFound, 400);
         }
+
+        return roadmapService(this.user).getById(task.roadmapId);
+      })
+      .then((roadmap: Roadmap) => {
+        if (moment(task.endDate).isAfter(roadmap.endDate) ||
+            moment(task.endDate).isBefore(roadmap.startDate) ||
+            moment(task.startDate).isAfter(roadmap.endDate) ||
+            moment(task.startDate).isBefore(roadmap.startDate)) {
+          throw new HttpError(resources.Generic_ValidationError, 400);
+        }
+
         return super.save(taskInstance);
       });
   }

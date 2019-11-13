@@ -107,6 +107,7 @@ export default {
   position: absolute;
   width: 2px;
   margin-top: 50px;
+  box-shadow: 0px 0px 3px #0d6444;
 }
 
 @media only screen and (max-width: 600px) {

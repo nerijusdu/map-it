@@ -110,7 +110,7 @@ export default {
   validations: {
     roadmap: {
       title: { required },
-      description: { maxLength: maxLength(this.descriptionLength) }
+      description: { maxLength: maxLength(validationRules.descriptionLength) }
     }
   },
   watch: {
