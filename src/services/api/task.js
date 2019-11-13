@@ -10,5 +10,8 @@ export default {
   },
   completeTask(id, isCompleted, options) {
     return apiCall(`/tasks/${id}/complete?reverted=${!isCompleted}`, {}, options);
+  },
+  deleteTask(id, options) {
+    return apiCall(`/tasks/${id}`, { method: 'DELETE' }, options);
   }
 };

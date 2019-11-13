@@ -1,6 +1,9 @@
 <template>
   <modal name="previewTask" height="auto">
     <div class="modal-title">
+      <div class="delete-icon">
+        <img @click="() => confirmDelete(task.id)" src="@/assets/trash.svg" alt="Delete"/>
+      </div>
       <div class="title">{{ task.title }}</div>
       <div class="checkbox">
         <md-checkbox v-model="task.isCompleted" @change="complete" class="md-primary" />
@@ -30,6 +33,7 @@ import moment from 'moment';
 import { mapGetters, mapActions } from 'vuex';
 import { datePreviewFormat } from '../../constants';
 import formatService from '../../services/formatService';
+import resources from '../../services/resourceService';
 
 export default {
   computed: {
@@ -37,7 +41,9 @@ export default {
   },
   watch: {
     taskToPreview(val) {
-      this.task = { ...val };
+      if (val) {
+        this.task = { ...val };
+      }
     }
   },
   data: () => ({
@@ -56,13 +62,22 @@ export default {
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editTask', 'completeTask']),
+    ...mapActions('roadmap', ['editTask', 'completeTask', 'deleteTask']),
     onClose() {
       this.editTask({ taskId: null, modal: this.$modal });
       this.$modal.hide('previewTask');
     },
     complete(isCompleted) {
       this.completeTask({ id: this.task.id, isCompleted });
+    },
+    confirmDelete(id) {
+      this.$modal.show('confirmation', {
+        content: resources.deleteTaskMsg,
+        confirmAction: () => {
+          this.$modal.hide('previewTask');
+          this.deleteTask(id);
+        }
+      });
     },
     getParagraphs: formatService.getParagraphs
   }
@@ -101,5 +116,10 @@ export default {
   align-items: center;
   display: flex;
   justify-content: center;
+}
+
+.modal-title > .delete-icon {
+  margin: 10px;
+  cursor: pointer;
 }
 </style>

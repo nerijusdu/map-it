@@ -147,7 +147,7 @@ export default {
       this.task.id = '';
       this.task.title = '';
       this.task.description = '';
-      this.task.categoryId = '';
+      this.task.categoryId = this.categories && this.categories.length > 0 ? this.categories[0].id : '';
       this.task.startDate = moment().toDate();
       this.task.endDate = moment().toDate();
       this.category.id = '';
@@ -164,12 +164,12 @@ export default {
   validations: {
     task: {
       title: { required },
-      description: { maxLength: maxLength(this.descriptionLength) },
+      description: { maxLength: maxLength(validationRules.descriptionLength) },
       categoryId: { required }
     },
     category: {
       title: { required },
-      description: { maxLength: maxLength(this.descriptionLength) },
+      description: { maxLength: maxLength(validationRules.descriptionLength) },
       color: { required }
     }
   },
@@ -187,6 +187,11 @@ export default {
         this.isCategory = true;
       } else {
         this.clearForm();
+      }
+    },
+    categories(val) {
+      if (val && val.length > 0) {
+        this.task.categoryId = val[0].id;
       }
     }
   }

@@ -99,6 +99,7 @@ export const getters = {
   selectedRoadmap: state => state.current.id
 };
 
+// TODO: split to category/task/roadmap modules
 export const actions = {
   async saveTask({ state, commit }, task) {
     task.roadmapId = state.current.id;
@@ -116,6 +117,15 @@ export const actions = {
       commit('mUpdateTask', task);
     }
 
+    return true;
+  },
+  async deleteTask({ commit }, id) {
+    const result = await api.deleteTask(id);
+    if (!result || !result.ok) {
+      return false;
+    }
+
+    commit('mDeleteTask', id);
     return true;
   },
   editTask({ state, commit }, { taskId, modal }) {
@@ -199,6 +209,8 @@ export const actions = {
       return false;
     }
 
+    window.localStorage.setItem('roadmapId', roadmapId);
+
     commit('mSelectRoadmap', result.data);
     return true;
   },
@@ -220,9 +232,14 @@ export const actions = {
 
         commit('mSetRoadmaps', res.data.map(x => converters.roadmapFromApi(x)));
 
-        return res.data.length > 0
-          ? api.getRoadmapById(res.data[0].id, { ignoreLoading: true })
-          : null;
+        if (res.data.length === 0) {
+          return null;
+        }
+
+        const selectedRoadmapId = window.localStorage.getItem('roadmapId');
+        const id = selectedRoadmapId ? parseInt(selectedRoadmapId, 10) : res.data[0].id;
+
+        return api.getRoadmapById(id, { ignoreLoading: true });
       })
       .then((res) => {
         if (res) {
@@ -243,6 +260,13 @@ export const mutations = {
   },
   mAddTask(state, task) {
     state.current.tasks.push(task);
+  },
+  mDeleteTask(state, id) {
+    const i = state.current.tasks.findIndex(t => t.id === id);
+    state.current.tasks = [
+      ...state.current.tasks.slice(0, i),
+      ...state.current.tasks.slice(i + 1)
+    ];
   },
   mUpdateTask(state, task) {
     const i = state.current.tasks.findIndex(t => t.id === task.id);
