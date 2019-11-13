@@ -14,7 +14,7 @@
           <md-field :class="getValidationClass('description')">
             <label>Description</label>
             <md-textarea v-model="task.description"/>
-            <span class="md-error" v-if="!$v.task.description.required">{{ resources.maxLengthMsg(500) }}</span>
+            <span class="md-error" v-if="!$v.task.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
           </md-field>
           <md-field :class="getValidationClass('categoryId')">
             <label for="categoryId">Category</label>
@@ -39,7 +39,7 @@
           <md-field :class="getValidationClass('description')">
             <label>Description</label>
             <md-textarea v-model="category.description"/>
-            <span class="md-error" v-if="!$v.category.description.required">{{ resources.maxLengthMsg(500) }}</span>
+            <span class="md-error" v-if="!$v.category.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
           </md-field>
           <md-field :class="getValidationClass('color')">
             <label>Color</label>
@@ -62,6 +62,7 @@ import { mapState, mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
 import resources from '../../services/resourceService';
+import { validationRules } from '../../constants';
 
 export default {
   name: 'AddEditTask',
@@ -97,7 +98,8 @@ export default {
       color: '#1eb980'
     },
     resources,
-    isCategory: false
+    isCategory: false,
+    descriptionLength: validationRules.descriptionLength
   }),
   methods: {
     ...mapActions('roadmap', {
@@ -162,12 +164,12 @@ export default {
   validations: {
     task: {
       title: { required },
-      description: { maxLength: maxLength(500) },
+      description: { maxLength: maxLength(this.descriptionLength) },
       categoryId: { required }
     },
     category: {
       title: { required },
-      description: { maxLength: maxLength(500) },
+      description: { maxLength: maxLength(this.descriptionLength) },
       color: { required }
     }
   },

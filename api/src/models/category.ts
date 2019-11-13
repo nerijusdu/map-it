@@ -12,7 +12,7 @@ export class Category extends OwnedEntity {
   public title: string;
 
   @Column({ nullable: true })
-  @Length(0, 500)
+  @Length(0, 2000)
   @IsOptional()
   public description: string;
 

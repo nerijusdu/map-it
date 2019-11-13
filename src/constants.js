@@ -12,3 +12,7 @@ export const publicUrls = [
 ];
 
 export const errorTime = 5 * 1000;
+
+export const validationRules = {
+  descriptionLength: 2000
+};

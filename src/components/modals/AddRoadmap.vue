@@ -12,7 +12,7 @@
       <md-field :class="getValidationClass('description')">
         <label>Description</label>
         <md-textarea v-model="roadmap.description"/>
-        <span class="md-error" v-if="!$v.roadmap.description.required">{{ resources.maxLengthMsg(500) }}</span>
+        <span class="md-error" v-if="!$v.roadmap.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
       </md-field>
       <md-datepicker md-immediately v-model="roadmap.startDate">
         <label>Start date</label>
@@ -34,6 +34,7 @@ import { mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
 import { required, maxLength } from 'vuelidate/lib/validators';
 import resources from '../../services/resourceService';
+import { validationRules } from '../../constants';
 
 export default {
   name: 'AddEditRoadmap',
@@ -46,7 +47,8 @@ export default {
       startDate: moment().toDate(),
       endDate: moment().toDate()
     },
-    resources
+    resources,
+    descriptionLength: validationRules.descriptionLength
   }),
   computed: {
     ...mapGetters('roadmap', ['roadmapToEdit'])
@@ -108,7 +110,7 @@ export default {
   validations: {
     roadmap: {
       title: { required },
-      description: { maxLength: maxLength(500) }
+      description: { maxLength: maxLength(this.descriptionLength) }
     }
   },
   watch: {

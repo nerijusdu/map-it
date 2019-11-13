@@ -105,6 +105,7 @@ export default {
   height: 50px;
   border-right: 1px solid var(--primary-color);
   margin-right: 10px;
+  cursor: pointer;
 }
 
 .md-menu-content:last-of-type {
