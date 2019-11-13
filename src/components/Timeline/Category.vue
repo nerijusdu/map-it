@@ -2,7 +2,8 @@
   <div class="category">
     <div
       class="label flex-center"
-      :style="{backgroundColor: category.color}">
+      :style="{backgroundColor: category.color}"
+      @click="() => previewCategory({ categoryId: category.id, modal: $modal })">
       {{category.title}}
     </div>
     <div class="rows-container">
@@ -36,7 +37,7 @@ export default {
     timeFrame: 'roadmapTimeFrame'
   }),
   methods: {
-    ...mapActions('roadmap', ['previewTask']),
+    ...mapActions('roadmap', ['previewTask', 'previewCategory']),
     calculateWidthPercentage: formatService.calculateWidthPercentage
   }
 };
@@ -55,6 +56,7 @@ export default {
   margin-left: 10px;
   margin-right: 10px;
   border-radius: 2px;
+  cursor: pointer;
 }
 
 .rows-container {

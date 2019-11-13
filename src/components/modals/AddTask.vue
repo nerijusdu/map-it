@@ -1,10 +1,10 @@
 <template>
   <modal name="addTask" height="auto">
     <div class="modal-title">
-      <div>{{ taskToEdit ? task.title : 'Create new' }}</div>
+      <div>{{ title }}</div>
     </div>
     <form class="modal-content">
-      <md-tabs>
+      <md-tabs :md-active-tab="isCategory ? 'tab-category' : 'tab-home'">
         <md-tab id="tab-home" md-label="Task" @click="isCategory = false" v-if="categories && categories.length > 0">
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
@@ -70,7 +70,16 @@ export default {
     ...mapState({
       categories: state => state.roadmap.current.categories,
     }),
-    ...mapGetters('roadmap', ['taskToEdit', 'roadmapTimeFrame'])
+    ...mapGetters('roadmap', ['taskToEdit', 'categoryToEdit', 'roadmapTimeFrame']),
+    title() {
+      if (this.taskToEdit) {
+        return this.task.title;
+      }
+      if (this.categoryToEdit) {
+        return this.category.title;
+      }
+      return 'Create new';
+    }
   },
   data: () => ({
     task: {
@@ -166,6 +175,14 @@ export default {
     taskToEdit(val) {
       if (val) {
         this.task = { ...val };
+      } else {
+        this.clearForm();
+      }
+    },
+    categoryToEdit(val) {
+      if (val) {
+        this.category = { ...val };
+        this.isCategory = true;
       } else {
         this.clearForm();
       }

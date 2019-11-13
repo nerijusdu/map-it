@@ -7,8 +7,10 @@ const initialState = {
   current: {},
   all: [],
   editTaskId: null,
+  editCategoryId: null,
+  editRoadmapId: null,
   previewTaskId: null,
-  editRoadmapId: null
+  previewCategoryId: null
 };
 
 export const getters = {
@@ -40,6 +42,24 @@ export const getters = {
       startDate: task.startDate.toDate(),
       endDate: task.endDate.toDate()
     };
+  },
+  categoryToEdit: (state) => {
+    if (!state.editCategoryId) {
+      return null;
+    }
+
+    const category = state.current.categories.find(t => t.id === state.editCategoryId);
+
+    return category || null;
+  },
+  categoryToPreview: (state) => {
+    if (!state.previewCategoryId) {
+      return null;
+    }
+
+    const category = state.current.categories.find(t => t.id === state.previewCategoryId);
+
+    return category || null;
   },
   taskToPreview: (state) => {
     if (!state.previewTaskId) {
@@ -107,11 +127,26 @@ export const actions = {
     }
     commit('mEditTask', taskId);
   },
+  editCategory({ state, commit }, { categoryId, modal }) {
+    if (categoryId) {
+      modal.show('addTask');
+      modal.hide('previewCategory');
+    } else if (state.previewCategoryId) {
+      modal.show('previewCategory');
+    }
+    commit('mEditCategory', categoryId);
+  },
   previewTask({ commit }, { taskId, modal }) {
     if (taskId) {
       modal.show('previewTask');
     }
     commit('mPreviewTask', taskId);
+  },
+  previewCategory({ commit }, { categoryId, modal }) {
+    if (categoryId) {
+      modal.show('previewCategory');
+    }
+    commit('mPreviewCategory', categoryId);
   },
   async saveCategory({ state, commit }, category) {
     category.roadmapId = state.current.id;
@@ -220,8 +255,14 @@ export const mutations = {
   mEditTask(state, taskId) {
     state.editTaskId = taskId;
   },
+  mEditCategory(state, categoryId) {
+    state.editCategoryId = categoryId;
+  },
   mPreviewTask(state, taskId) {
     state.previewTaskId = taskId;
+  },
+  mPreviewCategory(state, categoryId) {
+    state.previewCategoryId = categoryId;
   },
   mAddRoadmap(state, roadmap) {
     state.all.push(roadmap);
@@ -275,6 +316,7 @@ export const mutations = {
     state.current = {};
     state.editTaskId = null;
     state.previewTaskId = null;
+    state.previewCategoryId = null;
     state.editRoadmapId = null;
   }
 };
