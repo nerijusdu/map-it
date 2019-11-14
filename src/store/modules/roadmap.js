@@ -6,6 +6,8 @@ import converters from '../../services/converterService';
 const initialState = {
   current: {},
   all: [],
+  isInitialized: false,
+  isInitialising: false,
   editTaskId: null,
   editCategoryId: null,
   editRoadmapId: null,
@@ -222,7 +224,12 @@ export const actions = {
 
     commit('mCompleteTask', { id, isCompleted });
   },
-  init({ commit }) {
+  init({ commit, state, dispatch }) {
+    if (state.isInitialized || state.isInitialising) {
+      return;
+    }
+
+    commit('mToggleInitialising', true);
     commit('app/mToggleLoading', true, { root: true });
     api.getRoadmaps({ ignoreLoading: true })
       .then((res) => {
@@ -239,14 +246,13 @@ export const actions = {
         const selectedRoadmapId = window.localStorage.getItem('roadmapId');
         const id = selectedRoadmapId ? parseInt(selectedRoadmapId, 10) : res.data[0].id;
 
-        return api.getRoadmapById(id, { ignoreLoading: true });
+        return dispatch('selectRoadmap', id);
       })
-      .then((res) => {
-        if (res) {
-          commit('mSelectRoadmap', res.data);
-        }
-      })
-      .finally(() => commit('app/mToggleLoading', false, { root: true }));
+      .finally(() => {
+        commit('app/mToggleLoading', false, { root: true });
+        commit('mToggleInitialising', false);
+        commit('mInit');
+      });
   },
   reset({ commit }) {
     commit('mReset');
@@ -335,6 +341,12 @@ export const mutations = {
   mSetRoadmaps(state, roadmaps) {
     state.all = roadmaps;
   },
+  mInit(state) {
+    state.isInitialized = true;
+  },
+  mToggleInitialising(state, isInitialising) {
+    state.isInitialising = isInitialising;
+  },
   mReset(state) {
     state.all = [];
     state.current = {};
@@ -342,6 +354,7 @@ export const mutations = {
     state.previewTaskId = null;
     state.previewCategoryId = null;
     state.editRoadmapId = null;
+    state.isInitialized = false;
   }
 };
 

@@ -1,4 +1,3 @@
-import moment from 'moment';
 import store from '../../store';
 import router from '../../router';
 import { apiUrl } from '../../constants';
@@ -49,15 +48,8 @@ export class ApiCall {
     }
 
     const token = await this.store.dispatch('app/getToken');
-    const expiresAt = moment(this.store.state.app.user.expiresAt);
-    if (token && expiresAt && expiresAt.isAfter(moment(), 'second')) {
+    if (token) {
       headers.set('Authorization', `Bearer ${token}`);
-      return;
-    }
-
-    const newToken = await this.store.dispatch('app/refreshToken');
-    if (newToken) {
-      headers.set('Authorization', `Bearer ${newToken}`);
     }
   }
 

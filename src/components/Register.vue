@@ -59,7 +59,7 @@ export default {
     isLoading: false
   }),
   methods: {
-    ...mapActions('app', ['saveUser', 'showMessage']),
+    ...mapActions('app', ['showMessage']),
     submit() {
       this.isLoading = true;
       api

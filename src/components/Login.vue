@@ -44,16 +44,18 @@ export default {
     isLoading: false
   }),
   methods: {
-    ...mapActions('app', ['saveUser', 'init']),
+    ...mapActions('app', ['saveUser']),
     submit() {
       this.isLoading = true;
       api
-        .login(this.user, { ignoreLoading: true })
+        .login(this.user, {
+          ignoreLoading: true,
+          ignoreAuth: true
+        })
         .then((user) => {
           this.isLoading = false;
           if (user) {
-            this.saveUser(user.data);
-            this.init();
+            this.saveUser({ ...user.data, isLogin: true });
             this.$router.push('/timeline');
           }
         });

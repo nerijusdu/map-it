@@ -6,9 +6,7 @@ export default {
     if (publicUrls.includes(to.path)) {
       next();
     } else {
-      store
-        .dispatch('app/getToken')
-        .then(token => next(!token ? loginUrl : undefined));
+      next(!store.state.app.user.token ? loginUrl : undefined);
     }
   }
 };

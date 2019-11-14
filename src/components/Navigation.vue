@@ -47,7 +47,8 @@ export default {
   }),
   computed: {
     ...mapState({
-      roadmaps: state => state.roadmap.all.map(r => ({ id: r.id, title: r.title }))
+      roadmaps: state => state.roadmap.all.map(r => ({ id: r.id, title: r.title })),
+      isInitialized: state => state.roadmap.isInitialized
     }),
     ...mapGetters('roadmap', ['selectedRoadmap'])
   },
@@ -60,7 +61,7 @@ export default {
       this.logoutAction(this.$router);
     },
     updateRoadmap() {
-      if (this.roadmapSelection) {
+      if (this.roadmapSelection && this.isInitialized) {
         this.selectRoadmap(this.roadmapSelection);
       }
     }

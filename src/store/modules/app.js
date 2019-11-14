@@ -4,10 +4,10 @@ import { errorTime } from '@/constants';
 
 const initialState = {
   user: {
-    token: null,
-    refreshToken: null,
-    email: null,
-    expiresAt: moment()
+    token: window.localStorage.getItem('token'),
+    refreshToken: window.localStorage.getItem('refreshToken'),
+    email: window.localStorage.getItem('email'),
+    expiresAt: moment(window.localStorage.getItem('tokenExpiresAt'))
   },
   isInitialized: false,
   isLoading: false,
@@ -22,20 +22,24 @@ export const getters = {
 };
 
 export const actions = {
-  getToken({ state, commit }) {
+  async getToken({ state, commit, dispatch }) {
+    const now = moment();
     if (state.user.token) {
-      return state.user.token;
+      return state.user.expiresAt.isBefore(now, 'second')
+        ? dispatch('refreshToken')
+        : state.user.token;
     }
 
     const token = window.localStorage.getItem('token');
-    if (token) {
-      const refreshToken = window.localStorage.getItem('refreshToken');
-      const email = window.localStorage.getItem('email');
+    const expiresAt = window.localStorage.getItem('tokenExpiresAt');
+    const refreshToken = window.localStorage.getItem('refreshToken');
+    const email = window.localStorage.getItem('email');
+    if (token && expiresAt && moment(expiresAt).isAfter(now, 'second')) {
       commit('mSaveUser', { token, refreshToken, email });
-      // TODO: validate and update token
+      return token;
     }
 
-    return token;
+    return dispatch('refreshToken');
   },
   async refreshToken({ state, dispatch }) {
     let { email, refreshToken } = state.user;
@@ -58,7 +62,7 @@ export const actions = {
     dispatch('saveUser', result.data);
     return result.data.token;
   },
-  saveUser({ commit }, data) {
+  saveUser({ commit, dispatch }, data) {
     if (!data || !data.token || !data.email) {
       return;
     }
@@ -66,7 +70,9 @@ export const actions = {
     window.localStorage.setItem('token', data.token);
     window.localStorage.setItem('refreshToken', data.refreshToken);
     window.localStorage.setItem('email', data.email);
+    window.localStorage.setItem('tokenExpiresAt', data.expiresAt);
     commit('mSaveUser', data);
+    dispatch('roadmap/init', null, { root: true });
   },
   showError({ commit }, error) {
     if (error) {
@@ -90,17 +96,20 @@ export const actions = {
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('refreshToken');
     window.localStorage.removeItem('email');
+    window.localStorage.removeItem('tokenExpiresAt');
     commit('mSaveUser', { token: null, refreshToken: null, email: null });
     commit('mLogout');
     dispatch('roadmap/reset', null, { root: true });
     router.push('Login');
   },
-  init({ commit, dispatch, state }) {
-    if (state.isInitialized || !state.user.token) {
+  async init({ commit, state, dispatch }) {
+    if (state.isInitialized) {
       return;
     }
+    if (state.user.token) {
+      await dispatch('roadmap/init', null, { root: true });
+    }
 
-    dispatch('roadmap/init', null, { root: true });
     commit('mInit');
   }
 };
