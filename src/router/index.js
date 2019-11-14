@@ -13,6 +13,10 @@ Vue.use(Router);
 const router = new Router({
   routes: [
     {
+      path: '/',
+      redirect: '/timeline'
+    },
+    {
       path: '/timeline',
       name: 'Timeline',
       components: {

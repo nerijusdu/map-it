@@ -248,10 +248,14 @@ export const actions = {
 
         return dispatch('selectRoadmap', id);
       })
+      .then((res) => {
+        if (res) {
+          commit('mInit');
+        }
+      })
       .finally(() => {
         commit('app/mToggleLoading', false, { root: true });
         commit('mToggleInitialising', false);
-        commit('mInit');
       });
   },
   reset({ commit }) {
@@ -355,6 +359,7 @@ export const mutations = {
     state.previewCategoryId = null;
     state.editRoadmapId = null;
     state.isInitialized = false;
+    state.isInitialising = false;
   }
 };
 

@@ -53,7 +53,7 @@ body {
 }
 
 .v--modal {
-  background: var(--main-bg-color);
+  background: var(--main-bg-color) !important;
   overflow: initial;
   border-radius: 2px;
   display: flex;
