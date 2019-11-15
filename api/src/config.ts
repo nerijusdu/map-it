@@ -2,6 +2,8 @@ export const PORT = process.env.PORT || 8081;
 
 export const JWTAge = 900;
 
+export const JWTSecret = process.env.JWT_SECRET || 'deveopmentSecret';
+
 export const ORMConfigs: any[] = [
   {
     env: 'prod',

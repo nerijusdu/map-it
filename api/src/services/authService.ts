@@ -1,7 +1,6 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { JWTSecret } from '../.secret';
-import { JWTAge } from '../config';
+import { JWTAge, JWTSecret } from '../config';
 import { HttpError } from '../models';
 import { User } from '../models/user';
 import resources from '../resources';
