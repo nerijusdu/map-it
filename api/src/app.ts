@@ -19,6 +19,9 @@ app.use('/roadmaps', RoadmapController);
 app.use('/account', AccountController);
 app.use('/tasks', TaskController);
 app.use('/categories', CategoryController);
+app.get('/health', (req, res) => {
+  res.json(true);
+});
 
 app.use(ErrorHandler);
 
