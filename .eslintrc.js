@@ -54,6 +54,7 @@ module.exports = {
     'no-confusing-arrow': 'off',
     'import/no-unresolved': 'off',
     'no-param-reassign': 'off',
-    'no-mixed-operators': 'off'
+    'no-mixed-operators': 'off',
+    'import/no-named-as-default-member': 'off'
   }
 }
