@@ -2,7 +2,7 @@ export const datePreviewFormat = 'DD MMMM YYYY';
 
 export const roadmapMonthFormat = 'MMM YYYY';
 
-export const apiUrl = process.env.API_URL || 'http://localhost:8081';
+export const apiUrl = process.env.API_URL || 'http://localhost:8081/api';
 
 export const loginUrl = '/login';
 

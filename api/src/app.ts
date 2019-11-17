@@ -15,11 +15,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(auth.verifyUser);
 
-app.use('/roadmaps', RoadmapController);
-app.use('/account', AccountController);
-app.use('/tasks', TaskController);
-app.use('/categories', CategoryController);
-app.get('/health', (req, res) => {
+app.use(express.static('public'));
+app.use('/api/roadmaps', RoadmapController);
+app.use('/api/account', AccountController);
+app.use('/api/tasks', TaskController);
+app.use('/api/categories', CategoryController);
+app.get('/api/health', (req, res) => {
   res.json(true);
 });
 

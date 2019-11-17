@@ -3,14 +3,15 @@ import resources from '../resources';
 import auth from '../services/authService';
 
 const publicUrls = [
-  '/account/login',
-  '/account/register',
-  '/account/refresh',
-  '/health'
+  '/api/account/login',
+  '/api/account/register',
+  '/api/account/refresh',
+  '/api/health'
 ];
+const staticContent = /\.(css|html|js|ico)|\/$/;
 
 export const verifyUser = (async (req, res, next) => {
-  if (publicUrls.find((x) => x === req.url)) {
+  if (publicUrls.find((x) => x === req.url) || staticContent.test(req.url)) {
     next();
     return;
   }
