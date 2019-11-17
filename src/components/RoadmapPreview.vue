@@ -64,18 +64,14 @@ export default {
       this.$router.push(`/roadmaps/${roadmapId}`);
     }
   },
-  created() {
+  async created() {
     const id = this.$route.params.id;
-    // tries to refresh token again?
-    api
-      .getRoadmapById(id, { ignoreLoading: true })
-      .then((result) => {
-        if (!result || !result.ok) {
-          this.$router.push('/roadmaps');
-          return;
-        }
-        this.roadmap = converterService.roadmapFromApi(result.data);
-      });
+    const result = await api.getRoadmapById(id, { ignoreLoading: true });
+    if (!result || !result.ok) {
+      this.$router.push('/roadmaps');
+      return;
+    }
+    this.roadmap = converterService.roadmapFromApi(result.data);
   }
 };
 </script>

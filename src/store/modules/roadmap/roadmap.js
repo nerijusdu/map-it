@@ -88,39 +88,33 @@ export const actions = {
     commit('mSelectRoadmap', result.data);
     return true;
   },
-  init({ commit, state, dispatch }) {
+  async init({ commit, state, dispatch }) {
     if (state.isInitialized || state.isInitialising) {
       return;
     }
 
     commit('mToggleInitialising', true);
     commit('app/mToggleLoading', true, { root: true });
-    api.getRoadmaps({ ignoreLoading: true })
-      .then((res) => {
-        if (!res) {
-          return null;
-        }
+    const res = await api.getRoadmaps({ ignoreLoading: true });
+    if (!res) {
+      return;
+    }
 
-        commit('mSetRoadmaps', res.data.map(x => converters.roadmapFromApi(x)));
+    commit('mSetRoadmaps', res.data.map(x => converters.roadmapFromApi(x)));
 
-        if (res.data.length === 0) {
-          return null;
-        }
+    if (res.data.length === 0) {
+      return;
+    }
 
-        const selectedRoadmapId = window.localStorage.getItem('roadmapId');
-        const id = selectedRoadmapId ? parseInt(selectedRoadmapId, 10) : res.data[0].id;
+    const selectedRoadmapId = window.localStorage.getItem('roadmapId');
+    const id = selectedRoadmapId ? parseInt(selectedRoadmapId, 10) : res.data[0].id;
 
-        return dispatch('selectRoadmap', id);
-      })
-      .then((res) => {
-        if (res) {
-          commit('mInit');
-        }
-      })
-      .finally(() => {
-        commit('app/mToggleLoading', false, { root: true });
-        commit('mToggleInitialising', false);
-      });
+    const success = await dispatch('selectRoadmap', id);
+    if (success) {
+      commit('mInit');
+    }
+    commit('app/mToggleLoading', false, { root: true });
+    commit('mToggleInitialising', false);
   },
   reset({ commit }) {
     commit('mReset');
