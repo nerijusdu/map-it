@@ -1,7 +1,7 @@
 <template>
   <div class="navigation-bar">
     <div class="navigation-logo flex-center" @click="$router.push('/timeline')">
-      <span>MapIt</span>
+      <img src="@/assets/logo.svg"/>
     </div>
     <div class="grow flex-center-v">
       <md-field class="roadmap-select">
@@ -102,11 +102,13 @@ export default {
 }
 
 .navigation-logo {
-  width: 100px;
-  height: 50px;
-  border-right: 1px solid var(--primary-color);
+  height: 100%;
   margin-right: 10px;
   cursor: pointer;
+}
+
+.navigation-logo > img {
+  height: 100%;
 }
 
 .md-menu-content:last-of-type {
