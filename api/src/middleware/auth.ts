@@ -9,7 +9,7 @@ const publicUrls = [
   '/health'
 ];
 
-export const verifyUser = ((req, res, next) => {
+export const verifyUser = (async (req, res, next) => {
   if (publicUrls.find((x) => x === req.url)) {
     next();
     return;
@@ -17,14 +17,12 @@ export const verifyUser = ((req, res, next) => {
 
   const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
 
-  auth.verifyToken(tokenStr)
-    .then((token: any) => {
-      req.user = token.data;
-      next();
-    })
-    .catch((err) => {
-      res
-        .status(401)
-        .json({ message: resources.Generic_PleaseLogin });
-    });
+  try {
+    const token: any = await auth.verifyToken(tokenStr);
+    req.user = token.data;
+    next();
+  } catch (e) {
+    res.status(401)
+      .json({ message: resources.Generic_PleaseLogin });
+  }
 }) as RequestHandler;

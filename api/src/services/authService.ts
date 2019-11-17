@@ -37,10 +37,9 @@ const createToken = (data: ITokenData) => {
   return token;
 };
 
-const encryptPassword = (password: string) => {
-  return bcrypt.genSalt(10)
-    .then((salt) => bcrypt.hash(password, salt))
-    .catch((err) => console.log(err));
+const encryptPassword = async (password: string) => {
+  const salt = await bcrypt.genSalt(10);
+  return bcrypt.hash(password, salt).catch((err) => console.log(err));
 };
 
 const verifyPassword = (inputPass: string, encryptedPass: string) => {

@@ -1,41 +1,34 @@
 import { Router } from 'express';
+import respose from '../helpers/respose';
 import categoryService from '../services/categoryService';
 
 const router = Router();
 
-router.get('/', (req, res, next) => {
-  categoryService(req.user)
-    .getAll()
-    .then((response) => res.send(response))
-    .catch(next);
-});
+router.get('/', respose(async (req, res) => {
+  const result = await categoryService(req.user).getAll();
+  return res.json(result);
+}));
 
-router.get('/:id', (req, res, next) => {
-  categoryService(req.user)
-    .getById(req.params.id, { relations: ['roadmap'] })
-    .then((result) => res.send(result))
-    .catch(next);
-});
+router.get('/:id', respose(async (req, res) => {
+  const result = await categoryService(req.user).getById(req.params.id, {
+    relations: ['roadmap']
+  });
+  return res.json(result);
+}));
 
-router.post('/', (req, res, next) => {
-  categoryService(req.user)
-    .save(req.body)
-    .then((result) => res.send(result))
-    .catch(next);
-});
+router.post('/', respose(async (req, res) => {
+  const result = await categoryService(req.user).save(req.body);
+  return res.json(result);
+}));
 
-router.put('/:id', (req, res, next) => {
-  categoryService(req.user)
-    .update(req.params.id, req.body)
-    .then((result) => res.send(result))
-    .catch(next);
-});
+router.put('/:id', respose(async (req, res) => {
+  const result = await categoryService(req.user).update(req.params.id, req.body);
+  return res.json(result);
+}));
 
-router.delete('/:id', (req, res, next) => {
-  categoryService(req.user)
-    .delete(req.params.id)
-    .then((result) => res.send(result))
-    .catch(next);
-});
+router.delete('/:id', respose(async (req, res) => {
+  const result = await categoryService(req.user).delete(req.params.id);
+  return res.json(result);
+}));
 
 export const CategoryController = router;
