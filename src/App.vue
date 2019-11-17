@@ -13,7 +13,7 @@
 <script>
 import { mapActions, mapState } from 'vuex';
 import './services/api';
-import Modals from './components/modals';
+import Modals from './components/modals/Index';
 import Loading from './components/Loading';
 import Message from './components/Message';
 
