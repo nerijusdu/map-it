@@ -10,7 +10,7 @@
 
 <script>
 import { mapState } from 'vuex';
-import TimelineView from './TimeLineView';
+import TimelineView from './TimelineView';
 import Menu from './Menu';
 
 export default {
