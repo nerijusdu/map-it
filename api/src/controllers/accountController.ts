@@ -1,41 +1,35 @@
 import { Router } from 'express';
+import respose from '../helpers/respose';
 import { User } from '../models';
 import accountService from '../services/accountService';
 
 const router = Router();
 
-router.post('/login', (req, res, next) => {
+router.post('/login', respose(async (req, res) => {
   const { email, password } = req.body;
 
-  accountService()
-    .login(email, password)
-    .then((result) => res.send(result))
-    .catch(next);
-});
+  const result = await accountService().login(email, password);
+  return res.json(result);
+}));
 
-router.get('/verify', (req, res) => {
+router.get('/verify', respose((req, res) => {
   const result = accountService().verify(req.headers.authorization);
+  return res.json(result);
+}));
 
-  res.send(result);
-});
+router.post('/refresh', respose(async (req, res) => {
+  const result = await accountService().refresh(req.body.email, req.body.refreshToken);
+  return res.json(result);
+}));
 
-router.post('/refresh', (req, res, next) => {
-  accountService()
-    .refresh(req.body.email, req.body.refreshToken)
-    .then((result) => res.send(result))
-    .catch(next);
-});
-
-router.post('/register', (req, res, next) => {
+router.post('/register', respose(async (req, res) => {
   const user = new User();
   user.email = req.body.email;
   user.password = req.body.password;
   user.name = req.body.name;
 
-  accountService()
-    .register(user)
-    .then((result) => res.send(result))
-    .catch(next);
-});
+  const result = await accountService().register(user);
+  return res.json(result);
+}));
 
 export const AccountController = router;

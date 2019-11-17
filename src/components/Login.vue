@@ -45,20 +45,18 @@ export default {
   }),
   methods: {
     ...mapActions('app', ['saveUser']),
-    submit() {
+    async submit() {
       this.isLoading = true;
-      api
-        .login(this.user, {
-          ignoreLoading: true,
-          ignoreAuth: true
-        })
-        .then((user) => {
-          this.isLoading = false;
-          if (user) {
-            this.saveUser({ ...user.data, isLogin: true });
-            this.$router.push('/timeline');
-          }
-        });
+      const user = await api.login(this.user, {
+        ignoreLoading: true,
+        ignoreAuth: true
+      });
+
+      this.isLoading = false;
+      if (user) {
+        this.saveUser({ ...user.data, isLogin: true });
+        this.$router.push('/timeline');
+      }
     },
     register() {
       this.$router.push('/register');

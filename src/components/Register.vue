@@ -60,20 +60,15 @@ export default {
   }),
   methods: {
     ...mapActions('app', ['showMessage']),
-    submit() {
+    async submit() {
       this.isLoading = true;
-      api
-        .register(this.user, {
-          ignoreLoading: true
-        })
-        .then((res) => {
-          this.isLoading = false;
+      const res = await api.register(this.user, { ignoreLoading: true });
+      this.isLoading = false;
 
-          if (res) {
-            this.showMessage('Registration successful! Please login.');
-            this.$router.push('/login');
-          }
-        });
+      if (res) {
+        this.showMessage('Registration successful! Please login.');
+        this.$router.push('/login');
+      }
     },
     back() {
       this.$router.push('/login');

@@ -23,27 +23,26 @@ export class EntityServiceBase<TEntity> {
       });
   }
 
-  public getById(id: number, options?: any) {
+  public async getById(id: number, options?: any) {
     options = options || {};
-    return connection()
+    const res = await connection()
       .manager
-      .findOne(this.entity, id, { where: { userId: this.user!.id }, ...options })
-      .then((res) => {
-        if (!res) {
-          throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);
-        }
-        return res;
-      });
+      .findOne(this.entity, id, { where: { userId: this.user!.id }, ...options });
+
+    if (!res) {
+      throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);
+    }
+    return res;
   }
 
-  public save(entity: TEntity) {
-    return validate(entity)
-      .then(() => connection().manager.save(this.entity, entity));
+  public async save(entity: TEntity) {
+    await validate(entity);
+    return connection().manager.save(this.entity, entity);
   }
 
-  public update(id: number, entity: TEntity) {
-    return validate(entity)
-      .then(() => connection().manager.update(this.entity, { id, userId: this.user!.id }, entity));
+  public async update(id: number, entity: TEntity) {
+    await validate(entity);
+    return connection().manager.update(this.entity, { id, userId: this.user!.id }, entity);
   }
 
   public delete(id: number) {

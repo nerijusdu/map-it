@@ -11,43 +11,40 @@ class TaskService extends EntityServiceBase<Task> {
     super(Task, user);
   }
 
-  public save(task: Task) {
+  public async save(task: Task) {
     const taskInstance = new Task(task);
     taskInstance.userId = this.user!.id;
 
-    return categoryService(this.user)
+    const res = await categoryService(this.user)
       .getAll({
         where: {
           id: task.categoryId,
           roadmapId: task.roadmapId
         }
-      })
-      .then((res) => {
-        if (!res || res.length === 0) {
-          throw new HttpError(resources.Task_CategoryNotFound, 400);
-        }
-
-        return roadmapService(this.user).getById(task.roadmapId);
-      })
-      .then((roadmap: Roadmap) => {
-        if (moment(task.endDate).isAfter(roadmap.endDate) ||
-            moment(task.endDate).isBefore(roadmap.startDate) ||
-            moment(task.startDate).isAfter(roadmap.endDate) ||
-            moment(task.startDate).isBefore(roadmap.startDate)) {
-          throw new HttpError(resources.Generic_ValidationError, 400);
-        }
-
-        return super.save(taskInstance);
       });
+
+    if (!res || res.length === 0) {
+      throw new HttpError(resources.Task_CategoryNotFound, 400);
+    }
+
+    const roadmap: Roadmap = await roadmapService(this.user).getById(task.roadmapId);
+    if (moment(task.endDate).isAfter(roadmap.endDate) ||
+        moment(task.endDate).isBefore(roadmap.startDate) ||
+        moment(task.startDate).isAfter(roadmap.endDate) ||
+        moment(task.startDate).isBefore(roadmap.startDate)) {
+      throw new HttpError(resources.Generic_ValidationError, 400);
+    }
+
+    return super.save(taskInstance);
   }
 
   public async update(id: number, updates: Task) {
     await super.getById(id);
     if (updates.roadmapId) {
-      roadmapService(this.user).getById(updates.roadmapId);
+      await roadmapService(this.user).getById(updates.roadmapId);
     }
     if (updates.categoryId) {
-      categoryService(this.user).getById(updates.categoryId);
+      await categoryService(this.user).getById(updates.categoryId);
     }
     delete updates.id;
     delete updates.userId;
@@ -55,10 +52,9 @@ class TaskService extends EntityServiceBase<Task> {
   }
 
   public async complete(id: number, revert?: boolean) {
-    return connection()
+    await connection()
       .manager
-      .update(Task, { id, userId: this.user!.id }, { isCompleted: !revert })
-      .then(() => ({}));
+      .update(Task, { id, userId: this.user!.id }, { isCompleted: !revert });
   }
 }
 
