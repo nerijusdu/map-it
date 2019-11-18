@@ -16,7 +16,7 @@
           :style="{
             backgroundColor: task.isCompleted ? '#959595' : category.color,
             width: `${calculateWidthPercentage(timeFrame, {startDate: task.startDate, endDate: task.endDate})}%`,
-            marginLeft: `${calculateWidthPercentage(timeFrame, {startDate: timeFrame.startDate, endDate: task.startDate.add(-1, 'day')})}%`
+            marginLeft: `${calculateWidthPercentage(timeFrame, {startDate: timeFrame.startDate, endDate: task.startDate}, true)}%`
           }"
           @click="() => previewTask({ taskId: task.id, modal: $modal })">
           <span>{{task.title}}</span>
