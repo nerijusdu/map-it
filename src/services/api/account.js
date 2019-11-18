@@ -24,5 +24,16 @@ export default {
       ignoreAuth: true,
       ...options
     });
+  },
+  logout(refreshToken, options) {
+    return apiCall('/account/logout', {
+      method: 'POST',
+      body: JSON.stringify({
+        refreshToken
+      })
+    }, {
+      ...options,
+      ignoreAuth: true
+    });
   }
 };

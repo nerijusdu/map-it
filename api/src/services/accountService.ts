@@ -51,6 +51,16 @@ class AccountService extends EntityServiceBase<User> {
     };
   }
 
+  public logout(refreshToken?: string) {
+    if (!refreshToken) {
+      return;
+    }
+
+    if (tokenList[refreshToken]) {
+      delete tokenList[refreshToken];
+    }
+  }
+
   public async refresh(email: string, refreshToken: string) {
     if (tokenList[refreshToken] === email) {
       delete tokenList[refreshToken];
