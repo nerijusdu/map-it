@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@master
       with:
-      ref: develop
+        ref: develop
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1
       with:
