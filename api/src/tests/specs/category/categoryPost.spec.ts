@@ -33,7 +33,7 @@ describe('Category post tests', () => {
     category.roadmapId = roadmap.id;
 
     const response = await server
-      .post('/categories')
+      .post('/api/categories')
       .set('Authorization', `Bearer ${token}`)
       .send(category);
 
@@ -60,7 +60,7 @@ describe('Category post tests', () => {
     category.title = newTitle;
 
     const response = await server
-      .post('/categories')
+      .post('/api/categories')
       .set('Authorization', `Bearer ${token}`)
       .send(category);
 
@@ -80,7 +80,7 @@ describe('Category delete tests', () => {
     const category = await entityFactory.createCategory(roadmap.id);
 
     const response = await server
-      .delete(`/categories/${category.id}`)
+      .delete(`/api/categories/${category.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);
@@ -99,7 +99,7 @@ describe('Category delete tests', () => {
     const differentCategory = await entityFactory.createCategory(differentRoadmap.id);
 
     const response = await server
-      .delete(`/categories/${differentCategory.id}`)
+      .delete(`/api/categories/${differentCategory.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);

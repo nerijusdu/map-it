@@ -27,7 +27,7 @@ describe('Account registration tests', () =>  {
     };
 
     const response = await server
-      .post('/account/register')
+      .post('/api/account/register')
       .send(user);
 
     response.status.should.equal(200);
@@ -45,7 +45,7 @@ describe('Account registration tests', () =>  {
   });
 
   it('should validate user data correctly', async () => {
-    const response = await server.post('/account/register');
+    const response = await server.post('/api/account/register');
 
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_ValidationError);
@@ -74,7 +74,7 @@ describe('Account registration tests', () =>  {
     const existingUser = await entityFactory.createAccount();
     user.email = existingUser.email;
 
-    const response = await server.post('/account/register').send(user);
+    const response = await server.post('/api/account/register').send(user);
 
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Registration_EmailExists);

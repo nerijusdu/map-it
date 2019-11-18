@@ -40,7 +40,7 @@ describe('Task post tests', () => {
     task.endDate = endDate;
 
     const response = await server
-      .post('/tasks')
+      .post('/api/tasks')
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
@@ -76,7 +76,7 @@ describe('Task post tests', () => {
     task.endDate = endDate;
 
     const response = await server
-      .post('/tasks')
+      .post('/api/tasks')
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
@@ -97,7 +97,7 @@ describe('Task post tests', () => {
     task.endDate = endDate;
 
     const response = await server
-      .post('/tasks')
+      .post('/api/tasks')
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
@@ -112,7 +112,7 @@ describe('Task post tests', () => {
     task.title = newTitle;
 
     const response = await server
-      .post('/tasks')
+      .post('/api/tasks')
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
@@ -132,7 +132,7 @@ describe('Task delete tests', () => {
     const task = await entityFactory.createTask(roadmap.id);
 
     const response = await server
-      .delete(`/tasks/${task.id}`)
+      .delete(`/api/tasks/${task.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);
@@ -152,7 +152,7 @@ describe('Task delete tests', () => {
     const task = await entityFactory.createTask(differentRoadmap.id);
 
     const response = await server
-      .delete(`/tasks/${task.id}`)
+      .delete(`/api/tasks/${task.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);

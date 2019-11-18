@@ -21,7 +21,7 @@ describe('Account verify tests', () => {
     const user = await entityFactory.createAccount();
     const token = entityFactory.loginWithAccount(user).token;
 
-    const response = await server.get('/account/verify').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/account/verify').set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);
     response.body.email.should.equal(user.email);
@@ -29,7 +29,7 @@ describe('Account verify tests', () => {
   });
 
   it('should fail with incorrect token', async () => {
-    const response = await server.get('/account/verify').set('Authorization', 'Bearer someRandom.Incorrect.Token');
+    const response = await server.get('/api/account/verify').set('Authorization', 'Bearer someRandom.Incorrect.Token');
     response.status.should.equal(401);
   });
 });

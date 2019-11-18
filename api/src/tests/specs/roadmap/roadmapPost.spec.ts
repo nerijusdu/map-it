@@ -34,7 +34,7 @@ describe('Roadmap post tests', () => {
     roadmap.endDate = endDate;
 
     const response = await server
-      .post('/roadmaps')
+      .post('/api/roadmaps')
       .set('Authorization', `Bearer ${token}`)
       .send(roadmap);
 
@@ -61,7 +61,7 @@ describe('Roadmap post tests', () => {
     roadmap.title = newTitle;
 
     const response = await server
-      .post('/roadmaps')
+      .post('/api/roadmaps')
       .set('Authorization', `Bearer ${token}`)
       .send(roadmap);
 
@@ -83,7 +83,7 @@ describe('Roadmap delete tests', () => {
     const roadmap = await entityFactory.createRoadmap(user.id);
 
     const response = await server
-      .delete(`/roadmaps/${roadmap.id}`)
+      .delete(`/api/roadmaps/${roadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);
@@ -101,7 +101,7 @@ describe('Roadmap delete tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
 
     const response = await server
-      .delete(`/roadmaps/${differentRoadmap.id}`)
+      .delete(`/api/roadmaps/${differentRoadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     response.status.should.equal(200);

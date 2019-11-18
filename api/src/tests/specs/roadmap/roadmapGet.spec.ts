@@ -28,7 +28,7 @@ describe('Roadmap get all tests', () => {
     const differentUser = await entityFactory.createAccount();
     await entityFactory.createRoadmap(differentUser.id);
 
-    const response = await server.get('/roadmaps').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/roadmaps').set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     response.body.should.be.an('array');
     response.body.length.should.equal(1);
@@ -42,7 +42,7 @@ describe('Roadmap get by id tests', () => {
   it('should get roadmap by id', async () => {
     const usersRoadmap = await entityFactory.createRoadmap(user.id);
 
-    const response = await server.get(`/roadmaps/${usersRoadmap.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/roadmaps/${usersRoadmap.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     const roadmap = response.body as Roadmap;
     roadmap.id.should.equal(usersRoadmap.id);
@@ -59,7 +59,7 @@ describe('Roadmap get by id tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(user.id);
     await entityFactory.createCategory(differentRoadmap.id);
 
-    const response = await server.get(`/roadmaps/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/roadmaps/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     const fetchedRoadmap = response.body as Roadmap;
     fetchedRoadmap.categories.should.be.an('array');
@@ -75,7 +75,7 @@ describe('Roadmap get by id tests', () => {
     await entityFactory.createCategory(differentRoadmap.id);
     await entityFactory.createTask(differentRoadmap.id);
 
-    const response = await server.get(`/roadmaps/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/roadmaps/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     const fetchedRoadmap = response.body as Roadmap;
     fetchedRoadmap.tasks.should.be.an('array');
@@ -87,13 +87,13 @@ describe('Roadmap get by id tests', () => {
     const differentUser = await entityFactory.createAccount();
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
 
-    const response = await server.get(`/roadmaps/${differentRoadmap.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/roadmaps/${differentRoadmap.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_EntityNotFound(Roadmap.name));
   });
 
   it('should fail when roadmap does not exist', async () => {
-    const response = await server.get('/roadmaps/-1').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/roadmaps/-1').set('Authorization', `Bearer ${token}`);
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_EntityNotFound(Roadmap.name));
   });

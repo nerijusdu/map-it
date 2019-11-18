@@ -34,7 +34,7 @@ describe('Task get all tests', () => {
     await entityFactory.createCategory(differentRoadmap.id);
     await entityFactory.createTask(differentRoadmap.id);
 
-    const response = await server.get('/tasks').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/tasks').set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     response.body.should.be.an('array');
     response.body.length.should.equal(1);
@@ -48,7 +48,7 @@ describe('Task get by id tests', () => {
   it('should get task by id', async () => {
     const usersTask = await entityFactory.createTask(roadmap.id);
 
-    const response = await server.get(`/tasks/${usersTask.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/tasks/${usersTask.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
 
     const task = response.body as Task;
@@ -69,13 +69,13 @@ describe('Task get by id tests', () => {
     await entityFactory.createCategory(differentRoadmap.id);
     const differentTask = await entityFactory.createTask(differentRoadmap.id);
 
-    const response = await server.get(`/tasks/${differentTask.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/tasks/${differentTask.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_EntityNotFound(Task.name));
   });
 
   it('should fail when task does not exist', async () => {
-    const response = await server.get('/tasks/-1').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/tasks/-1').set('Authorization', `Bearer ${token}`);
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_EntityNotFound(Task.name));
   });

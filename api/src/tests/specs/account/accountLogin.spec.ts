@@ -23,7 +23,7 @@ after(async () => {
 describe('Account login tests', () => {
   it('should login to existing account', async () => {
     const response = await server
-      .post('/account/login')
+      .post('/api/account/login')
       .send({
         email: existingUser.email,
         password: entityFactory.defaultPassword
@@ -36,7 +36,7 @@ describe('Account login tests', () => {
 
   it('should fail when email is incorrect', async () => {
     const response = await server
-      .post('/account/login')
+      .post('/api/account/login')
       .send({
         email: 'a' + existingUser.email,
         password: entityFactory.defaultPassword
@@ -48,7 +48,7 @@ describe('Account login tests', () => {
 
   it('should fail when password is incorrect', async () => {
     const response = await server
-      .post('/account/login')
+      .post('/api/account/login')
       .send({
         email: existingUser.email,
         password: 'a' + entityFactory.defaultPassword

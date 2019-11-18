@@ -30,7 +30,7 @@ describe('Category get all tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
     await entityFactory.createCategory(differentRoadmap.id);
 
-    const response = await server.get('/categories').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/categories').set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     response.body.should.be.an('array');
     response.body.length.should.equal(1);
@@ -45,7 +45,7 @@ describe('Category get by id tests', () => {
     const usersRoadmap = await entityFactory.createRoadmap(user.id);
     const usersCategory = await entityFactory.createCategory(usersRoadmap.id);
 
-    const response = await server.get(`/categories/${usersCategory.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/categories/${usersCategory.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(200);
     const category = response.body as Category;
     category.id.should.equal(usersCategory.id);
@@ -63,13 +63,13 @@ describe('Category get by id tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
     const differentCategory = await entityFactory.createCategory(differentRoadmap.id);
 
-    const response = await server.get(`/categories/${differentCategory.id}`).set('Authorization', `Bearer ${token}`);
+    const response = await server.get(`/api/categories/${differentCategory.id}`).set('Authorization', `Bearer ${token}`);
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_EntityNotFound(Category.name));
   });
 
   it('should fail when category does not exist', async () => {
-    const response = await server.get('/categories/-1').set('Authorization', `Bearer ${token}`);
+    const response = await server.get('/api/categories/-1').set('Authorization', `Bearer ${token}`);
     response.status.should.equal(400);
     response.body.message.should.equal(resources.Generic_EntityNotFound(Category.name));
   });
