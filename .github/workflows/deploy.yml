@@ -27,7 +27,7 @@ jobs:
         npm install
         npm run build
         cp -R dist/. api/public/
-    - name: npm install, build, and test backend
+    - name: npm install and build backend
       run: |
         cd api
         npm config set unsafe-perm=true
