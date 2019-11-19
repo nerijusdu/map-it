@@ -23,12 +23,14 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
     - name: build and copy frontend
       run: |
+        npm config set unsafe-perm=true
         npm install
         npm run build
         cp -R dist/. api/public/
     - name: npm install, build, and test backend
       run: |
         cd api
+        npm config set unsafe-perm=true
         npm install
         npm run build
     - name: 'Deploy API to Azure WebApp'
