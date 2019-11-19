@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
@@ -7,7 +7,7 @@ import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/account/register';
 
 let server: supertest.SuperTest<supertest.Test>;
 before(async () => {
@@ -27,10 +27,10 @@ describe('Account registration tests', () =>  {
     };
 
     const response = await server
-      .post('/api/account/register')
+      .post(url)
       .send(user);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const createdUser =  await database
       .connection()
       .manager
@@ -39,29 +39,29 @@ describe('Account registration tests', () =>  {
         name: user.name
       });
 
-    chai.should().exist(createdUser);
+    expect(createdUser).to.exist;
     const passCorrect = await createdUser!.comparePasswords(user.password);
-    passCorrect.should.equal(true);
+    expect(passCorrect).to.equal(true);
   });
 
   it('should validate user data correctly', async () => {
-    const response = await server.post('/api/account/register');
+    const response = await server.post(url);
 
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_ValidationError);
-    response.body.data.should.be.an('array');
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_ValidationError);
+    expect(response.body.data).to.be.an('array');
 
     const emailErrors = response.body.data.find((x: any) => x.property === 'email');
-    chai.should().exist(emailErrors);
-    emailErrors.errors.should.have.lengthOf(2);
+    expect(emailErrors).to.exist;
+    expect(emailErrors.errors).to.have.lengthOf(2);
 
     const nameErrors = response.body.data.find((x: any) => x.property === 'name');
-    chai.should().exist(nameErrors);
-    nameErrors.errors.should.have.lengthOf(2);
+    expect(nameErrors).to.exist;
+    expect(nameErrors.errors).to.have.lengthOf(2);
 
     const passwordErrors = response.body.data.find((x: any) => x.property === 'password');
-    chai.should().exist(passwordErrors);
-    passwordErrors.errors.should.have.lengthOf(2);
+    expect(passwordErrors).to.exist;
+    expect(passwordErrors.errors).to.have.lengthOf(2);
   });
 
   it('should not create account with existing email', async () => {
@@ -74,9 +74,9 @@ describe('Account registration tests', () =>  {
     const existingUser = await entityFactory.createAccount();
     user.email = existingUser.email;
 
-    const response = await server.post('/api/account/register').send(user);
+    const response = await server.post(url).send(user);
 
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Registration_EmailExists);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Registration_EmailExists);
   });
 });
