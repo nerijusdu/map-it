@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
@@ -7,7 +7,7 @@ import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/roadmaps';
 
 let server: supertest.SuperTest<supertest.Test>;
 let user: User;
@@ -28,13 +28,13 @@ describe('Roadmap get all tests', () => {
     const differentUser = await entityFactory.createAccount();
     await entityFactory.createRoadmap(differentUser.id);
 
-    const response = await server.get('/api/roadmaps').set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
-    response.body.should.be.an('array');
-    response.body.length.should.equal(1);
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+    expect(response.body.length).to.equal(1);
 
     const roadmap = response.body[0] as Roadmap;
-    roadmap.id.should.equal(usersRoadmap.id);
+    expect(roadmap.id).to.equal(usersRoadmap.id);
   });
 });
 
@@ -42,15 +42,15 @@ describe('Roadmap get by id tests', () => {
   it('should get roadmap by id', async () => {
     const usersRoadmap = await entityFactory.createRoadmap(user.id);
 
-    const response = await server.get(`/api/roadmaps/${usersRoadmap.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
+    const response = await server.get(`${url}/${usersRoadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
     const roadmap = response.body as Roadmap;
-    roadmap.id.should.equal(usersRoadmap.id);
-    roadmap.userId.should.equal(usersRoadmap.userId);
-    roadmap.title.should.equal(usersRoadmap.title);
-    roadmap.description.should.equal(usersRoadmap.description);
-    roadmap.startDate.should.equal(usersRoadmap.startDate.toISOString());
-    roadmap.endDate.should.equal(usersRoadmap.endDate.toISOString());
+    expect(roadmap.id).to.equal(usersRoadmap.id);
+    expect(roadmap.userId).to.equal(usersRoadmap.userId);
+    expect(roadmap.title).to.equal(usersRoadmap.title);
+    expect(roadmap.description).to.equal(usersRoadmap.description);
+    expect(roadmap.startDate).to.equal(usersRoadmap.startDate.toISOString());
+    expect(roadmap.endDate).to.equal(usersRoadmap.endDate.toISOString());
   });
 
   it('should get roadmap with categories by id', async () => {
@@ -59,12 +59,12 @@ describe('Roadmap get by id tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(user.id);
     await entityFactory.createCategory(differentRoadmap.id);
 
-    const response = await server.get(`/api/roadmaps/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
+    const response = await server.get(`${url}/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
     const fetchedRoadmap = response.body as Roadmap;
-    fetchedRoadmap.categories.should.be.an('array');
-    fetchedRoadmap.categories.length.should.equal(1);
-    fetchedRoadmap.categories[0].id.should.equal(category.id);
+    expect(fetchedRoadmap.categories).to.be.an('array');
+    expect(fetchedRoadmap.categories.length).to.equal(1);
+    expect(fetchedRoadmap.categories[0].id).to.equal(category.id);
   });
 
   it('should get roadmap with tasks by id', async () => {
@@ -75,26 +75,26 @@ describe('Roadmap get by id tests', () => {
     await entityFactory.createCategory(differentRoadmap.id);
     await entityFactory.createTask(differentRoadmap.id);
 
-    const response = await server.get(`/api/roadmaps/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
+    const response = await server.get(`${url}/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
     const fetchedRoadmap = response.body as Roadmap;
-    fetchedRoadmap.tasks.should.be.an('array');
-    fetchedRoadmap.tasks.length.should.equal(1);
-    fetchedRoadmap.tasks[0].id.should.equal(task.id);
+    expect(fetchedRoadmap.tasks).to.be.an('array');
+    expect(fetchedRoadmap.tasks.length).to.equal(1);
+    expect(fetchedRoadmap.tasks[0].id).to.equal(task.id);
   });
 
   it('should fail when roadmap belongs to another user', async () => {
     const differentUser = await entityFactory.createAccount();
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
 
-    const response = await server.get(`/api/roadmaps/${differentRoadmap.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_EntityNotFound(Roadmap.name));
+    const response = await server.get(`${url}/${differentRoadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Roadmap.name));
   });
 
   it('should fail when roadmap does not exist', async () => {
-    const response = await server.get('/api/roadmaps/-1').set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_EntityNotFound(Roadmap.name));
+    const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Roadmap.name));
   });
 });

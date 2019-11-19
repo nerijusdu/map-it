@@ -31,13 +31,6 @@ class RoadmapService extends EntityServiceBase<Roadmap> {
 
     return super.save(roadmapInstance);
   }
-
-  public async update(id: number, updates: Roadmap) {
-    await super.getById(id);
-    delete updates.id;
-    delete updates.userId;
-    return super.update(id, updates);
-  }
 }
 
 export default (user?: User) => new RoadmapService(user);
