@@ -7,6 +7,9 @@ on:
 
 env:
   NODE_VERSION: '10.16.0'
+  DB_HOST: ${{ secrets.DB_HOST }}
+  DB_USER: ${{ secrets.DB_USER }}
+  DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
 
 jobs:
   build-and-test:
@@ -20,7 +23,7 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ env.NODE_VERSION }}
-    - name: build and copy frontend
+    - name: build and test frontend
       run: |
         npm install
         npm run build
@@ -30,5 +33,4 @@ jobs:
         cd api
         npm install
         npm run build
-        # TODO: setup test database
-        # npm run test
+        npm run test
