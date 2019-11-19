@@ -26,7 +26,7 @@ app.get('/api/health', (req, res) => {
 
 app.use(ErrorHandler);
 
-if (process.env.NODE_ENV!.trim() !== 'test') {
+if (!(process.env.NODE_ENV || '').trim().startsWith('test')) {
   app.listen(PORT, () => console.log(`Listening at http://localhost:${PORT}/`));
 }
 

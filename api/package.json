@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "SET NODE_ENV=development & npm run watch",
     "start": "node build/app.js",
-    "test": "nyc ts-mocha -p tsconfig.json src/tests/**/*.ts",
-    "test-local": "SET NODE_ENV=test-local & npm run test",
+    "test": "ts-mocha -p tsconfig.json 'src/tests/**/*.ts'",
+    "test-local": "SET NODE_ENV=test-local & nyc ts-mocha -p tsconfig.json src/tests/**/*.ts",
     "test-watch": "SET NODE_ENV=test-local & ts-mocha -p tsconfig.json src/tests/**/*.ts --watch-extensions ts --watch",
     "tsc": "tsc",
     "watch-ts": "tsc -w",

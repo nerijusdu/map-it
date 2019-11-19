@@ -9,6 +9,7 @@ env:
   AZURE_WEBAPP_NAME: map-it-api
   AZURE_WEBAPP_PACKAGE_PATH: './api'
   NODE_VERSION: '10.16.0'
+  NODE_ENV: prod
 
 jobs:
   build-and-deploy:
@@ -24,14 +25,12 @@ jobs:
       run: |
         npm install
         npm run build
-        # npm run test
         cp -R dist/. api/public/
     - name: npm install, build, and test backend
       run: |
         cd api
         npm install
         npm run build
-        # npm run test
     - name: 'Deploy API to Azure WebApp'
       uses: azure/webapps-deploy@v1
       with:
