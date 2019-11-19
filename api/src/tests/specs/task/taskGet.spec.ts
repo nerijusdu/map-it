@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
@@ -7,7 +7,7 @@ import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/tasks';
 
 let server: supertest.SuperTest<supertest.Test>;
 let user: User;
@@ -34,13 +34,13 @@ describe('Task get all tests', () => {
     await entityFactory.createCategory(differentRoadmap.id);
     await entityFactory.createTask(differentRoadmap.id);
 
-    const response = await server.get('/tasks').set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
-    response.body.should.be.an('array');
-    response.body.length.should.equal(1);
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+    expect(response.body.length).to.equal(1);
 
     const task = response.body[0] as Task;
-    task.id.should.equal(usersTask.id);
+    expect(task.id).to.equal(usersTask.id);
   });
 });
 
@@ -48,19 +48,19 @@ describe('Task get by id tests', () => {
   it('should get task by id', async () => {
     const usersTask = await entityFactory.createTask(roadmap.id);
 
-    const response = await server.get(`/tasks/${usersTask.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
+    const response = await server.get(`${url}/${usersTask.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
 
     const task = response.body as Task;
-    task.id.should.equal(usersTask.id);
-    task.title.should.equal(usersTask.title);
-    task.description.should.equal(usersTask.description);
-    task.startDate.should.equal(usersTask.startDate.toISOString());
-    task.endDate.should.equal(usersTask.endDate.toISOString());
-    chai.should().exist(task.category);
-    chai.should().exist(task.roadmap);
-    task.category.id.should.equal(category.id);
-    task.roadmap.id.should.equal(roadmap.id);
+    expect(task.id).to.equal(usersTask.id);
+    expect(task.title).to.equal(usersTask.title);
+    expect(task.description).to.equal(usersTask.description);
+    expect(task.startDate).to.equal(usersTask.startDate.toISOString());
+    expect(task.endDate).to.equal(usersTask.endDate.toISOString());
+    expect(task.category).to.exist;
+    expect(task.roadmap).to.exist;
+    expect(task.category.id).to.equal(category.id);
+    expect(task.roadmap.id).to.equal(roadmap.id);
   });
 
   it('should fail when task belongs to another user', async () => {
@@ -69,14 +69,68 @@ describe('Task get by id tests', () => {
     await entityFactory.createCategory(differentRoadmap.id);
     const differentTask = await entityFactory.createTask(differentRoadmap.id);
 
-    const response = await server.get(`/tasks/${differentTask.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_EntityNotFound(Task.name));
+    const response = await server.get(`${url}/${differentTask.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Task.name));
   });
 
   it('should fail when task does not exist', async () => {
-    const response = await server.get('/tasks/-1').set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_EntityNotFound(Task.name));
+    const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Task.name));
+  });
+});
+
+describe('Task complete tests', () => {
+  it('should complete task', async () => {
+    const task = await entityFactory.createTask(roadmap.id);
+
+    const result = await server.get(`${url}/${task.id}/complete`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(result.status).to.equal(200);
+
+    const completedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(completedTask!.isCompleted).to.be.true;
+  });
+
+  it('should revert completed task', async () => {
+    const task = await entityFactory.createTask(roadmap.id, (x) => {
+      x.isCompleted = true;
+      return x;
+    });
+
+    const result = await server.get(`${url}/${task.id}/complete?revert=true`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(result.status).to.equal(200);
+
+    const completedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(completedTask!.isCompleted).to.be.false;
+  });
+
+  it('should fail when completing non existing task', async () => {
+    const result = await server.get(`${url}/-1/complete`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(result.status).to.equal(400);
+  });
+
+  it('should fail when task does not belong to user', async () => {
+    const task = await entityFactory.createTask(roadmap.id);
+    const differentUser = await entityFactory.createAccount();
+    const differentToken = entityFactory.loginWithAccount(differentUser).token;
+    const result = await server.get(`${url}/${task.id}/complete`)
+      .set('Authorization', `Bearer ${differentToken}`);
+
+    expect(result.status).to.equal(400);
   });
 });

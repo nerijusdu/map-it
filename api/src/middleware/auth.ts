@@ -6,9 +6,10 @@ const publicUrls = [
   '/api/account/login',
   '/api/account/register',
   '/api/account/refresh',
+  '/api/account/logout',
   '/api/health'
 ];
-const staticContent = /\.(css|html|js|ico)|\/$/;
+const staticContent = /\.(css|html|js|ico|png)|\/$/;
 
 export const verifyUser = (async (req, res, next) => {
   if (publicUrls.find((x) => x === req.url) || staticContent.test(req.url)) {

@@ -2,7 +2,7 @@ import moment from 'moment';
 
 export default {
   getParagraphs: text => (text || '').split('\n'),
-  calculateWidthPercentage(allTimeFrame, objectTimeframe) {
+  calculateWidthPercentage(allTimeFrame, objectTimeframe, isMargin) {
     if (!allTimeFrame || !allTimeFrame.startDate || !allTimeFrame.endDate || !objectTimeframe || !objectTimeframe.startDate || !objectTimeframe.endDate) {
       throw new Error('Incorrect arguments provided!');
     }
@@ -23,6 +23,10 @@ export default {
       endDate: moment(objectTimeframe.endDate).endOf('day')
     };
 
+    if (isMargin === true) {
+      b.endDate.startOf('day');
+    }
+
     if (b.endDate.isAfter(a.endDate)) {
       b.endDate = a.endDate;
     }
@@ -33,6 +37,6 @@ export default {
     const allDays = Math.abs(a.startDate.diff(a.endDate, 'hours'));
     const objectDays = Math.abs(b.startDate.diff(b.endDate, 'hours'));
 
-    return Math.round((objectDays / allDays) * 100);
+    return Math.round((objectDays / allDays) * 10000) / 100;
   }
 };

@@ -22,6 +22,11 @@ router.post('/refresh', respose(async (req, res) => {
   return res.json(result);
 }));
 
+router.post('/logout', respose((req, res) => {
+  accountService().logout(req.body.refreshToken);
+  return res.json({});
+}));
+
 router.post('/register', respose(async (req, res) => {
   const user = new User();
   user.email = req.body.email;

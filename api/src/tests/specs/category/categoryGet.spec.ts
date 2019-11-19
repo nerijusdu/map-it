@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
@@ -7,7 +7,7 @@ import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/categories';
 
 let server: supertest.SuperTest<supertest.Test>;
 let user: User;
@@ -30,13 +30,13 @@ describe('Category get all tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
     await entityFactory.createCategory(differentRoadmap.id);
 
-    const response = await server.get('/categories').set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
-    response.body.should.be.an('array');
-    response.body.length.should.equal(1);
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+    expect(response.body.length).to.equal(1);
 
     const category = response.body[0] as Category;
-    category.id.should.equal(usersCategory.id);
+    expect(category.id).to.equal(usersCategory.id);
   });
 });
 
@@ -45,17 +45,17 @@ describe('Category get by id tests', () => {
     const usersRoadmap = await entityFactory.createRoadmap(user.id);
     const usersCategory = await entityFactory.createCategory(usersRoadmap.id);
 
-    const response = await server.get(`/categories/${usersCategory.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(200);
+    const response = await server.get(`${url}/${usersCategory.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
     const category = response.body as Category;
-    category.id.should.equal(usersCategory.id);
-    category.roadmapId.should.equal(usersCategory.roadmapId);
-    category.userId.should.equal(usersCategory.userId);
-    category.title.should.equal(usersCategory.title);
-    category.description.should.equal(usersCategory.description);
-    category.color.should.equal(usersCategory.color);
-    chai.should().exist(category.roadmap);
-    category.roadmap.id.should.equal(usersRoadmap.id);
+    expect(category.id).to.equal(usersCategory.id);
+    expect(category.roadmapId).to.equal(usersCategory.roadmapId);
+    expect(category.userId).to.equal(usersCategory.userId);
+    expect(category.title).to.equal(usersCategory.title);
+    expect(category.description).to.equal(usersCategory.description);
+    expect(category.color).to.equal(usersCategory.color);
+    expect(category.roadmap).to.exist;
+    expect(category.roadmap.id).to.equal(usersRoadmap.id);
   });
 
   it('should fail when category belongs to another user', async () => {
@@ -63,14 +63,16 @@ describe('Category get by id tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
     const differentCategory = await entityFactory.createCategory(differentRoadmap.id);
 
-    const response = await server.get(`/categories/${differentCategory.id}`).set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_EntityNotFound(Category.name));
+    const response = await server
+      .get(`${url}/${differentCategory.id}`)
+      .set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Category.name));
   });
 
   it('should fail when category does not exist', async () => {
-    const response = await server.get('/categories/-1').set('Authorization', `Bearer ${token}`);
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Generic_EntityNotFound(Category.name));
+    const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Category.name));
   });
 });

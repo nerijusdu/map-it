@@ -38,22 +38,9 @@ class TaskService extends EntityServiceBase<Task> {
     return super.save(taskInstance);
   }
 
-  public async update(id: number, updates: Task) {
-    await super.getById(id);
-    if (updates.roadmapId) {
-      await roadmapService(this.user).getById(updates.roadmapId);
-    }
-    if (updates.categoryId) {
-      await categoryService(this.user).getById(updates.categoryId);
-    }
-    delete updates.id;
-    delete updates.userId;
-    return super.update(id, updates);
-  }
-
   public async complete(id: number, revert?: boolean) {
-    await connection()
-      .manager
+    await super.getById(id);
+    await connection().manager
       .update(Task, { id, userId: this.user!.id }, { isCompleted: !revert });
   }
 }

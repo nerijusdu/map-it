@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import shortid from 'shortid';
 import supertest from 'supertest';
@@ -7,7 +7,7 @@ import { Category, Roadmap, User } from '../../../models';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/categories';
 
 let server: supertest.SuperTest<supertest.Test>;
 let user: User;
@@ -32,25 +32,24 @@ describe('Category post tests', () => {
     category.description = shortid.generate();
     category.roadmapId = roadmap.id;
 
-    const response = await server
-      .post('/categories')
+    const response = await server.post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(category);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const id = response.body.id;
-    id.should.be.a('number');
+    expect(id).to.be.a('number');
     const createdCategory = await database
       .connection()
       .manager
       .findOne(Category, id);
 
-    chai.should().exist(createdCategory);
-    createdCategory!.title.should.equal(category.title);
-    createdCategory!.color.should.equal(category.color);
-    createdCategory!.description.should.equal(category.description);
-    createdCategory!.roadmapId.should.equal(category.roadmapId);
-    createdCategory!.userId.should.equal(user.id);
+    expect(createdCategory).to.exist;
+    expect(createdCategory!.title).to.equal(category.title);
+    expect(createdCategory!.color).to.equal(category.color);
+    expect(createdCategory!.description).to.equal(category.description);
+    expect(createdCategory!.roadmapId).to.equal(category.roadmapId);
+    expect(createdCategory!.userId).to.equal(user.id);
   });
 
   it('should edit category', async () => {
@@ -59,19 +58,18 @@ describe('Category post tests', () => {
     const newTitle = shortid.generate();
     category.title = newTitle;
 
-    const response = await server
-      .post('/categories')
+    const response = await server.post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(category);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const editedCategory = await database
       .connection()
       .manager
       .findOne(Category, category.id);
 
-    chai.should().exist(editedCategory);
-    editedCategory!.title.should.equal(category.title);
+    expect(editedCategory).to.exist;
+    expect(editedCategory!.title).to.equal(category.title);
   });
 });
 
@@ -80,17 +78,17 @@ describe('Category delete tests', () => {
     const category = await entityFactory.createCategory(roadmap.id);
 
     const response = await server
-      .delete(`/categories/${category.id}`)
+      .delete(`${url}/${category.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
 
     const deletedCategory = await database
       .connection()
       .manager
       .findOne(Category, category.id);
 
-    chai.should().not.exist(deletedCategory);
+    expect(deletedCategory).to.not.exist;
   });
 
   it('should not delete category of different user', async () => {
@@ -99,16 +97,16 @@ describe('Category delete tests', () => {
     const differentCategory = await entityFactory.createCategory(differentRoadmap.id);
 
     const response = await server
-      .delete(`/categories/${differentCategory.id}`)
+      .delete(`${url}/${differentCategory.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
 
     const deletedCategory = await database
       .connection()
       .manager
       .findOne(Category, differentCategory.id);
 
-    chai.should().exist(deletedCategory);
+    expect(deletedCategory).to.exist;
   });
 });

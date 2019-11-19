@@ -21,11 +21,6 @@ router.post('/', respose(async (req, res) => {
   return res.json(result);
 }));
 
-router.put('/:id', respose(async (req, res) => {
-  const result = await taskService(req.user).update(req.params.id, req.body);
-  return res.json(result);
-}));
-
 router.delete('/:id', respose(async (req, res) => {
   const result = await taskService(req.user).delete(req.params.id);
   return res.json(result);

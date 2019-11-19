@@ -1,3 +1,4 @@
+import moment from 'moment';
 import api from '../../../services/api';
 import converters from '../../../services/converterService';
 
@@ -7,7 +8,9 @@ const initialState = {
 };
 
 export const getters = {
-  tasksByCategory: state => categoryId => state.current.tasks.filter(t => t.categoryId === categoryId),
+  tasksByCategory: state => categoryId => state.current.tasks
+    .filter(t => t.categoryId === categoryId)
+    .map(t => ({ ...t, startDate: moment(t.startDate), endDate: moment(t.endDate) })),
   taskToEdit: (state) => {
     if (!state.editTaskId) {
       return null;
@@ -20,8 +23,8 @@ export const getters = {
 
     return {
       ...task,
-      startDate: task.startDate.toDate(),
-      endDate: task.endDate.toDate()
+      startDate: new Date(task.startDate),
+      endDate: new Date(task.endDate)
     };
   },
   taskToPreview: (state) => {
@@ -36,6 +39,8 @@ export const getters = {
 
     return {
       ...task,
+      startDate: moment(task.startDate),
+      endDate: moment(task.endDate),
       category: state.current.categories.find(c => c.id === task.categoryId)
     };
   }

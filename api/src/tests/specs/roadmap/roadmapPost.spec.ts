@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import shortid from 'shortid';
 import supertest from 'supertest';
@@ -7,7 +7,7 @@ import { Roadmap, User } from '../../../models';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/roadmaps';
 
 let server: supertest.SuperTest<supertest.Test>;
 let user: User;
@@ -34,24 +34,24 @@ describe('Roadmap post tests', () => {
     roadmap.endDate = endDate;
 
     const response = await server
-      .post('/roadmaps')
+      .post('/api/roadmaps')
       .set('Authorization', `Bearer ${token}`)
       .send(roadmap);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const id = response.body.id;
-    id.should.be.a('number');
+    expect(id).to.be.a('number');
     const createdRoadmap = await database
       .connection()
       .manager
       .findOne(Roadmap, id);
 
-    chai.should().exist(createdRoadmap);
-    createdRoadmap!.title.should.equal(roadmap.title);
-    createdRoadmap!.description.should.equal(roadmap.description);
-    createdRoadmap!.userId.should.equal(roadmap.userId);
-    createdRoadmap!.startDate.toISOString().should.equal(roadmap.startDate.toISOString());
-    createdRoadmap!.endDate.toISOString().should.equal(roadmap.endDate.toISOString());
+    expect(createdRoadmap).to.exist;
+    expect(createdRoadmap!.title).to.equal(roadmap.title);
+    expect(createdRoadmap!.description).to.equal(roadmap.description);
+    expect(createdRoadmap!.userId).to.equal(roadmap.userId);
+    expect(createdRoadmap!.startDate.toISOString()).to.equal(roadmap.startDate.toISOString());
+    expect(createdRoadmap!.endDate.toISOString()).to.equal(roadmap.endDate.toISOString());
   });
 
   it('should edit roadmap', async () => {
@@ -61,20 +61,20 @@ describe('Roadmap post tests', () => {
     roadmap.title = newTitle;
 
     const response = await server
-      .post('/roadmaps')
+      .post('/api/roadmaps')
       .set('Authorization', `Bearer ${token}`)
       .send(roadmap);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const id = response.body.id;
-    id.should.be.a('number');
+    expect(id).to.be.a('number');
     const editedRoadmap = await database
       .connection()
       .manager
       .findOne(Roadmap, id);
 
-    chai.should().exist(editedRoadmap);
-    editedRoadmap!.title.should.equal(roadmap.title);
+    expect(editedRoadmap).to.exist;
+    expect(editedRoadmap!.title).to.equal(roadmap.title);
   });
 });
 
@@ -83,17 +83,17 @@ describe('Roadmap delete tests', () => {
     const roadmap = await entityFactory.createRoadmap(user.id);
 
     const response = await server
-      .delete(`/roadmaps/${roadmap.id}`)
+      .delete(`/api/roadmaps/${roadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
 
     const deletedRoadmap = await database
       .connection()
       .manager
       .findOne(Roadmap, roadmap.id);
 
-    chai.should().not.exist(deletedRoadmap);
+    expect(deletedRoadmap).to.not.exist;
   });
 
   it('should not delete roadmap of different user', async () => {
@@ -101,16 +101,16 @@ describe('Roadmap delete tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
 
     const response = await server
-      .delete(`/roadmaps/${differentRoadmap.id}`)
+      .delete(`/api/roadmaps/${differentRoadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
 
     const deletedRoadmap = await database
       .connection()
       .manager
       .findOne(Roadmap, differentRoadmap.id);
 
-    chai.should().exist(deletedRoadmap);
+    expect(deletedRoadmap).to.exist;
   });
 });

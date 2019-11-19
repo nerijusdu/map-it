@@ -1,11 +1,11 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/account/verify';
 
 let server: supertest.SuperTest<supertest.Test>;
 before(async () => {
@@ -21,15 +21,15 @@ describe('Account verify tests', () => {
     const user = await entityFactory.createAccount();
     const token = entityFactory.loginWithAccount(user).token;
 
-    const response = await server.get('/account/verify').set('Authorization', `Bearer ${token}`);
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
-    response.body.email.should.equal(user.email);
-    response.body.token.should.equal(token);
+    expect(response.status).to.equal(200);
+    expect(response.body.email).to.equal(user.email);
+    expect(response.body.token).to.equal(token);
   });
 
   it('should fail with incorrect token', async () => {
-    const response = await server.get('/account/verify').set('Authorization', 'Bearer someRandom.Incorrect.Token');
-    response.status.should.equal(401);
+    const response = await server.get(url).set('Authorization', 'Bearer someRandom.Incorrect.Token');
+    expect(response.status).to.equal(401);
   });
 });

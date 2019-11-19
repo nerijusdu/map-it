@@ -36,13 +36,13 @@ export const getters = {
 
     return {
       ...roadmap,
-      startDate: roadmap.startDate.toDate(),
-      endDate: roadmap.endDate.toDate()
+      startDate: new Date(roadmap.startDate),
+      endDate: new Date(roadmap.endDate)
     };
   },
   roadmapTimeFrame: state => ({
-    startDate: state.current.startDate,
-    endDate: state.current.endDate
+    startDate: moment(state.current.startDate),
+    endDate: moment(state.current.endDate)
   }),
   selectedRoadmap: state => state.current.id
 };
@@ -146,12 +146,12 @@ export const mutations = {
   mSelectRoadmap(state, roadmap) {
     state.current = {
       ...roadmap,
-      startDate: moment(roadmap.startDate),
-      endDate: moment(roadmap.endDate),
+      startDate: roadmap.startDate,
+      endDate: roadmap.endDate,
       tasks: roadmap.tasks.map(task => ({
         ...task,
-        startDate: moment(task.startDate),
-        endDate: moment(task.endDate)
+        startDate: task.startDate,
+        endDate: task.endDate
       }))
     };
   },

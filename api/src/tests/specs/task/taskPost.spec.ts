@@ -1,4 +1,4 @@
-import chai from 'chai';
+import { expect } from 'chai';
 import 'mocha';
 import shortid from 'shortid';
 import supertest from 'supertest';
@@ -8,7 +8,7 @@ import resources from '../../../resources';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
-chai.should();
+const url: string = '/api/tasks';
 
 let server: supertest.SuperTest<supertest.Test>;
 let user: User;
@@ -39,27 +39,26 @@ describe('Task post tests', () => {
     endDate.setMonth(task.startDate.getMonth() + 3);
     task.endDate = endDate;
 
-    const response = await server
-      .post('/tasks')
+    const response = await server.post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const id = response.body.id;
-    id.should.be.a('number');
+    expect(id).to.be.a('number');
     const createdTask = await database
       .connection()
       .manager
       .findOne(Task, id);
 
-    chai.should().exist(createdTask);
-    createdTask!.title.should.equal(task.title);
-    createdTask!.description.should.equal(task.description);
-    createdTask!.roadmapId.should.equal(task.roadmapId);
-    createdTask!.categoryId.should.equal(task.categoryId);
-    createdTask!.startDate.toISOString().should.equal(task.startDate.toISOString());
-    createdTask!.endDate.toISOString().should.equal(task.endDate.toISOString());
-    createdTask!.userId.should.equal(user.id);
+    expect(createdTask).to.exist;
+    expect(createdTask!.title).to.equal(task.title);
+    expect(createdTask!.description).to.equal(task.description);
+    expect(createdTask!.roadmapId).to.equal(task.roadmapId);
+    expect(createdTask!.categoryId).to.equal(task.categoryId);
+    expect(createdTask!.startDate.toISOString()).to.equal(task.startDate.toISOString());
+    expect(createdTask!.endDate.toISOString()).to.equal(task.endDate.toISOString());
+    expect(createdTask!.userId).to.equal(user.id);
   });
 
   it('should fail when category is incorrect', async () => {
@@ -75,13 +74,12 @@ describe('Task post tests', () => {
     endDate.setMonth(task.startDate.getMonth() + 3);
     task.endDate = endDate;
 
-    const response = await server
-      .post('/tasks')
+    const response = await server.post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Task_CategoryNotFound);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Task_CategoryNotFound);
   });
 
   it('should fail when roadmap is incorrect', async () => {
@@ -97,12 +95,12 @@ describe('Task post tests', () => {
     task.endDate = endDate;
 
     const response = await server
-      .post('/tasks')
+      .post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
-    response.status.should.equal(400);
-    response.body.message.should.equal(resources.Task_CategoryNotFound);
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.equal(resources.Task_CategoryNotFound);
   });
 
   it('should edit task', async () => {
@@ -112,18 +110,37 @@ describe('Task post tests', () => {
     task.title = newTitle;
 
     const response = await server
-      .post('/tasks')
+      .post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(task);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
     const editedTask = await database
       .connection()
       .manager
       .findOne(Task, task.id);
 
-    chai.should().exist(editedTask);
-    editedTask!.title.should.equal(task.title);
+    expect(editedTask).to.exist;
+    expect(editedTask!.title).to.equal(task.title);
+  });
+
+  it('should only allow to create tasks inside roadmaps timeframe', async () => {
+    const task = new Task();
+    task.title = shortid.generate();
+    task.description = shortid.generate();
+    task.roadmapId = roadmap.id;
+    task.categoryId = category.id;
+    task.startDate = new Date(roadmap.startDate);
+    task.startDate.setMonth(roadmap.startDate.getMonth() - 1);
+    const endDate = new Date();
+    endDate.setMonth(task.startDate.getMonth() + 3);
+    task.endDate = endDate;
+
+    const response = await server.post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send(task);
+
+    expect(response.status).to.equal(400);
   });
 });
 
@@ -132,17 +149,17 @@ describe('Task delete tests', () => {
     const task = await entityFactory.createTask(roadmap.id);
 
     const response = await server
-      .delete(`/tasks/${task.id}`)
+      .delete(`${url}/${task.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
 
     const deletedTask = await database
       .connection()
       .manager
       .findOne(Task, task.id);
 
-    chai.should().not.exist(deletedTask);
+    expect(deletedTask).to.not.exist;
   });
 
   it('should not delete task of different user', async () => {
@@ -152,16 +169,16 @@ describe('Task delete tests', () => {
     const task = await entityFactory.createTask(differentRoadmap.id);
 
     const response = await server
-      .delete(`/tasks/${task.id}`)
+      .delete(`${url}/${task.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    response.status.should.equal(200);
+    expect(response.status).to.equal(200);
 
     const deletedTask = await database
       .connection()
       .manager
       .findOne(Task, task.id);
 
-    chai.should().exist(deletedTask);
+    expect(deletedTask).to.exist;
   });
 });
