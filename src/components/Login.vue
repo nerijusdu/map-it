@@ -18,8 +18,7 @@
       <div class="form-footer">
         <md-button class="md-raised" @click="register">Register</md-button>
         <md-button class="md-raised md-primary" @click="validateForm">
-          <div v-if="!isLoading">Login</div>
-          <md-progress-spinner v-if="isLoading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+          <div>Login</div>
         </md-button>
       </div>
     </form>
@@ -40,19 +39,13 @@ export default {
       email: '',
       password: ''
     },
-    resources,
-    isLoading: false
+    resources
   }),
   methods: {
     ...mapActions('app', ['saveUser']),
     async submit() {
-      this.isLoading = true;
-      const user = await api.login(this.user, {
-        ignoreLoading: true,
-        ignoreAuth: true
-      });
+      const user = await api.login(this.user, { ignoreAuth: true });
 
-      this.isLoading = false;
       if (user) {
         this.saveUser({ ...user.data, isLogin: true });
         this.$router.push('/timeline');

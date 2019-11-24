@@ -31,8 +31,7 @@
       <div class="form-footer">
         <md-button class="md-raised" @click="back">Back</md-button>
         <md-button class="md-raised md-primary" @click="validateForm">
-          <div v-if="!isLoading">Register</div>
-          <md-progress-spinner v-if="isLoading" :md-diameter="30" :md-stroke="3" md-mode="indeterminate"></md-progress-spinner>
+          <div>Register</div>
         </md-button>
       </div>
     </form>
@@ -55,15 +54,12 @@ export default {
       password: '',
       repeatPassword: ''
     },
-    resources,
-    isLoading: false
+    resources
   }),
   methods: {
     ...mapActions('app', ['showMessage']),
     async submit() {
-      this.isLoading = true;
-      const res = await api.register(this.user, { ignoreLoading: true });
-      this.isLoading = false;
+      const res = await api.register(this.user);
 
       if (res) {
         this.showMessage('Registration successful! Please login.');
