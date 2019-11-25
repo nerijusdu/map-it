@@ -5,9 +5,16 @@
       :style="{
         height: currentDateMarkerHeigh,
         'margin-left': `${(window.width - categoryLabelSize) * currentDateMarkerMargin / 100 + categoryLabelSize}px`,
-        'margin-top': `${shouldShowDays ? 70 : 50}px`
+        'margin-top': `${shouldShowDays ? 80 : 60}px`
       }"
-    ></div>
+    >
+      <div class="arrow-down">
+        <md-tooltip md-direction="top">Today</md-tooltip>
+        <svg height="10" width="12">
+          <polygon points="0,0 12,0 12,2 7,9 5,9 0,2" style="fill:#1eb980;stroke-width:0"/>
+        </svg>
+      </div>
+    </div>
     <div class="label-container">
       <div
         v-for="m in months"
@@ -126,6 +133,7 @@ export default {
 .label-container, .day-label-container {
   display: flex;
   margin-left: 200px;
+  margin-right: 5px;
 }
 
 .day-label-container {
@@ -139,17 +147,20 @@ export default {
 }
 
 .label {
-  padding-left: 10px;
-  padding-right: 10px;
+  margin: 2px;
   margin-top: 10px;
   margin-bottom: 10px;
-  /* flex-grow: 1; */
   text-align: center;
-  border-left: 1px solid white;
+  background-color: var(--modal-overlay-color);
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 10px;
 }
 
 .label:first-of-type {
   border: none;
+  padding-left: 0;
+  margin-left: 0;
 }
 
 .current-date-marker {
@@ -157,6 +168,18 @@ export default {
   position: absolute;
   width: 2px;
   box-shadow: 0px 0px 3px #0d6444;
+}
+
+.arrow-down {
+  position: relative;
+  top: -15px;
+  left: -5px;
+}
+
+.arrow-down > div {
+  line-height: .8;
+  position: relative;
+  left: -12px;
 }
 
 @media only screen and (max-width: 600px) {
