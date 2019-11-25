@@ -19,7 +19,8 @@
             marginLeft: `${calculateWidthPercentage(timeFrame, {startDate: timeFrame.startDate, endDate: task.startDate}, true)}%`
           }"
           @click="() => previewTask({ taskId: task.id, modal: $modal })">
-          <span>{{task.title}}</span>
+          <md-tooltip md-direction="top">{{task.title}}</md-tooltip>
+          <div>{{task.title}}</div>
         </div>
       </div>
     </div>
@@ -84,6 +85,15 @@ export default {
   height: 100%;
   border-radius: 2px;
   cursor: pointer;
+}
+
+.item > div {
+  width: 100%;
+  margin-left: 5px;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 @media only screen and (max-width: 600px) {
