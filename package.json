@@ -8,9 +8,9 @@
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
     "start": "npm run dev",
     "api": "npm start --prefix api",
-    "unit": "jest --config test/unit/jest.conf.js --collectCoverage",
-    "unit-watch": "jest --config test/unit/jest.conf.js --watch",
-    "test": "npm run unit",
+    "test": "jest --config test/unit/jest.conf.js",
+    "conver": "jest --config test/unit/jest.conf.js --collectCoverage",
+    "test-watch": "jest --config test/unit/jest.conf.js --watch",
     "lint": "eslint --ext .js,.vue src test/unit",
     "build": "node build/build.js"
   },

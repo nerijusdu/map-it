@@ -4,7 +4,7 @@ import { ApiCall } from '@/services/api/apiCall';
 import MockStore from '../mocks/store';
 
 let instance;
-// TODO: update when error handling will be implemented
+
 global.console = {
   warn: jest.fn(),
   error: jest.fn()
@@ -45,15 +45,15 @@ describe('apiCall', () => {
   });
 
   it('appendToken > when token is not set', () => {
-    const store = {
-      getters: {
-        'app/getToken': null
+    const store = new MockStore({
+      actions: {
+        'app/getToken': () => null
       }
-    };
+    });
     instance = new ApiCall(store);
     const headers = new Headers();
 
-    instance.appendToken(headers);
+    instance.appendToken(headers, {});
 
     expect(headers.has('Authorization')).toBeFalsy();
   });

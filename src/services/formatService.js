@@ -20,7 +20,7 @@ export default {
     };
 
     const allHours = Math.abs(a.startDate.diff(a.endDate, 'hours'));
-    if (objectTimeframe.startDate.isSame(objectTimeframe.endDate, 'day') && !isMargin) {
+    if (b.startDate.isSame(b.endDate, 'day') && !isMargin) {
       return Math.round((24 / allHours) * 10000) / 100;
     }
 

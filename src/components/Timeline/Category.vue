@@ -15,12 +15,12 @@
           class="item flex-center"
           :style="{
             backgroundColor: task.isCompleted ? '#959595' : category.color,
-            width: `${calculateWidthPercentage(timeFrame, {startDate: task.startDate, endDate: task.endDate})}%`,
-            marginLeft: `${calculateWidthPercentage(timeFrame, {startDate: timeFrame.startDate, endDate: task.startDate}, true)}%`
+            width: `${task.width}%`,
+            marginLeft: `${task.leftMargin}%`
           }"
           @click="() => previewTask({ taskId: task.id, modal: $modal })">
           <md-tooltip md-direction="top">{{task.title}}</md-tooltip>
-          <div>{{task.title}}</div>
+          <div v-if="task.width > 3">{{task.title}}</div>
         </div>
       </div>
     </div>
@@ -29,7 +29,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex';
-import formatService from '../../services/formatService';
 
 export default {
   props: ['category'],
@@ -38,8 +37,7 @@ export default {
     timeFrame: 'roadmapTimeFrame'
   }),
   methods: {
-    ...mapActions('roadmap', ['previewTask', 'previewCategory']),
-    calculateWidthPercentage: formatService.calculateWidthPercentage
+    ...mapActions('roadmap', ['previewTask', 'previewCategory'])
   }
 };
 </script>
