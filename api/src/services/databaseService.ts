@@ -25,7 +25,7 @@ export const init = () => {
     .catch((e) => console.log('connection failed', e));
 };
 
-export const close = () => con.isConnected
+export const close = () => con && con.isConnected
   ? con.close()
   : Promise.resolve();
 
