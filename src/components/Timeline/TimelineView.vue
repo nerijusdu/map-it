@@ -18,10 +18,10 @@
     <div class="label-container">
       <div
         v-for="m in months"
-        v-bind:key="m"
+        v-bind:key="m.id"
         class="label"
-        :style="{ width: `${labelWidth}%` }"
-      >{{m}}</div>
+        :style="{ width: `${m.width}%` }"
+      >{{m.label}}</div>
     </div>
     <div class="day-label-container" v-if="shouldShowDays">
       <div
@@ -41,7 +41,6 @@
 </template>
 
 <script>
-import shortid from 'shortid';
 import moment from 'moment';
 import { mapState, mapGetters } from 'vuex';
 import Category from './Category';
@@ -91,18 +90,13 @@ export default {
       const days = this.timeFrame.endDate.diff(this.timeFrame.startDate, 'days') + 1;
       const width = 100 / days;
       return Math.round(width * 100) / 100;
-    },
-    labelWidth() {
-      // TODO: take into account days with 31/30 days
-      return Math.round(100 / this.months.length * 100) / 100;
     }
   },
   data: () => ({
     window: {
       width: 0,
       height: 0
-    },
-    shortid
+    }
   }),
   created() {
     window.addEventListener('resize', this.handleResize);
