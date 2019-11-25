@@ -8,8 +8,6 @@ import authService from './authService';
 import { connection } from './databaseService';
 import { EntityServiceBase } from './entityServiceBase';
 
-const tokenList: any = {};
-
 class AccountService extends EntityServiceBase<User> {
   constructor(user?: User) {
     super(User, user);
@@ -29,8 +27,8 @@ class AccountService extends EntityServiceBase<User> {
     }
 
     const refreshToken = this.generateLongToken();
-    tokenList[refreshToken] = user.email;
     const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
+    await connection().manager.update(User, { email }, { refreshToken });
 
     return {
         email: user.email,
@@ -51,40 +49,40 @@ class AccountService extends EntityServiceBase<User> {
     };
   }
 
-  public logout(refreshToken?: string) {
-    if (!refreshToken) {
+  public async logout(email: string, refreshToken?: string) {
+    if (!refreshToken || !email) {
       return;
     }
-
-    if (tokenList[refreshToken]) {
-      delete tokenList[refreshToken];
-    }
+    await connection().manager.update(
+      User,
+      { email, refreshToken },
+      { refreshToken: undefined }
+    );
   }
 
-  public async refresh(email: string, refreshToken: string) {
-    if (tokenList[refreshToken] === email) {
-      delete tokenList[refreshToken];
+  public async refresh(email: string, refreshToken?: string) {
+    const user = await connection()
+      .manager
+      .findOne(User, { email });
 
-      const user = await connection()
-        .manager
-        .findOne(User, { email });
-
-      if (!user) {
-        throw new HttpError(resources.Generic_ErrorMessage, 400);
-      }
-      const newRefreshToken = this.generateLongToken();
-      tokenList[newRefreshToken] = user.email;
-      const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
-
-      return {
-          email: user.email,
-          token: authService.createToken({ payload: user }),
-          refreshToken: newRefreshToken,
-          expiresAt
-      };
+    if (!user) {
+      throw new HttpError(resources.Login_EmailIncorrect, 400);
     }
 
-    throw new HttpError(resources.Generic_PleaseLogin, 401);
+    if (user.refreshToken !== refreshToken) {
+      throw new HttpError(resources.Generic_PleaseLogin, 401);
+    }
+
+    const newRefreshToken = this.generateLongToken();
+    const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
+    await connection().manager.update(User, { email }, { refreshToken: newRefreshToken });
+
+    return {
+        email: user.email,
+        token: authService.createToken({ payload: user }),
+        refreshToken,
+        expiresAt
+    };
   }
 
   public async register(newUser: User) {

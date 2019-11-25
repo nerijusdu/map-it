@@ -1,4 +1,4 @@
-import { IsDefined, IsEmail, Length } from 'class-validator';
+import { IsDefined, IsEmail, IsOptional, Length } from 'class-validator';
 import { Column, Entity, OneToMany } from 'typeorm';
 import authService from '../services/authService';
 import { EntityBase } from './entityBase';
@@ -21,6 +21,10 @@ export class User extends EntityBase {
   @Length(3)
   @IsDefined()
   public name: string;
+
+  @Column({ nullable: true })
+  @IsOptional()
+  public refreshToken?: string;
 
   @OneToMany(() => Roadmap, (roadmap) => roadmap.user)
   public roadmaps: Roadmap[];

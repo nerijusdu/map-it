@@ -35,8 +35,9 @@ describe('Account logout tests', () => {
   it('should remove refresh token from store', async () => {
     const userData = await login(existingUser);
     const refreshToken = userData.refreshToken;
+    const email = userData.email;
 
-    const response = await server.post(url).send({ refreshToken });
+    const response = await server.post(url).send({ refreshToken, email });
     expect(response.status).to.equal(200);
 
     const refreshResult = await server.post(refreshUrl)
@@ -57,5 +58,25 @@ describe('Account logout tests', () => {
     const response = await server.post(url)
       .send({ refreshToken: shortid.generate() });
     expect(response.status).to.equal(200);
+  });
+
+  it('should not logout other user', async () => {
+    const userData = await login(existingUser);
+    const user2 = await entityFactory.createAccount();
+    const userData2 = await login(user2);
+
+    const response = await server.post(url).send({
+      refreshToken: userData.refreshToken,
+      email: userData2.email
+    });
+    expect(response.status).to.equal(200);
+
+    const refreshResult = await server.post(refreshUrl)
+      .send({
+        email: userData2.email,
+        refreshToken: userData2.refreshToken
+      });
+
+    expect(refreshResult.status).to.equal(200);
   });
 });

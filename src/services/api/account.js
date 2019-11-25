@@ -25,11 +25,12 @@ export default {
       ...options
     });
   },
-  logout(refreshToken, options) {
+  logout(refreshToken, email, options) {
     return apiCall('/account/logout', {
       method: 'POST',
       body: JSON.stringify({
-        refreshToken
+        refreshToken,
+        email
       })
     }, {
       ...options,
