@@ -7,7 +7,8 @@ const publicUrls = [
   '/api/account/register',
   '/api/account/refresh',
   '/api/account/logout',
-  '/api/health'
+  '/api/health',
+  '/swagger'
 ];
 const staticContent = /\.(css|html|js|ico|png)|\/$/;
 
@@ -17,6 +18,7 @@ export const verifyUser = (async (req, res, next) => {
     return;
   }
 
+  console.log(req.headers.authorization);
   const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
 
   try {

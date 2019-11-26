@@ -1,11 +1,13 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import express from 'express';
+import swaggerUi from 'swagger-ui-express';
 import {PORT} from './config';
 import {AccountController, CategoryController, RoadmapController, TaskController} from './controllers';
 import * as auth from './middleware/auth';
 import ErrorHandler from './middleware/errorHandler';
 import * as database from './services/databaseService';
+import swaggerDocument from './swagger.json';
 
 database.init();
 
@@ -23,6 +25,7 @@ app.use('/api/categories', CategoryController);
 app.get('/api/health', (req, res) => {
   res.json(true);
 });
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use(ErrorHandler);
 
