@@ -12,6 +12,7 @@ class RoadmapService extends EntityServiceBase<Roadmap> {
     const roadmap = await connection().createQueryBuilder(Roadmap, 'roadmaps')
       .leftJoinAndSelect('roadmaps.tasks', 'tasks')
       .leftJoinAndSelect('roadmaps.categories', 'categories')
+      .leftJoinAndSelect('roadmaps.milestones', 'milestones')
       .where('roadmaps.id = :id and roadmaps.user = :userId', { id, userId: this.user!.id })
       .orderBy('roadmaps.id', 'ASC')
       .addOrderBy('categories.id', 'ASC')

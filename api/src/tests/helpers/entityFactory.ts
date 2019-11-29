@@ -1,5 +1,5 @@
 import shortid from 'shortid';
-import { Category, Roadmap, Task, User } from '../../models';
+import { Category, Roadmap, Task, User, Milestone } from '../../models';
 import authService from '../../services/authService';
 import { connection } from '../../services/databaseService';
 
@@ -88,11 +88,30 @@ const createTask = async (roadmapId: number, modifier?: (t: Task) => Task) => {
   return connection().manager.save(task);
 };
 
+const createMilestone = async (roadmapId: number, modifier?: (t: Milestone) => Milestone) => {
+  let milestone = new Milestone();
+  milestone.title = shortid.generate();
+  milestone.date = new Date();
+  milestone.roadmapId = roadmapId;
+
+  const roadmap = await connection()
+    .manager
+    .findOne(Roadmap, roadmapId);
+
+  milestone.userId = roadmap!.userId;
+  if (modifier) {
+    milestone = modifier(milestone);
+  }
+
+  return connection().manager.save(milestone);
+};
+
 export default {
   defaultPassword,
   createAccount,
   loginWithAccount,
   createCategory,
   createRoadmap,
-  createTask
+  createTask,
+  createMilestone
 };

@@ -18,7 +18,6 @@ export const verifyUser = (async (req, res, next) => {
     return;
   }
 
-  console.log(req.headers.authorization);
   const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
 
   try {
