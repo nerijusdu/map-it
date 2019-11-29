@@ -29,6 +29,7 @@ describe('Milestone post tests', () => {
   it('should create milestone', async () => {
     const milestone = new Milestone();
     milestone.title = shortid.generate();
+    milestone.color = shortid.generate();
     milestone.date = moment(roadmap.startDate).add(1, 'days').toDate();
     milestone.roadmapId = roadmap.id;
 
@@ -46,6 +47,7 @@ describe('Milestone post tests', () => {
 
     expect(createdMilestone).to.exist;
     expect(createdMilestone!.title).to.equal(milestone.title);
+    expect(createdMilestone!.color).to.equal(milestone.color);
     expect(createdMilestone!.date.toISOString()).to.equal(milestone.date.toISOString());
     expect(createdMilestone!.roadmapId).to.equal(milestone.roadmapId);
     expect(createdMilestone!.userId).to.equal(user.id);

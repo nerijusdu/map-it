@@ -53,6 +53,7 @@ describe('Milestone get by id tests', () => {
     expect(milestone.userId).to.equal(usersMilestone.userId);
     expect(milestone.title).to.equal(usersMilestone.title);
     expect(milestone.date).to.equal(usersMilestone.date.toISOString());
+    expect(milestone.color).to.equal(usersMilestone.color);
     expect(milestone.roadmap).to.exist;
     expect(milestone.roadmap.id).to.equal(usersRoadmap.id);
   });

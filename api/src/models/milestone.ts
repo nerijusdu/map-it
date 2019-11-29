@@ -16,6 +16,10 @@ export class Milestone extends OwnedEntity {
 
   @Column()
   @IsDefined()
+  public color: string;
+
+  @Column()
+  @IsDefined()
   public roadmapId: number;
 
   @ManyToOne(() => Roadmap, { onDelete: 'CASCADE' })

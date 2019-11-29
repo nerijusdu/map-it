@@ -1,20 +1,5 @@
 <template>
   <div class="timeline">
-    <div
-      class="current-date-marker"
-      :style="{
-        height: currentDateMarkerHeigh,
-        'margin-left': `${(window.width - categoryLabelSize) * currentDateMarkerMargin / 100 + categoryLabelSize}px`,
-        'margin-top': `${shouldShowDays ? 80 : 60}px`
-      }"
-    >
-      <div class="arrow-down">
-        <md-tooltip md-direction="top">Today</md-tooltip>
-        <svg height="10" width="12">
-          <polygon points="0,0 12,0 12,2 7,9 5,9 0,2" style="fill:#1eb980;stroke-width:0"/>
-        </svg>
-      </div>
-    </div>
     <div class="label-container">
       <div
         v-for="m in months"
@@ -30,6 +15,7 @@
         :style="{ width: `${dayWidth}%` }"
       >{{day}}</div>
     </div>
+    <Milestones :taskCount="tasks.length" :categoryCount="categories.length"/>
     <div class="table">
       <Category
         v-for="category in categories"
@@ -42,9 +28,10 @@
 
 <script>
 import moment from 'moment';
+import shortid from 'shortid';
 import { mapState, mapGetters } from 'vuex';
 import Category from './Category';
-import formatService from '../../services/formatService';
+import Milestones from './Milestones';
 
 export default {
   computed: {
@@ -56,22 +43,6 @@ export default {
       months: 'roadmapMonths',
       timeFrame: 'roadmapTimeFrame'
     }),
-    currentDateMarkerHeigh() {
-      return `${this.tasks.length * 35 + this.categories.length * 5 - 10}px`;
-    },
-    currentDateMarkerMargin() {
-      return formatService.calculateWidthPercentage(
-        this.timeFrame,
-        {
-          startDate: this.timeFrame.startDate,
-          endDate: moment()
-        },
-        true
-      );
-    },
-    categoryLabelSize() {
-      return this.window.width > 600 ? 200 : 10;
-    },
     shouldShowDays() {
       const days = this.timeFrame.endDate.diff(this.timeFrame.startDate, 'days');
       return days <= 31;
@@ -93,26 +64,11 @@ export default {
     }
   },
   data: () => ({
-    window: {
-      width: 0,
-      height: 0
-    }
+    shortid
   }),
-  created() {
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.handleResize);
-  },
-  methods: {
-    handleResize() {
-      this.window.width = window.innerWidth;
-      this.window.height = window.innerHeight;
-    }
-  },
   components: {
-    Category
+    Category,
+    Milestones
   }
 };
 </script>
@@ -155,25 +111,6 @@ export default {
   border: none;
   padding-left: 0;
   margin-left: 0;
-}
-
-.current-date-marker {
-  background: var(--primary-color);
-  position: absolute;
-  width: 2px;
-  box-shadow: 0px 0px 3px #0d6444;
-}
-
-.arrow-down {
-  position: relative;
-  top: -15px;
-  left: -5px;
-}
-
-.arrow-down > div {
-  line-height: .8;
-  position: relative;
-  left: -12px;
 }
 
 @media only screen and (max-width: 600px) {
