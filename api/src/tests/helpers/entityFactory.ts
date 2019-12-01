@@ -93,6 +93,7 @@ const createMilestone = async (roadmapId: number, modifier?: (t: Milestone) => M
   milestone.title = shortid.generate();
   milestone.date = new Date();
   milestone.roadmapId = roadmapId;
+  milestone.color = shortid.generate();
 
   const roadmap = await connection()
     .manager

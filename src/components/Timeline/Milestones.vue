@@ -12,12 +12,13 @@
       :dateMarkerHeigh="currentDateMarkerHeigh"
       :title="milestone.title"
       :color="milestone.color"
+      :click="() => previewMilestone({ milestoneId: milestone.id, modal: $modal })"
     />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapState } from 'vuex';
+import { mapGetters, mapState, mapActions } from 'vuex';
 import moment from 'moment';
 import DateMarker from './DateMarker';
 import formatService from '../../services/formatService';
@@ -58,6 +59,7 @@ export default {
       );
     }
   },
+  methods: mapActions('roadmap', ['previewMilestone']),
   components: {
     DateMarker
   }

@@ -6,6 +6,7 @@
         height: `${dateMarkerHeigh}px`,
         'margin-left': `${(window.width - categoryLabelSize) * percentage / 100 + categoryLabelSize}px`
       }"
+      @click="click"
     >
       <div class="arrow-down">
         <md-tooltip md-direction="top">{{title}}</md-tooltip>
@@ -40,6 +41,10 @@ export default {
     classes: {
       type: String,
       default: ''
+    },
+    click: {
+      type: Function,
+      default: () => null
     }
   },
   computed: {
@@ -77,6 +82,7 @@ export default {
 .arrow-container {
   position: absolute;
   margin-top: 5px;
+  cursor: pointer;
 }
 
 .arrow-container:hover {

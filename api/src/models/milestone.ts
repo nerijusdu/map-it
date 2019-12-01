@@ -14,7 +14,7 @@ export class Milestone extends OwnedEntity {
   @IsDateString()
   public date: Date;
 
-  @Column()
+  @Column({ default: '#1eb980' })
   @IsDefined()
   public color: string;
 
