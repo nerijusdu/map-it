@@ -4,6 +4,7 @@
       :percentage="currentDateMarkerMargin"
       :dateMarkerHeigh="currentDateMarkerHeigh"
       title="Today"
+      v-if="showCurrentDate"
     />
     <DateMarker
       v-for="milestone in roadmap.milestones"
@@ -47,6 +48,9 @@ export default {
     }),
     currentDateMarkerHeigh() {
       return this.taskCount * 35 + this.categoryCount * 5 - 5;
+    },
+    showCurrentDate() {
+      return moment(this.timeFrame.startDate).isAfter(moment());
     },
     currentDateMarkerMargin() {
       return formatService.calculateWidthPercentage(
