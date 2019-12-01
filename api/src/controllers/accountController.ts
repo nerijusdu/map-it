@@ -22,8 +22,8 @@ router.post('/refresh', respose(async (req, res) => {
   return res.json(result);
 }));
 
-router.post('/logout', respose((req, res) => {
-  accountService().logout(req.body.refreshToken);
+router.post('/logout', respose(async (req, res) => {
+  await accountService().logout(req.body.email, req.body.refreshToken);
   return res.json({});
 }));
 

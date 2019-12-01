@@ -1,0 +1,670 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+      "version": "1.0.0",
+      "title": "Map-it API",
+      "description": "Roadmap tool",
+      "license": {
+          "name": "MIT",
+          "url": "https://opensource.org/licenses/MIT"
+      }
+  },
+  "servers": [
+    {
+      "url": "/api",
+      "description": "Development server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "account"
+    },
+    {
+      "name": "categories"
+    },
+    {
+      "name": "roadmaps"
+    },
+    {
+      "name": "tasks"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/health": {
+      "get": {
+        "summary": "Check if API is reachable",
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/account/login": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Logs in to user account",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully logged in",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserInfo"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" }
+        }
+      }
+    },
+    "/account/verify": {
+      "get": {
+        "tags": ["account"],
+        "summary": "Verify user JWT token",
+        "parameters": [{
+          "name": "Authorization",
+          "in": "header",
+          "schema": { "type": "string" },
+          "required": true,
+          "example": "Bearer PASTE_TOKEN_HERE"
+        }],
+        "responses": {
+          "200": {
+            "description": "Token is valid",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "email": { "type": "string" },
+                    "token": {
+                      "type": "string",
+                      "description": "JWT token created for user"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" }
+        }
+      }
+    },
+    "/account/refresh": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Renew users JWT token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully got a new JWT token",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/UserInfo"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Refresh token is incorrect",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/Error"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" }
+        }
+      }
+    },
+    "/account/logout": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Invalidate users refresh token",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "refreshToken": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully invalidated refresh token"
+          }
+        }
+      }
+    },
+    "/account/register": {
+      "post": {
+        "tags": ["account"],
+        "summary": "Create new user",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": { "type": "string" },
+                  "password": { "type": "string" },
+                  "name": { "type": "string" }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Succesfully created a new user",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/definitions/User"
+                }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" }
+        }
+      }
+    },
+
+    "/categories": {
+      "get": {
+        "tags": ["categories"],
+        "summary": "Gets all available categories",
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Category"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["categories"],
+        "summary": "Add or update a category",
+        "security": [{ "JWT": [] }],
+        "requestBody": {
+          "application/json": {
+            "schema": { "$ref": "#/definitions/Category" }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insert/Update was successful",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/Category" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      }
+    },
+    "/categories/{id}": {
+      "parameters": [{ "$ref": "#/definitions/IdParam" }],
+      "get": {
+        "tags": ["categories"],
+        "summary": "Get full details of a single category",
+        "security": [{ "JWT": [] }],
+        "parameters": [{ "$ref": "#/definitions/IdParam"}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/FullCategory" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      },
+      "delete": {
+        "tags": ["categories"],
+        "summary": "Delete category",
+        "security": [{ "JWT": [] }],
+        "parameters": [{ "$ref": "#/definitions/IdParam"}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/roadmaps": {
+      "get": {
+        "tags": ["roadmaps"],
+        "summary": "Gets all available roadmaps",
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Roadmap"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["roadmaps"],
+        "summary": "Add or update a roadmap",
+        "security": [{ "JWT": [] }],
+        "requestBody": {
+          "application/json": {
+            "schema": { "$ref": "#/definitions/Roadmap" }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insert/Update was successful",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/Roadmap" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      }
+    },
+    "/roadmaps/{id}": {
+      "parameters": [{ "$ref": "#/definitions/IdParam" }],
+      "get": {
+        "tags": ["roadmaps"],
+        "summary": "Get full details of a single roadmaps",
+        "security": [{ "JWT": [] }],
+        "parameters": [{ "$ref": "#/definitions/IdParam"}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/FullRoadmap" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      },
+      "delete": {
+        "tags": ["roadmaps"],
+        "summary": "Delete roadmap",
+        "security": [{ "JWT": [] }],
+        "parameters": [{ "$ref": "#/definitions/IdParam"}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+
+    "/tasks": {
+      "get": {
+        "tags": ["tasks"],
+        "summary": "Gets all available tasks",
+        "security": [{ "JWT": [] }],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/definitions/Task"
+                  }
+                }
+              }
+            }
+          },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      },
+      "post": {
+        "tags": ["tasks"],
+        "summary": "Add or update a tasks",
+        "security": [{ "JWT": [] }],
+        "requestBody": {
+          "application/json": {
+            "schema": { "$ref": "#/definitions/Task" }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Insert/Update was successful",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/Task" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      }
+    },
+    "/tasks/{id}": {
+      "parameters": [{ "$ref": "#/definitions/IdParam" }],
+      "get": {
+        "tags": ["tasks"],
+        "summary": "Get full details of a single tasks",
+        "security": [{ "JWT": [] }],
+        "parameters": [{ "$ref": "#/definitions/IdParam"}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/definitions/FullTask" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      },
+      "delete": {
+        "tags": ["tasks"],
+        "summary": "Delete task",
+        "security": [{ "JWT": [] }],
+        "parameters": [{ "$ref": "#/definitions/IdParam"}],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/task/{id}/complete": {
+      "parameters": [{ "$ref": "#/definitions/IdParam" }],
+      "get": {
+        "tags": ["tasks"],
+        "summary": "Complete or uncomplete a task",
+        "security": [{ "JWT": [] }],
+        "parameters": [
+          { "$ref": "#/definitions/IdParam"},
+          {
+            "in": "query",
+            "name": "revert",
+            "schema": { "type": "boolean" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "content": {
+              "application/json": {
+                "schema": { "type": "object" }
+              }
+            }
+          },
+          "400": { "$ref": "#/definitions/ErrorResponse" },
+          "401": { "$ref": "#/definitions/Unauthorized" }
+        }
+      }
+    }
+  },
+
+  "definitions": {
+    "IdParam": {
+      "name": "id",
+      "in": "path",
+      "schema": { "type": "integer" },
+      "required": true
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        },
+        "data": {
+          "type": "object",
+          "nullable": true,
+          "description": "Additional error data (optional)"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "description": "Provided data is invalid",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "Unauthorized": {
+      "description": "User is not authorized to perform this action",
+      "content": {
+        "application/json": {
+          "schema": {
+            "$ref": "#/definitions/Error"
+          }
+        }
+      }
+    },
+    "UserInfo": {
+      "type": "object",
+      "properties": {
+        "email": { "type": "string" },
+        "token": {
+          "type": "string",
+          "description": "JWT token created for user"
+        },
+        "refreshToken": {
+          "type": "string",
+          "description": "Refresh token used to renew the JWT token"
+        },
+        "expiresAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Expiration date-time of the JWT token"
+        }
+      }
+    },
+    "User": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "email": { "type": "string" },
+        "password": { "type": "string" },
+        "name": { "type": "string" }
+      }
+    },
+    "Roadmap": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "FullRoadmap": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "tasks": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Task" }
+        },
+        "categories": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/Category" }
+        }
+      }
+    },
+    "Category": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "color": { "type": "string" },
+        "roadmapId": { "type": "integer" }
+      }
+    },
+    "FullCategory": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "color": { "type": "string" },
+        "roadmapId": { "type": "integer" },
+        "roadmap": { "$ref": "#/definitions/Roadmap" }
+      }
+    },
+    "Task": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isCompleted": { "type": "boolean" },
+        "roadmapId": { "type": "integer" },
+        "categoryId": { "type": "integer" }
+      }
+    },
+    "FullTask": {
+      "type": "object",
+      "properties": {
+        "id": { "type": "integer" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "startDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "endDate": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "isCompleted": { "type": "boolean" },
+        "roadmapId": { "type": "integer" },
+        "roadmap": { "$ref": "#/definitions/Roadmap" },
+        "categoryId": { "type": "integer" },
+        "category": { "$ref": "#/definitions/Roadmap" }
+      }
+    }
+  },
+
+  "components": {
+    "securitySchemes": {
+      "JWT": {
+        "type": "apiKey",
+        "scheme": "bearer",
+        "name": "Authorization",
+        "bearerFormat": "JWT",
+        "in": "header"
+      }
+    }
+  }
+}

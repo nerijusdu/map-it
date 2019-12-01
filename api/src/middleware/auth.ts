@@ -7,7 +7,8 @@ const publicUrls = [
   '/api/account/register',
   '/api/account/refresh',
   '/api/account/logout',
-  '/api/health'
+  '/api/health',
+  '/swagger'
 ];
 const staticContent = /\.(css|html|js|ico|png)|\/$/;
 

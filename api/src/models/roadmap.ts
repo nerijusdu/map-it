@@ -1,6 +1,7 @@
 import { IsDateString, IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { Category } from './category';
+import { Milestone } from './milestone';
 import { OwnedEntity } from './ownedEntity';
 import { Task } from './task';
 
@@ -32,4 +33,7 @@ export class Roadmap extends OwnedEntity {
 
   @OneToMany(() => Category, (category) => category.roadmap)
   public categories: Category[];
+
+  @OneToMany(() => Milestone, (milestone) => milestone.roadmap)
+  public milestones: Milestone[];
 }

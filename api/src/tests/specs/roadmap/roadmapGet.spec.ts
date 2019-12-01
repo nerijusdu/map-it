@@ -83,6 +83,20 @@ describe('Roadmap get by id tests', () => {
     expect(fetchedRoadmap.tasks[0].id).to.equal(task.id);
   });
 
+  it('should get roadmap with milestones by id', async () => {
+    const roadmap = await entityFactory.createRoadmap(user.id);
+    const milestone = await entityFactory.createMilestone(roadmap.id);
+    const differentRoadmap = await entityFactory.createRoadmap(user.id);
+    await entityFactory.createCategory(differentRoadmap.id);
+
+    const response = await server.get(`${url}/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    const fetchedRoadmap = response.body as Roadmap;
+    expect(fetchedRoadmap.milestones).to.be.an('array');
+    expect(fetchedRoadmap.milestones.length).to.equal(1);
+    expect(fetchedRoadmap.milestones[0].id).to.equal(milestone.id);
+  });
+
   it('should fail when roadmap belongs to another user', async () => {
     const differentUser = await entityFactory.createAccount();
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);

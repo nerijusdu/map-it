@@ -94,7 +94,8 @@ export const actions = {
   },
   logout({ commit, dispatch, state }, router) {
     const refreshToken = state.user.refreshToken || window.localStorage.getItem('refreshToken');
-    api.logout(refreshToken);
+    const email = state.user.email || window.localStorage.getItem('email');
+    api.logout(refreshToken, email);
 
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('refreshToken');

@@ -4,8 +4,8 @@
       <div>{{ title }}</div>
     </div>
     <form class="modal-content">
-      <md-tabs :md-active-tab="isCategory ? 'tab-category' : 'tab-home'">
-        <md-tab id="tab-home" md-label="Task" @click="isCategory = false" v-if="categories && categories.length > 0">
+      <md-tabs :md-active-tab="activeTabName">
+        <md-tab id="tab-home" md-label="Task" @click="activeTab = tab.Task" v-if="categories && categories.length > 0">
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
             <md-input v-model="task.title"/>
@@ -30,7 +30,7 @@
             <label>End date</label>
           </md-datepicker>
         </md-tab>
-        <md-tab id="tab-category" md-label="Category" @click="isCategory = true" v-if="!task.id">
+        <md-tab id="tab-category" md-label="Category" @click="activeTab = tab.Category" v-if="!task.id">
           <md-field :class="getValidationClass('title')">
             <label>Title</label>
             <md-input v-model="category.title"/>
@@ -46,6 +46,21 @@
             <md-input v-model="category.color" type="color"/>
             <span class="md-error" v-if="!$v.category.color.required">{{ resources.requiredMsg }}</span>
           </md-field>
+        </md-tab>
+        <md-tab id="tab-milestone" md-label="Milestone" @click="activeTab = tab.Milestone" v-if="!task.id">
+          <md-field :class="getValidationClass('title')">
+            <label>Title</label>
+            <md-input v-model="milestone.title"/>
+            <span class="md-error" v-if="!$v.milestone.title.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <md-field :class="getValidationClass('color')">
+            <label>Color</label>
+            <md-input v-model="milestone.color" type="color"/>
+            <span class="md-error" v-if="!$v.milestone.color.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <md-datepicker md-immediately v-model="milestone.date" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
+            <label>Date</label>
+          </md-datepicker>
         </md-tab>
       </md-tabs>
     </form>
@@ -64,6 +79,12 @@ import { required, maxLength } from 'vuelidate/lib/validators';
 import resources from '../../services/resourceService';
 import { validationRules } from '../../constants';
 
+const tab = {
+  Task: 1,
+  Category: 2,
+  Milestone: 3
+};
+
 export default {
   name: 'AddEditTask',
   mixins: [validationMixin],
@@ -71,7 +92,7 @@ export default {
     ...mapState({
       categories: state => state.roadmap.current.categories,
     }),
-    ...mapGetters('roadmap', ['taskToEdit', 'categoryToEdit', 'roadmapTimeFrame']),
+    ...mapGetters('roadmap', ['taskToEdit', 'categoryToEdit', 'milestoneToEdit', 'roadmapTimeFrame']),
     title() {
       if (this.taskToEdit) {
         return this.task.title;
@@ -79,7 +100,20 @@ export default {
       if (this.categoryToEdit) {
         return this.category.title;
       }
+      if (this.milestoneToEdit) {
+        return this.milestone.title;
+      }
       return 'Create new';
+    },
+    activeTabName() {
+      switch (this.activeTab) {
+        case tab.Category:
+          return 'tab-category';
+        case tab.Milestone:
+          return 'tab-milestone';
+        default:
+          return 'tab-home';
+      }
     }
   },
   data: () => ({
@@ -97,20 +131,39 @@ export default {
       description: '',
       color: '#1eb980'
     },
+    milestone: {
+      id: '',
+      title: '',
+      color: '#1eb980',
+      date: moment().toDate()
+    },
     resources,
-    isCategory: false,
+    tab,
+    activeTab: tab.Task,
     descriptionLength: validationRules.descriptionLength
   }),
   methods: {
     ...mapActions('roadmap', {
       saveTaskToStore: 'saveTask',
       editTask: 'editTask',
-      saveCategoryToStore: 'saveCategory'
+      saveCategoryToStore: 'saveCategory',
+      saveMilestoneToStore: 'saveMilestone'
     }),
     async save() {
-      const success = !this.isCategory
-        ? await this.saveTaskToStore(this.task)
-        : await this.saveCategoryToStore(this.category);
+      let success = true;
+      switch (this.activeTab) {
+        case tab.Task:
+          success = await this.saveTaskToStore(this.task);
+          break;
+        case tab.Category:
+          success = await this.saveCategoryToStore(this.category);
+          break;
+        case tab.Milestone:
+          success = await this.saveMilestoneToStore(this.milestone);
+          break;
+        default:
+          return;
+      }
 
       if (!success) {
         return;
@@ -130,12 +183,38 @@ export default {
       this.$modal.hide('addTask');
     },
     getValidationClass(fieldName) {
-      const field = this.isCategory ? this.$v.category[fieldName] : this.$v.task[fieldName];
+      let field;
+      switch (this.activeTab) {
+        case tab.Task:
+          field = this.$v.task[fieldName];
+          break;
+        case tab.Category:
+          field = this.$v.category[fieldName];
+          break;
+        case tab.Milestone:
+          field = this.$v.milestone[fieldName];
+          break;
+        default:
+          return {};
+      }
 
       return field ? { 'md-invalid': field.$invalid && field.$dirty } : {};
     },
     validateForm() {
-      const form = this.isCategory ? this.$v.category : this.$v.task;
+      let form;
+      switch (this.activeTab) {
+        case tab.Task:
+          form = this.$v.task;
+          break;
+        case tab.Category:
+          form = this.$v.category;
+          break;
+        case tab.Milestone:
+          form = this.$v.milestone;
+          break;
+        default:
+          return;
+      }
       form.$touch();
 
       if (!form.$invalid) {
@@ -154,6 +233,10 @@ export default {
       this.category.title = '';
       this.category.description = '';
       this.category.color = '#1eb980';
+      this.milestone.id = '';
+      this.milestone.title = '';
+      this.milestone.color = '#1eb980';
+      this.milestone.date = moment().toDate();
     },
     disabledDates: timeFrame => (date) => {
       const d = moment(date);
@@ -171,6 +254,10 @@ export default {
       title: { required },
       description: { maxLength: maxLength(validationRules.descriptionLength) },
       color: { required }
+    },
+    milestone: {
+      title: { required },
+      color: { required }
     }
   },
   watch: {
@@ -184,7 +271,15 @@ export default {
     categoryToEdit(val) {
       if (val) {
         this.category = { ...val };
-        this.isCategory = true;
+        this.activeTab = tab.Category;
+      } else {
+        this.clearForm();
+      }
+    },
+    milestoneToEdit(val) {
+      if (val) {
+        this.milestone = { ...val };
+        this.activeTab = tab.Milestone;
       } else {
         this.clearForm();
       }

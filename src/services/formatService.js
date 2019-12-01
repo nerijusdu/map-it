@@ -10,10 +10,6 @@ export default {
       throw new Error('Dates must be \'moment\' objects!');
     }
 
-    if (objectTimeframe.startDate.isSame(objectTimeframe.endDate, 'day')) {
-      return 0;
-    }
-
     const a = {
       startDate: moment(allTimeFrame.startDate).startOf('day'),
       endDate: moment(allTimeFrame.endDate).endOf('day')
@@ -22,6 +18,11 @@ export default {
       startDate: moment(objectTimeframe.startDate).startOf('day'),
       endDate: moment(objectTimeframe.endDate).endOf('day')
     };
+
+    const allHours = Math.abs(a.startDate.diff(a.endDate, 'hours'));
+    if (b.startDate.isSame(b.endDate, 'day') && !isMargin) {
+      return Math.round((24 / allHours) * 10000) / 100;
+    }
 
     if (isMargin === true) {
       b.endDate.startOf('day');
@@ -34,9 +35,8 @@ export default {
       b.startDate = a.startDate;
     }
 
-    const allDays = Math.abs(a.startDate.diff(a.endDate, 'hours'));
-    const objectDays = Math.abs(b.startDate.diff(b.endDate, 'hours'));
+    const objectHours = Math.abs(b.startDate.diff(b.endDate, 'hours'));
 
-    return Math.round((objectDays / allDays) * 10000) / 100;
+    return Math.round((objectHours / allHours) * 10000) / 100;
   }
 };

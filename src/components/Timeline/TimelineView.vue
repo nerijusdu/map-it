@@ -1,20 +1,12 @@
 <template>
   <div class="timeline">
-    <div
-      class="current-date-marker"
-      :style="{
-        height: currentDateMarkerHeigh,
-        'margin-left': `${(window.width - categoryLabelSize) * currentDateMarkerMargin / 100 + categoryLabelSize}px`,
-        'margin-top': `${shouldShowDays ? 70 : 50}px`
-      }"
-    ></div>
     <div class="label-container">
       <div
         v-for="m in months"
-        v-bind:key="m"
+        v-bind:key="m.id"
         class="label"
-        :style="{ width: `${labelWidth}%` }"
-      >{{m}}</div>
+        :style="{ width: `${m.width}%` }"
+      >{{m.label}}</div>
     </div>
     <div class="day-label-container" v-if="shouldShowDays">
       <div
@@ -23,6 +15,7 @@
         :style="{ width: `${dayWidth}%` }"
       >{{day}}</div>
     </div>
+    <Milestones :taskCount="tasks.length" :categoryCount="categories.length"/>
     <div class="table">
       <Category
         v-for="category in categories"
@@ -34,11 +27,11 @@
 </template>
 
 <script>
-import shortid from 'shortid';
 import moment from 'moment';
+import shortid from 'shortid';
 import { mapState, mapGetters } from 'vuex';
 import Category from './Category';
-import formatService from '../../services/formatService';
+import Milestones from './Milestones';
 
 export default {
   computed: {
@@ -50,22 +43,6 @@ export default {
       months: 'roadmapMonths',
       timeFrame: 'roadmapTimeFrame'
     }),
-    currentDateMarkerHeigh() {
-      return `${this.tasks.length * 35 + this.categories.length * 5 - 10}px`;
-    },
-    currentDateMarkerMargin() {
-      return formatService.calculateWidthPercentage(
-        this.timeFrame,
-        {
-          startDate: this.timeFrame.startDate,
-          endDate: moment()
-        },
-        true
-      );
-    },
-    categoryLabelSize() {
-      return this.window.width > 600 ? 200 : 10;
-    },
     shouldShowDays() {
       const days = this.timeFrame.endDate.diff(this.timeFrame.startDate, 'days');
       return days <= 31;
@@ -84,34 +61,14 @@ export default {
       const days = this.timeFrame.endDate.diff(this.timeFrame.startDate, 'days') + 1;
       const width = 100 / days;
       return Math.round(width * 100) / 100;
-    },
-    labelWidth() {
-      // TODO: take into account days with 31/30 days
-      return Math.round(100 / this.months.length * 100) / 100;
     }
   },
   data: () => ({
-    window: {
-      width: 0,
-      height: 0
-    },
     shortid
   }),
-  created() {
-    window.addEventListener('resize', this.handleResize);
-    this.handleResize();
-  },
-  destroyed() {
-    window.removeEventListener('resize', this.handleResize);
-  },
-  methods: {
-    handleResize() {
-      this.window.width = window.innerWidth;
-      this.window.height = window.innerHeight;
-    }
-  },
   components: {
-    Category
+    Category,
+    Milestones
   }
 };
 </script>
@@ -126,6 +83,7 @@ export default {
 .label-container, .day-label-container {
   display: flex;
   margin-left: 200px;
+  margin-right: 5px;
 }
 
 .day-label-container {
@@ -139,24 +97,20 @@ export default {
 }
 
 .label {
-  padding-left: 10px;
-  padding-right: 10px;
+  margin: 2px;
   margin-top: 10px;
   margin-bottom: 10px;
-  /* flex-grow: 1; */
   text-align: center;
-  border-left: 1px solid white;
+  background-color: var(--modal-overlay-color);
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-radius: 10px;
 }
 
 .label:first-of-type {
   border: none;
-}
-
-.current-date-marker {
-  background: var(--primary-color);
-  position: absolute;
-  width: 2px;
-  box-shadow: 0px 0px 3px #0d6444;
+  padding-left: 0;
+  margin-left: 0;
 }
 
 @media only screen and (max-width: 600px) {

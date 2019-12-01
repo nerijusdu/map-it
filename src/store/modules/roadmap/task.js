@@ -1,6 +1,7 @@
 import moment from 'moment';
 import api from '../../../services/api';
 import converters from '../../../services/converterService';
+import formatService from '../../../services/formatService';
 
 const initialState = {
   editTaskId: null,
@@ -10,7 +11,29 @@ const initialState = {
 export const getters = {
   tasksByCategory: state => categoryId => state.current.tasks
     .filter(t => t.categoryId === categoryId)
-    .map(t => ({ ...t, startDate: moment(t.startDate), endDate: moment(t.endDate) })),
+    .map(t => ({
+      ...t,
+      startDate: moment(t.startDate),
+      endDate: moment(t.endDate),
+      width: formatService.calculateWidthPercentage(
+        {
+          startDate: moment(state.current.startDate),
+          endDate: moment(state.current.endDate)
+        },
+        {
+          startDate: moment(t.startDate),
+          endDate: moment(t.endDate)
+        }),
+      leftMargin: formatService.calculateWidthPercentage(
+        {
+          startDate: moment(state.current.startDate),
+          endDate: moment(state.current.endDate)
+        },
+        {
+          startDate: moment(state.current.startDate),
+          endDate: moment(t.startDate)
+        }, true)
+    })),
   taskToEdit: (state) => {
     if (!state.editTaskId) {
       return null;

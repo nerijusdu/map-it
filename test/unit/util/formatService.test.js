@@ -1,7 +1,5 @@
 import moment from 'moment';
 import formatService from '@/services/formatService';
-import authService from '@/services/authService';
-import { publicUrls, loginUrl } from '@/constants';
 
 describe('Functions.calculateWidthPercentage', () => {
   it('should be 100%', () => {
@@ -27,7 +25,7 @@ describe('Functions.calculateWidthPercentage', () => {
 
     const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
 
-    expect(res).toBe(50);
+    expect(Math.round(res)).toBe(50);
   });
 
   it('should not accept incorrect params', () => {
@@ -43,7 +41,7 @@ describe('Functions.calculateWidthPercentage', () => {
     expect(() => formatService.calculateWidthPercentage(notMomentDates, notMomentDates)).toThrowError();
   });
 
-  it('should be 0%', () => {
+  it('should calculate correct for single day', () => {
     const allTimeFrame = {
       startDate: moment('2018-06-01'),
       endDate: moment('2018-06-30')
@@ -55,7 +53,54 @@ describe('Functions.calculateWidthPercentage', () => {
 
     const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
 
+    const allHours = Math.abs(allTimeFrame.startDate.diff(allTimeFrame.endDate, 'hours'));
+    const expectedRes = Math.round((24 / allHours) * 10000) / 100;
+    expect(res).toBeCloseTo(expectedRes, 0);
+  });
+
+  it('should end at start of last day for margin', () => {
+    const allTimeFrame = {
+      startDate: moment('2018-06-01'),
+      endDate: moment('2018-06-30')
+    };
+    const objectTimeFrame = {
+      startDate: moment('2018-06-01'),
+      endDate: moment('2018-06-01')
+    };
+
+    const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame, true);
+
     expect(res).toBe(0);
+  });
+
+  it('should not extend after all-time frame', () => {
+    const allTimeFrame = {
+      startDate: moment('2018-06-01'),
+      endDate: moment('2018-06-30')
+    };
+    const objectTimeFrame = {
+      startDate: moment('2018-06-01'),
+      endDate: moment('2018-07-01')
+    };
+
+    const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
+
+    expect(res).toBeLessThanOrEqual(100);
+  });
+
+  it('should not extend before all-time frame', () => {
+    const allTimeFrame = {
+      startDate: moment('2018-06-01'),
+      endDate: moment('2018-06-30')
+    };
+    const objectTimeFrame = {
+      startDate: moment('2018-05-01'),
+      endDate: moment('2018-06-30')
+    };
+
+    const res = formatService.calculateWidthPercentage(allTimeFrame, objectTimeFrame);
+
+    expect(res).toBeLessThanOrEqual(100);
   });
 });
 
@@ -76,37 +121,5 @@ describe('Functions.getParagraphs', () => {
 
     expect(result).toBeDefined();
     expect(result.length).toBe(1);
-  });
-});
-
-describe('Functions.authorizeRoutes', () => {
-  it('should allow public urls', () => {
-    const next = x => expect(x).toBeUndefined();
-
-    publicUrls.forEach((x) => {
-      authService.authorizeRoutes({ path: x }, null, next);
-    });
-  });
-
-  it('should redirect to login when accessing non public url and no token is saved', () => {
-    jest.mock('@/store', () => ({
-      getters: {
-        'app/getToken': null
-      }
-    }));
-    const next = x => expect(x).toBe(loginUrl);
-
-    authService.authorizeRoutes({ path: '/timeline' }, null, next);
-  });
-
-  it('should allow non public urls when token is saved', () => {
-    jest.mock('@/store', () => ({
-      getters: {
-        'app/getToken': 'TestToken'
-      }
-    }));
-    const next = x => expect(x).toBe(loginUrl);
-
-    authService.authorizeRoutes({ path: '/timeline' }, null, next);
   });
 });

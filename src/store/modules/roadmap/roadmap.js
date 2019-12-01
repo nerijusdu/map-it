@@ -2,6 +2,7 @@ import moment from 'moment';
 import api from '../../../services/api';
 import { roadmapMonthFormat } from '../../../constants';
 import converters from '../../../services/converterService';
+import formatService from '../../../services/formatService';
 
 const initialState = {
   current: {},
@@ -14,12 +15,26 @@ const initialState = {
 export const getters = {
   roadmapMonths: (state) => {
     const months = [];
-    const start = moment(state.current.startDate).startOf('month');
-    const end = moment(state.current.endDate).endOf('month');
+    const start = moment(state.current.startDate);
+    const end = moment(state.current.endDate);
 
+    let id = 1;
     while (start.isSameOrBefore(end)) {
-      months.push(start.format(roadmapMonthFormat));
-      start.add(1, 'month');
+      months.push({
+        id,
+        label: start.format(roadmapMonthFormat),
+        width: formatService.calculateWidthPercentage(
+          {
+            startDate: moment(state.current.startDate),
+            endDate: moment(state.current.endDate)
+          },
+          {
+            startDate: start,
+            endDate: moment(start).endOf('month')
+          })
+      });
+      start.add(1, 'month').startOf('month');
+      id += 1;
     }
 
     return months;
