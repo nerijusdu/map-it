@@ -18,9 +18,10 @@
     <Milestones :taskCount="tasks.length" :categoryCount="categories.length"/>
     <div class="table">
       <Category
-        v-for="category in categories"
-        v-bind:key="category.title"
-        v-bind:category="category"
+        v-for="category in parentCategories"
+        :key="category.title"
+        :category="category"
+        :subCategories="categories.filter(x => x.parentCategoryId === category.id)"
       />
     </div>
   </div>
@@ -61,6 +62,9 @@ export default {
       const days = this.timeFrame.endDate.diff(this.timeFrame.startDate, 'days') + 1;
       const width = 100 / days;
       return Math.round(width * 100) / 100;
+    },
+    parentCategories() {
+      return this.categories.filter(x => !x.parentCategoryId);
     }
   },
   data: () => ({

@@ -20,6 +20,13 @@ export class Category extends OwnedEntity {
   @IsDefined()
   public color: string;
 
+  @Column({ nullable: true })
+  @IsOptional()
+  public parentCategoryId?: number;
+
+  @ManyToOne(() => Category, { onDelete: 'CASCADE', nullable: true })
+  public parentCategory?: Category;
+
   @Column()
   @IsDefined()
   public roadmapId: number;

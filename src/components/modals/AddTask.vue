@@ -19,7 +19,7 @@
           <md-field :class="getValidationClass('categoryId')">
             <label for="categoryId">Category</label>
             <md-select name="categoryId" id="categoryId" v-model="task.categoryId">
-              <md-option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+              <md-option v-for="cat in categoriesForTasks" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
             <span class="md-error" v-if="!$v.task.categoryId.required">{{ resources.requiredMsg }}</span>
           </md-field>
@@ -45,6 +45,19 @@
             <label>Color</label>
             <md-input v-model="category.color" type="color"/>
             <span class="md-error" v-if="!$v.category.color.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <div class="checkbox" v-if="categories && categories.length > 0">
+            <md-checkbox v-model="category.isSubCategory" class="md-primary" />
+            <div>Is Sub-Category?</div>
+            // TODO: show warning if category already has tasks and this is first sub-category
+            // "all tasks will fall under this sub-category"
+          </div>
+          <md-field :class="getValidationClass('parentCategoryId')" v-show="category.isSubCategory">
+            <label for="parentCategoryId">Parent category</label>
+            <md-select name="parentCategoryId" id="parentCategoryId" v-model="category.parentCategoryId">
+              <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+            </md-select>
+            <span class="md-error" v-if="!$v.category.parentCategoryId.required">{{ resources.requiredMsg }}</span>
           </md-field>
         </md-tab>
         <md-tab id="tab-milestone" md-label="Milestone" @click="activeTab = tab.Milestone" v-if="!task.id">
@@ -75,7 +88,7 @@
 import moment from 'moment';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
-import { required, maxLength } from 'vuelidate/lib/validators';
+import { required, maxLength, requiredIf } from 'vuelidate/lib/validators';
 import resources from '../../services/resourceService';
 import { validationRules } from '../../constants';
 
@@ -114,6 +127,13 @@ export default {
         default:
           return 'tab-home';
       }
+    },
+    parentCategories() {
+      return (this.categories || []).filter(x => !x.parentCategoryId);
+    },
+    categoriesForTasks() {
+      const cats = this.categories || [];
+      return cats.filter(x => !!x.parentCategoryId || !cats.find(y => y.parentCategoryId === x.id));
     }
   },
   data: () => ({
@@ -129,7 +149,9 @@ export default {
       id: '',
       title: '',
       description: '',
-      color: '#1eb980'
+      color: '#1eb980',
+      isSubCategory: false,
+      parentCategoryId: ''
     },
     milestone: {
       id: '',
@@ -253,7 +275,12 @@ export default {
     category: {
       title: { required },
       description: { maxLength: maxLength(validationRules.descriptionLength) },
-      color: { required }
+      color: { required },
+      parentCategoryId: {
+        required: requiredIf(function validate() {
+          return this.category.isSubCategory;
+        })
+      }
     },
     milestone: {
       title: { required },
@@ -283,12 +310,14 @@ export default {
       } else {
         this.clearForm();
       }
-    },
-    categories(val) {
-      if (val && val.length > 0) {
-        this.task.categoryId = val[0].id;
-      }
     }
   }
 };
 </script>
+
+<style scoped>
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+</style>

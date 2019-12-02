@@ -1,29 +1,49 @@
 <template>
   <div class="category">
-    <div
-      class="label flex-center"
-      :style="{backgroundColor: category.color}"
-      @click="() => previewCategory({ categoryId: category.id, modal: $modal })">
-      {{category.title}}
-    </div>
-    <div class="rows-container">
       <div
-        v-for="task in getTasks(category.id)"
-        :key="task.title"
-        class="row">
+        class="label main flex-center"
+        @click="() => previewCategory({ categoryId: category.id, modal: $modal })"
+        :style="{
+          backgroundColor: category.color
+        }"
+        v-if="subCategories && subCategories.length > 0">
+        {{category.title}}
+      </div>
+      <div class="subcategory-container">
         <div
-          class="item flex-center"
-          :style="{
-            backgroundColor: task.isCompleted ? '#959595' : category.color,
-            width: `${task.width}%`,
-            marginLeft: `${task.leftMargin}%`
-          }"
-          @click="() => previewTask({ taskId: task.id, modal: $modal })">
-          <md-tooltip md-direction="top">{{task.title}}</md-tooltip>
-          <div v-if="task.width > 3">{{task.title}}</div>
+          class="subcategory"
+          v-for="c in renderCategories"
+          :key="c.id">
+          <div
+            class="label flex-center"
+            :style="{
+              backgroundColor: c.color,
+              width: `${subCategories && subCategories.length > 0 ? 90 : 180}px`,
+              'max-width': `${subCategories && subCategories.length > 0 ? 90 : 180}px`
+            }"
+            @click="() => previewCategory({ categoryId: c.id, modal: $modal })">
+            {{c.title}}
+          </div>
+          <div class="rows-container">
+            <div
+              v-for="task in getTasks(c.id)"
+              :key="task.title"
+              class="row">
+              <div
+                class="item flex-center"
+                :style="{
+                  backgroundColor: task.isCompleted ? '#959595' : c.color,
+                  width: `${task.width}%`,
+                  marginLeft: `${task.leftMargin}%`
+                }"
+                @click="() => previewTask({ taskId: task.id, modal: $modal })">
+                <md-tooltip md-direction="top">{{task.title}}</md-tooltip>
+                <div v-if="task.width > 3">{{task.title}}</div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -31,11 +51,18 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
-  props: ['category'],
-  computed: mapGetters('roadmap', {
-    getTasks: 'tasksByCategory',
-    timeFrame: 'roadmapTimeFrame'
-  }),
+  props: ['category', 'subCategories'],
+  computed: {
+    ...mapGetters('roadmap', {
+      getTasks: 'tasksByCategory',
+      timeFrame: 'roadmapTimeFrame'
+    }),
+    renderCategories() {
+      return this.subCategories && this.subCategories.length > 0
+        ? this.subCategories
+        : [this.category];
+    }
+  },
   methods: {
     ...mapActions('roadmap', ['previewTask', 'previewCategory'])
   }
@@ -50,12 +77,32 @@ export default {
   display: flex;
 }
 
+.subcategory-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.subcategory:not(:last-of-type) {
+  margin-bottom: 5px;
+}
+
+.subcategory {
+  display: flex;
+}
+
 .label {
-  width: 180px;
-  margin-left: 10px;
-  margin-right: 10px;
   border-radius: 2px;
   cursor: pointer;
+  flex-grow: 1;
+  max-width: 90px;
+  margin-right: 10px;
+}
+
+.label.main {
+  margin-right: 5px;
+  margin-left: 5px;
+  width: 85px;
 }
 
 .rows-container {
@@ -93,7 +140,7 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
+/* TODO: responsive */
 @media only screen and (max-width: 600px) {
   .category {
     flex-direction: column;
