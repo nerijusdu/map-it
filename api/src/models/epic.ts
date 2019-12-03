@@ -1,11 +1,11 @@
 import { IsDefined, IsOptional, Length } from 'class-validator';
-import { Column, Entity, ManyToOne } from 'typeorm';
-import { Epic } from './epic';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
+import { Category } from './category';
 import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
 
 @Entity()
-export class Category extends OwnedEntity {
+export class Epic extends OwnedEntity {
 
   @Column()
   @IsDefined()
@@ -21,19 +21,8 @@ export class Category extends OwnedEntity {
   @IsDefined()
   public color: string;
 
-  @Column({ nullable: true })
-  @IsOptional()
-  public parentCategoryId?: number;
-
-  @ManyToOne(() => Category, { onDelete: 'CASCADE', nullable: true })
-  public parentCategory?: Category;
-
-  @Column({ nullable: true })
-  @IsOptional()
-  public epicId?: number;
-
-  @ManyToOne(() => Epic, { nullable: true })
-  public epic?: Epic;
+  @OneToMany(() => Category, (category) => category.epic)
+  public categories: Category[];
 
   @Column()
   @IsDefined()

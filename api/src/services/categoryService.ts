@@ -1,4 +1,4 @@
-import { Category, User, Task } from '../models';
+import { Category, Task, User } from '../models';
 import { connection } from './databaseService';
 import { EntityServiceBase } from './entityServiceBase';
 import roadmapService from './roadmapService';

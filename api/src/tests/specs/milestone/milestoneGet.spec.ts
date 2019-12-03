@@ -23,7 +23,7 @@ after(async () => {
 });
 
 describe('Milestone get all tests', () => {
-  it('should get categories for user', async () => {
+  it('should get milestones for user', async () => {
     const usersRoadmap = await entityFactory.createRoadmap(user.id);
     const usersMilestone = await entityFactory.createMilestone(usersRoadmap.id);
     const differentUser = await entityFactory.createAccount();
