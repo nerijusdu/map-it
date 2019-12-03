@@ -49,8 +49,6 @@
           <div class="checkbox" v-if="categories && categories.length > 0">
             <md-checkbox v-model="category.isSubCategory" class="md-primary" />
             <div>Is Sub-Category?</div>
-            // TODO: show warning if category already has tasks and this is first sub-category
-            // "all tasks will fall under this sub-category"
           </div>
           <md-field :class="getValidationClass('parentCategoryId')" v-show="category.isSubCategory">
             <label for="parentCategoryId">Parent category</label>
@@ -104,6 +102,8 @@ export default {
   computed: {
     ...mapState({
       categories: state => state.roadmap.current.categories,
+      tasks: state => state.roadmap.current.tasks,
+      roadmapId: state => state.roadmap.current.id
     }),
     ...mapGetters('roadmap', ['taskToEdit', 'categoryToEdit', 'milestoneToEdit', 'roadmapTimeFrame']),
     title() {
@@ -133,7 +133,7 @@ export default {
     },
     categoriesForTasks() {
       const cats = this.categories || [];
-      return cats.filter(x => !!x.parentCategoryId || !cats.find(y => y.parentCategoryId === x.id));
+      return cats.filter(x => !!x.parentCategoryId || !cats.some(y => y.parentCategoryId === x.id));
     }
   },
   data: () => ({
@@ -169,9 +169,10 @@ export default {
       saveTaskToStore: 'saveTask',
       editTask: 'editTask',
       saveCategoryToStore: 'saveCategory',
-      saveMilestoneToStore: 'saveMilestone'
+      saveMilestoneToStore: 'saveMilestone',
+      selectRoadmap: 'selectRoadmap'
     }),
-    async save() {
+    async save(refresh) {
       let success = true;
       switch (this.activeTab) {
         case tab.Task:
@@ -196,6 +197,9 @@ export default {
         this.editTask({ taskId: null, modal: this.$modal });
       }
       this.$modal.hide('addTask');
+      if (refresh) {
+        this.selectRoadmap(this.roadmapId);
+      }
     },
     onClose() {
       this.clearForm();
@@ -240,6 +244,16 @@ export default {
       form.$touch();
 
       if (!form.$invalid) {
+        if (this.activeTab === tab.Category &&
+            this.category.isSubCategory &&
+            this.tasks.some(x => x.categoryId === this.category.parentCategoryId)
+        ) {
+          this.$modal.show('confirmation', {
+            content: 'All tasks in the parent category will fall under this sub-category!',
+            confirmAction: () => this.save(true)
+          });
+          return;
+        }
         this.save();
       }
     },

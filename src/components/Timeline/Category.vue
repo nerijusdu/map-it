@@ -7,7 +7,8 @@
           backgroundColor: category.color
         }"
         v-if="subCategories && subCategories.length > 0">
-        {{category.title}}
+        <md-tooltip md-direction="top">{{category.title}}</md-tooltip>
+        <div>{{category.title}}</div>
       </div>
       <div class="subcategory-container">
         <div
@@ -22,7 +23,8 @@
               'max-width': `${subCategories && subCategories.length > 0 ? 90 : 180}px`
             }"
             @click="() => previewCategory({ categoryId: c.id, modal: $modal })">
-            {{c.title}}
+            <md-tooltip md-direction="top">{{c.title}}</md-tooltip>
+            <div>{{c.title}}</div>
           </div>
           <div class="rows-container">
             <div
@@ -95,14 +97,25 @@ export default {
   border-radius: 2px;
   cursor: pointer;
   flex-grow: 1;
-  max-width: 90px;
+  width: 90px;
   margin-right: 10px;
+  margin-left: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
 }
 
 .label.main {
-  margin-right: 5px;
-  margin-left: 5px;
-  width: 85px;
+  margin-right: 0;
+  width: 90px;
+}
+
+.label > div {
+  width: 100%;
+  text-align: center;
+  white-space: nowrap;
+  overflow: hidden;
+  display: block;
+  text-overflow: ellipsis;
 }
 
 .rows-container {
