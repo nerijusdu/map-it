@@ -122,6 +122,10 @@ export default {
     margin-left: 10px;
   }
 
+  .day-label-container {
+    display: none;
+  }
+
   .label:first-of-type {
     border-left: none;
   }

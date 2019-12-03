@@ -8,23 +8,24 @@
         }"
         v-if="subCategories && subCategories.length > 0">
         <md-tooltip md-direction="top">{{category.title}}</md-tooltip>
-        <div>{{category.title}}</div>
+        <div class="title">{{category.title}}</div>
       </div>
       <div class="subcategory-container">
         <div
-          class="subcategory"
+          :class="['subcategory', getTasks(c.id).length === 0 ? 'no-tasks' : '']"
           v-for="c in renderCategories"
           :key="c.id">
           <div
-            class="label flex-center"
+            :class="[
+              'label flex-center',
+              subCategories && subCategories.length > 0 ? '' : 'stretch'
+            ]"
             :style="{
-              backgroundColor: c.color,
-              width: `${subCategories && subCategories.length > 0 ? 90 : 180}px`,
-              'max-width': `${subCategories && subCategories.length > 0 ? 90 : 180}px`
+              backgroundColor: c.color
             }"
             @click="() => previewCategory({ categoryId: c.id, modal: $modal })">
             <md-tooltip md-direction="top">{{c.title}}</md-tooltip>
-            <div>{{c.title}}</div>
+            <div class="title">{{c.title}}</div>
           </div>
           <div class="rows-container">
             <div
@@ -96,12 +97,13 @@ export default {
 .label {
   border-radius: 2px;
   cursor: pointer;
-  flex-grow: 1;
-  width: 90px;
+  width: 85px;
   margin-right: 10px;
   margin-left: 5px;
-  padding-left: 5px;
-  padding-right: 5px;
+}
+
+.label.stretch {
+  width: 180px;
 }
 
 .label.main {
@@ -109,13 +111,15 @@ export default {
   width: 90px;
 }
 
-.label > div {
-  width: 100%;
+.label > .title {
+  min-width: 80px;
   text-align: center;
   white-space: nowrap;
   overflow: hidden;
   display: block;
   text-overflow: ellipsis;
+  margin-right: 5px;
+  margin-left: 5px;
 }
 
 .rows-container {
@@ -153,19 +157,36 @@ export default {
   overflow: hidden;
   text-overflow: ellipsis;
 }
-/* TODO: responsive */
+
 @media only screen and (max-width: 600px) {
-  .category {
+  .category, .subcategory {
     flex-direction: column;
   }
 
-  .label {
+  .subcategory {
+    margin: 0;
+    margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
+  }
+
+  .label, .label.stretch {
     width: auto;
-    margin: 0px 10px 10px 10px;
+    margin: 0;
+    margin-bottom: 5px;
+  }
+
+  .subcategory.no-tasks {
+    display: none;
   }
 
   .rows-container {
-    margin-left: 10px;
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .label.main {
+    display: none;
   }
 }
 </style>
