@@ -73,6 +73,29 @@
             <label>Date</label>
           </md-datepicker>
         </md-tab>
+        <md-tab id="tab-epic" md-label="Epic" @click="activeTab = tab.Epic">
+          <md-field :class="getValidationClass('title')">
+            <label>Title</label>
+            <md-input v-model="epic.title"/>
+            <span class="md-error" v-if="!$v.epic.title.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <md-field :class="getValidationClass('description')">
+            <label>Description</label>
+            <md-textarea v-model="epic.description"/>
+            <span class="md-error" v-if="!$v.epic.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
+          </md-field>
+          <md-field :class="getValidationClass('color')">
+            <label>Color</label>
+            <md-input v-model="epic.color" type="color"/>
+            <span class="md-error" v-if="!$v.epic.color.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <md-field>
+            <label for="categoryIds">Categories</label>
+            <md-select name="categoryIds" id="categoryIds" v-model="epic.categoryIds" multiple>
+              <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+            </md-select>
+          </md-field>
+        </md-tab>
       </md-tabs>
     </form>
     <div class="modal-footer">
@@ -93,7 +116,8 @@ import { validationRules } from '../../constants';
 const tab = {
   Task: 1,
   Category: 2,
-  Milestone: 3
+  Milestone: 3,
+  Epic: 4
 };
 
 export default {
@@ -105,7 +129,13 @@ export default {
       tasks: state => state.roadmap.current.tasks,
       roadmapId: state => state.roadmap.current.id
     }),
-    ...mapGetters('roadmap', ['taskToEdit', 'categoryToEdit', 'milestoneToEdit', 'roadmapTimeFrame']),
+    ...mapGetters('roadmap', [
+      'taskToEdit',
+      'categoryToEdit',
+      'milestoneToEdit',
+      'epicToEdit',
+      'roadmapTimeFrame'
+    ]),
     title() {
       if (this.taskToEdit) {
         return this.task.title;
@@ -116,6 +146,9 @@ export default {
       if (this.milestoneToEdit) {
         return this.milestone.title;
       }
+      if (this.epicToEdit) {
+        return this.epic.title;
+      }
       return 'Create new';
     },
     activeTabName() {
@@ -124,6 +157,8 @@ export default {
           return 'tab-category';
         case tab.Milestone:
           return 'tab-milestone';
+        case tab.Epic:
+          return 'tab-epic';
         default:
           return 'tab-home';
       }
@@ -159,6 +194,13 @@ export default {
       color: '#1eb980',
       date: moment().toDate()
     },
+    epic: {
+      id: '',
+      title: '',
+      description: '',
+      color: '#1eb980',
+      categoryIds: []
+    },
     resources,
     tab,
     activeTab: tab.Task,
@@ -170,6 +212,7 @@ export default {
       editTask: 'editTask',
       saveCategoryToStore: 'saveCategory',
       saveMilestoneToStore: 'saveMilestone',
+      saveEpicToStore: 'saveEpic',
       selectRoadmap: 'selectRoadmap'
     }),
     async save(refresh) {
@@ -183,6 +226,9 @@ export default {
           break;
         case tab.Milestone:
           success = await this.saveMilestoneToStore(this.milestone);
+          break;
+        case tab.Epic:
+          success = await this.saveEpicToStore(this.epic);
           break;
         default:
           return;
@@ -220,6 +266,9 @@ export default {
         case tab.Milestone:
           field = this.$v.milestone[fieldName];
           break;
+        case tab.Epic:
+          field = this.$v.epic[fieldName];
+          break;
         default:
           return {};
       }
@@ -237,6 +286,9 @@ export default {
           break;
         case tab.Milestone:
           form = this.$v.milestone;
+          break;
+        case tab.Epic:
+          form = this.$v.epic;
           break;
         default:
           return;
@@ -269,10 +321,16 @@ export default {
       this.category.title = '';
       this.category.description = '';
       this.category.color = '#1eb980';
+      this.category.isSubCategory = false;
+      this.category.parentCategoryId = '';
       this.milestone.id = '';
       this.milestone.title = '';
       this.milestone.color = '#1eb980';
       this.milestone.date = moment().toDate();
+      this.epic.id = '';
+      this.epic.title = '';
+      this.epic.description = '';
+      this.epic.color = '#1eb980';
     },
     disabledDates: timeFrame => (date) => {
       const d = moment(date);
@@ -299,6 +357,11 @@ export default {
     milestone: {
       title: { required },
       color: { required }
+    },
+    epic: {
+      title: { required },
+      description: { maxLength: maxLength(validationRules.descriptionLength) },
+      color: { required }
     }
   },
   watch: {
@@ -321,6 +384,14 @@ export default {
       if (val) {
         this.milestone = { ...val };
         this.activeTab = tab.Milestone;
+      } else {
+        this.clearForm();
+      }
+    },
+    epicToEdit(val) {
+      if (val) {
+        this.epic = { ...val };
+        this.activeTab = tab.Epic;
       } else {
         this.clearForm();
       }

@@ -1,5 +1,6 @@
 import moment from 'moment';
 
+// TODO: i probably dont need this
 export default {
   taskFromApi: task => ({
     id: task.id,
