@@ -4,6 +4,7 @@
     <PreviewTask />
     <PreviewCategory />
     <PreviewMilestone />
+    <PreviewEpic />
     <AddRoadmap />
     <Confirmation />
   </div>
@@ -14,6 +15,7 @@ import AddTask from './AddTask';
 import PreviewTask from './PreviewTask';
 import PreviewCategory from './PreviewCategory';
 import PreviewMilestone from './PreviewMilestone';
+import PreviewEpic from './PreviewEpic';
 import AddRoadmap from './AddRoadmap';
 import Confirmation from './Confirmation';
 
@@ -23,6 +25,7 @@ export default {
     PreviewTask,
     PreviewCategory,
     PreviewMilestone,
+    PreviewEpic,
     AddRoadmap,
     Confirmation
   }

@@ -100,6 +100,7 @@ export default {
   width: 85px;
   margin-right: 10px;
   margin-left: 5px;
+  min-height: 30px;
 }
 
 .label.stretch {
@@ -126,7 +127,7 @@ export default {
   display: flex;
   flex-direction: column;
   flex-grow: 1;
-  margin-right: 10px;
+  margin-right: 5px;
 }
 
 .row {

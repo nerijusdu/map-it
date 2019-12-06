@@ -15,7 +15,8 @@ class RoadmapService extends EntityServiceBase<Roadmap> {
       .leftJoinAndSelect('roadmaps.milestones', 'milestones')
       .leftJoinAndSelect('roadmaps.epics', 'epics')
       .where('roadmaps.id = :id and roadmaps.user = :userId', { id, userId: this.user!.id })
-      .orderBy('roadmaps.id', 'ASC')
+      .orderBy('epics.id', 'ASC')
+      .addOrderBy('categories.epicId', 'ASC')
       .addOrderBy('categories.id', 'ASC')
       .addOrderBy('tasks.id', 'ASC')
       .getOne();

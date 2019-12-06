@@ -92,7 +92,7 @@
           <md-field>
             <label for="categoryIds">Categories</label>
             <md-select name="categoryIds" id="categoryIds" v-model="epic.categoryIds" multiple>
-              <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+              <md-option v-for="cat in categoriesForEpics" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
           </md-field>
         </md-tab>
@@ -165,6 +165,9 @@ export default {
     },
     parentCategories() {
       return (this.categories || []).filter(x => !x.parentCategoryId);
+    },
+    categoriesForEpics() {
+      return this.parentCategories.filter(x => !x.epicId || (this.epicToEdit && x.epicId === this.epic.id));
     },
     categoriesForTasks() {
       const cats = this.categories || [];
@@ -277,6 +280,7 @@ export default {
     },
     validateForm() {
       let form;
+      let refresh = false;
       switch (this.activeTab) {
         case tab.Task:
           form = this.$v.task;
@@ -289,6 +293,7 @@ export default {
           break;
         case tab.Epic:
           form = this.$v.epic;
+          refresh = true;
           break;
         default:
           return;
@@ -306,7 +311,7 @@ export default {
           });
           return;
         }
-        this.save();
+        this.save(refresh);
       }
     },
     clearForm() {
@@ -331,6 +336,7 @@ export default {
       this.epic.title = '';
       this.epic.description = '';
       this.epic.color = '#1eb980';
+      this.epic.categoryIds = [];
     },
     disabledDates: timeFrame => (date) => {
       const d = moment(date);
@@ -390,7 +396,10 @@ export default {
     },
     epicToEdit(val) {
       if (val) {
-        this.epic = { ...val };
+        this.epic = {
+          ...val,
+          categoryIds: this.categories.filter(x => x.epicId === val.id).map(x => x.id)
+        };
         this.activeTab = tab.Epic;
       } else {
         this.clearForm();

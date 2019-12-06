@@ -21,9 +21,44 @@ export const getters = {
     }
 
     const epic = state.current.epics.find(t => t.id === state.previewEpicId);
+    if (!epic) {
+      return null;
+    }
 
-    return epic || null;
-  }
+    return {
+      ...epic,
+      categories: state.current.categories.filter(x => x.epicId === epic.id)
+    };
+  },
+  epicList: state => state.current.epics.map((epic) => {
+    const categories = state.current.categories
+      .filter(x => x.epicId === epic.id)
+      .map(x => x.id);
+    const allCategories = state.current.categories
+      .filter(x => categories.includes(x.id) || categories.includes(x.parentCategoryId))
+      .map(x => x.id);
+
+    const emptyCategories = new Set([...allCategories]);
+    state.current.categories.forEach((x) => {
+      if (allCategories.includes(x.id) && x.parentCategoryId) {
+        emptyCategories.delete(x.parentCategoryId);
+      }
+    });
+    const tasks = state.current.tasks.filter((x) => {
+      const includes = allCategories.includes(x.categoryId);
+      if (includes) {
+        emptyCategories.delete(x.categoryId);
+      }
+      return includes;
+    });
+
+    return {
+      ...epic,
+      categoryCount: categories.length,
+      taskCount: tasks.length,
+      emptyCategories: emptyCategories.size
+    };
+  })
 };
 
 export const actions = {
