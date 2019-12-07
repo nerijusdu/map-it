@@ -19,7 +19,7 @@
           <md-field :class="getValidationClass('categoryId')">
             <label for="categoryId">Category</label>
             <md-select name="categoryId" id="categoryId" v-model="task.categoryId">
-              <md-option v-for="cat in categories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+              <md-option v-for="cat in categoriesForTasks" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
             <span class="md-error" v-if="!$v.task.categoryId.required">{{ resources.requiredMsg }}</span>
           </md-field>
@@ -46,6 +46,17 @@
             <md-input v-model="category.color" type="color"/>
             <span class="md-error" v-if="!$v.category.color.required">{{ resources.requiredMsg }}</span>
           </md-field>
+          <div class="checkbox" v-if="categories && categories.length > 0">
+            <md-checkbox v-model="category.isSubCategory" class="md-primary" />
+            <div>Is Sub-Category?</div>
+          </div>
+          <md-field :class="getValidationClass('parentCategoryId')" v-show="category.isSubCategory">
+            <label for="parentCategoryId">Parent category</label>
+            <md-select name="parentCategoryId" id="parentCategoryId" v-model="category.parentCategoryId">
+              <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+            </md-select>
+            <span class="md-error" v-if="!$v.category.parentCategoryId.required">{{ resources.requiredMsg }}</span>
+          </md-field>
         </md-tab>
         <md-tab id="tab-milestone" md-label="Milestone" @click="activeTab = tab.Milestone" v-if="!task.id">
           <md-field :class="getValidationClass('title')">
@@ -62,6 +73,29 @@
             <label>Date</label>
           </md-datepicker>
         </md-tab>
+        <md-tab id="tab-epic" md-label="Epic" @click="activeTab = tab.Epic">
+          <md-field :class="getValidationClass('title')">
+            <label>Title</label>
+            <md-input v-model="epic.title"/>
+            <span class="md-error" v-if="!$v.epic.title.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <md-field :class="getValidationClass('description')">
+            <label>Description</label>
+            <md-textarea v-model="epic.description"/>
+            <span class="md-error" v-if="!$v.epic.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
+          </md-field>
+          <md-field :class="getValidationClass('color')">
+            <label>Color</label>
+            <md-input v-model="epic.color" type="color"/>
+            <span class="md-error" v-if="!$v.epic.color.required">{{ resources.requiredMsg }}</span>
+          </md-field>
+          <md-field>
+            <label for="categoryIds">Categories</label>
+            <md-select name="categoryIds" id="categoryIds" v-model="epic.categoryIds" multiple>
+              <md-option v-for="cat in categoriesForEpics" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+            </md-select>
+          </md-field>
+        </md-tab>
       </md-tabs>
     </form>
     <div class="modal-footer">
@@ -75,14 +109,15 @@
 import moment from 'moment';
 import { mapState, mapActions, mapGetters } from 'vuex';
 import { validationMixin } from 'vuelidate';
-import { required, maxLength } from 'vuelidate/lib/validators';
+import { required, maxLength, requiredIf } from 'vuelidate/lib/validators';
 import resources from '../../services/resourceService';
 import { validationRules } from '../../constants';
 
 const tab = {
   Task: 1,
   Category: 2,
-  Milestone: 3
+  Milestone: 3,
+  Epic: 4
 };
 
 export default {
@@ -91,8 +126,16 @@ export default {
   computed: {
     ...mapState({
       categories: state => state.roadmap.current.categories,
+      tasks: state => state.roadmap.current.tasks,
+      roadmapId: state => state.roadmap.current.id
     }),
-    ...mapGetters('roadmap', ['taskToEdit', 'categoryToEdit', 'milestoneToEdit', 'roadmapTimeFrame']),
+    ...mapGetters('roadmap', [
+      'taskToEdit',
+      'categoryToEdit',
+      'milestoneToEdit',
+      'epicToEdit',
+      'roadmapTimeFrame'
+    ]),
     title() {
       if (this.taskToEdit) {
         return this.task.title;
@@ -103,6 +146,9 @@ export default {
       if (this.milestoneToEdit) {
         return this.milestone.title;
       }
+      if (this.epicToEdit) {
+        return this.epic.title;
+      }
       return 'Create new';
     },
     activeTabName() {
@@ -111,9 +157,21 @@ export default {
           return 'tab-category';
         case tab.Milestone:
           return 'tab-milestone';
+        case tab.Epic:
+          return 'tab-epic';
         default:
           return 'tab-home';
       }
+    },
+    parentCategories() {
+      return (this.categories || []).filter(x => !x.parentCategoryId);
+    },
+    categoriesForEpics() {
+      return this.parentCategories.filter(x => !x.epicId || (this.epicToEdit && x.epicId === this.epic.id));
+    },
+    categoriesForTasks() {
+      const cats = this.categories || [];
+      return cats.filter(x => !!x.parentCategoryId || !cats.some(y => y.parentCategoryId === x.id));
     }
   },
   data: () => ({
@@ -129,13 +187,22 @@ export default {
       id: '',
       title: '',
       description: '',
-      color: '#1eb980'
+      color: '#1eb980',
+      isSubCategory: false,
+      parentCategoryId: ''
     },
     milestone: {
       id: '',
       title: '',
       color: '#1eb980',
       date: moment().toDate()
+    },
+    epic: {
+      id: '',
+      title: '',
+      description: '',
+      color: '#1eb980',
+      categoryIds: []
     },
     resources,
     tab,
@@ -147,9 +214,11 @@ export default {
       saveTaskToStore: 'saveTask',
       editTask: 'editTask',
       saveCategoryToStore: 'saveCategory',
-      saveMilestoneToStore: 'saveMilestone'
+      saveMilestoneToStore: 'saveMilestone',
+      saveEpicToStore: 'saveEpic',
+      selectRoadmap: 'selectRoadmap'
     }),
-    async save() {
+    async save(refresh) {
       let success = true;
       switch (this.activeTab) {
         case tab.Task:
@@ -160,6 +229,9 @@ export default {
           break;
         case tab.Milestone:
           success = await this.saveMilestoneToStore(this.milestone);
+          break;
+        case tab.Epic:
+          success = await this.saveEpicToStore(this.epic);
           break;
         default:
           return;
@@ -174,6 +246,9 @@ export default {
         this.editTask({ taskId: null, modal: this.$modal });
       }
       this.$modal.hide('addTask');
+      if (refresh) {
+        this.selectRoadmap(this.roadmapId);
+      }
     },
     onClose() {
       this.clearForm();
@@ -194,6 +269,9 @@ export default {
         case tab.Milestone:
           field = this.$v.milestone[fieldName];
           break;
+        case tab.Epic:
+          field = this.$v.epic[fieldName];
+          break;
         default:
           return {};
       }
@@ -202,6 +280,7 @@ export default {
     },
     validateForm() {
       let form;
+      let refresh = false;
       switch (this.activeTab) {
         case tab.Task:
           form = this.$v.task;
@@ -212,13 +291,27 @@ export default {
         case tab.Milestone:
           form = this.$v.milestone;
           break;
+        case tab.Epic:
+          form = this.$v.epic;
+          refresh = true;
+          break;
         default:
           return;
       }
       form.$touch();
 
       if (!form.$invalid) {
-        this.save();
+        if (this.activeTab === tab.Category &&
+            this.category.isSubCategory &&
+            this.tasks.some(x => x.categoryId === this.category.parentCategoryId)
+        ) {
+          this.$modal.show('confirmation', {
+            content: 'All tasks in the parent category will fall under this sub-category!',
+            confirmAction: () => this.save(true)
+          });
+          return;
+        }
+        this.save(refresh);
       }
     },
     clearForm() {
@@ -233,10 +326,17 @@ export default {
       this.category.title = '';
       this.category.description = '';
       this.category.color = '#1eb980';
+      this.category.isSubCategory = false;
+      this.category.parentCategoryId = '';
       this.milestone.id = '';
       this.milestone.title = '';
       this.milestone.color = '#1eb980';
       this.milestone.date = moment().toDate();
+      this.epic.id = '';
+      this.epic.title = '';
+      this.epic.description = '';
+      this.epic.color = '#1eb980';
+      this.epic.categoryIds = [];
     },
     disabledDates: timeFrame => (date) => {
       const d = moment(date);
@@ -253,10 +353,20 @@ export default {
     category: {
       title: { required },
       description: { maxLength: maxLength(validationRules.descriptionLength) },
-      color: { required }
+      color: { required },
+      parentCategoryId: {
+        required: requiredIf(function validate() {
+          return this.category.isSubCategory;
+        })
+      }
     },
     milestone: {
       title: { required },
+      color: { required }
+    },
+    epic: {
+      title: { required },
+      description: { maxLength: maxLength(validationRules.descriptionLength) },
       color: { required }
     }
   },
@@ -284,11 +394,24 @@ export default {
         this.clearForm();
       }
     },
-    categories(val) {
-      if (val && val.length > 0) {
-        this.task.categoryId = val[0].id;
+    epicToEdit(val) {
+      if (val) {
+        this.epic = {
+          ...val,
+          categoryIds: this.categories.filter(x => x.epicId === val.id).map(x => x.id)
+        };
+        this.activeTab = tab.Epic;
+      } else {
+        this.clearForm();
       }
     }
   }
 };
 </script>
+
+<style scoped>
+.checkbox {
+  display: flex;
+  align-items: center;
+}
+</style>

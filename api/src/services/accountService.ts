@@ -80,7 +80,7 @@ class AccountService extends EntityServiceBase<User> {
     return {
         email: user.email,
         token: authService.createToken({ payload: user }),
-        refreshToken,
+        refreshToken: newRefreshToken,
         expiresAt
     };
   }

@@ -159,16 +159,7 @@ export const mutations = {
     ];
   },
   mSelectRoadmap(state, roadmap) {
-    state.current = {
-      ...roadmap,
-      startDate: roadmap.startDate,
-      endDate: roadmap.endDate,
-      tasks: roadmap.tasks.map(task => ({
-        ...task,
-        startDate: task.startDate,
-        endDate: task.endDate
-      }))
-    };
+    state.current = { ...roadmap };
   },
   mSetRoadmaps(state, roadmaps) {
     state.all = roadmaps;

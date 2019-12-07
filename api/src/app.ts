@@ -6,6 +6,7 @@ import {PORT} from './config';
 import {
   AccountController,
   CategoryController,
+  EpicController,
   MilestoneController,
   RoadmapController,
   TaskController
@@ -29,6 +30,7 @@ app.use('/api/account', AccountController);
 app.use('/api/tasks', TaskController);
 app.use('/api/categories', CategoryController);
 app.use('/api/milestones', MilestoneController);
+app.use('/api/epics', EpicController);
 app.get('/api/health', (req, res) => {
   res.json(true);
 });

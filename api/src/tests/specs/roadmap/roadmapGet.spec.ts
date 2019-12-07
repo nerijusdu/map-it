@@ -67,6 +67,25 @@ describe('Roadmap get by id tests', () => {
     expect(fetchedRoadmap.categories[0].id).to.equal(category.id);
   });
 
+  it('should get roadmap with subcategories by id', async () => {
+    const roadmap = await entityFactory.createRoadmap(user.id);
+    const category = await entityFactory.createCategory(roadmap.id);
+    const subcategory = await entityFactory.createCategory(roadmap.id, (x) => {
+      x.parentCategoryId = category.id;
+      return x;
+    });
+    const differentRoadmap = await entityFactory.createRoadmap(user.id);
+    await entityFactory.createCategory(differentRoadmap.id);
+
+    const response = await server.get(`${url}/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    const fetchedRoadmap = response.body as Roadmap;
+    expect(fetchedRoadmap.categories).to.be.an('array');
+    expect(fetchedRoadmap.categories.length).to.equal(2);
+    expect(fetchedRoadmap.categories.find((x) => x.id === category.id)).to.exist;
+    expect(fetchedRoadmap.categories.find((x) => x.id === subcategory.id)).to.exist;
+  });
+
   it('should get roadmap with tasks by id', async () => {
     const roadmap = await entityFactory.createRoadmap(user.id);
     await entityFactory.createCategory(roadmap.id);
@@ -95,6 +114,20 @@ describe('Roadmap get by id tests', () => {
     expect(fetchedRoadmap.milestones).to.be.an('array');
     expect(fetchedRoadmap.milestones.length).to.equal(1);
     expect(fetchedRoadmap.milestones[0].id).to.equal(milestone.id);
+  });
+
+  it('should get roadmap with epics by id', async () => {
+    const roadmap = await entityFactory.createRoadmap(user.id);
+    const epic = await entityFactory.createEpic(roadmap.id);
+    const differentRoadmap = await entityFactory.createRoadmap(user.id);
+    await entityFactory.createCategory(differentRoadmap.id);
+
+    const response = await server.get(`${url}/${roadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    const fetchedRoadmap = response.body as Roadmap;
+    expect(fetchedRoadmap.epics).to.be.an('array');
+    expect(fetchedRoadmap.epics.length).to.equal(1);
+    expect(fetchedRoadmap.epics[0].id).to.equal(epic.id);
   });
 
   it('should fail when roadmap belongs to another user', async () => {

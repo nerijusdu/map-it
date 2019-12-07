@@ -1,6 +1,6 @@
 <template>
   <div class="timeline">
-    <div class="label-container">
+    <div :class="['label-container', epics && epics.length > 0 ? 'with-epics' : '']">
       <div
         v-for="m in months"
         v-bind:key="m.id"
@@ -8,7 +8,9 @@
         :style="{ width: `${m.width}%` }"
       >{{m.label}}</div>
     </div>
-    <div class="day-label-container" v-if="shouldShowDays">
+    <div
+      :class="['day-label-container', epics && epics.length > 0 ? 'with-epics' : '']"
+      v-if="shouldShowDays">
       <div
         v-for="day in timelineDays"
         :key="shortid.generate(day)"
@@ -16,12 +18,16 @@
       >{{day}}</div>
     </div>
     <Milestones :taskCount="tasks.length" :categoryCount="categories.length"/>
-    <div class="table">
-      <Category
-        v-for="category in categories"
-        v-bind:key="category.title"
-        v-bind:category="category"
-      />
+    <div class="flex">
+      <div class="table">
+        <Category
+          v-for="category in parentCategories"
+          :key="category.title"
+          :category="category"
+          :subCategories="categories.filter(x => x.parentCategoryId === category.id)"
+        />
+      </div>
+      <Epics />
     </div>
   </div>
 </template>
@@ -32,12 +38,14 @@ import shortid from 'shortid';
 import { mapState, mapGetters } from 'vuex';
 import Category from './Category';
 import Milestones from './Milestones';
+import Epics from './Epics';
 
 export default {
   computed: {
     ...mapState({
       categories: state => state.roadmap.current.categories,
-      tasks: state => state.roadmap.current.tasks
+      tasks: state => state.roadmap.current.tasks,
+      epics: state => state.roadmap.current.epics
     }),
     ...mapGetters('roadmap', {
       months: 'roadmapMonths',
@@ -61,6 +69,9 @@ export default {
       const days = this.timeFrame.endDate.diff(this.timeFrame.startDate, 'days') + 1;
       const width = 100 / days;
       return Math.round(width * 100) / 100;
+    },
+    parentCategories() {
+      return this.categories.filter(x => !x.parentCategoryId);
     }
   },
   data: () => ({
@@ -68,7 +79,8 @@ export default {
   }),
   components: {
     Category,
-    Milestones
+    Milestones,
+    Epics
   }
 };
 </script>
@@ -80,10 +92,18 @@ export default {
   flex-direction: column;
 }
 
+.table {
+  flex-grow: 1;
+}
+
 .label-container, .day-label-container {
   display: flex;
   margin-left: 200px;
   margin-right: 5px;
+}
+
+.label-container.with-epics, .day-label-container.with-epics {
+  margin-right: 40px;
 }
 
 .day-label-container {
@@ -116,6 +136,10 @@ export default {
 @media only screen and (max-width: 600px) {
   .label-container {
     margin-left: 10px;
+  }
+
+  .day-label-container {
+    display: none;
   }
 
   .label:first-of-type {

@@ -57,3 +57,11 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.modal-content {
+  margin-top: 10px;
+  display: flex;
+  align-items: center;
+}
+</style>
