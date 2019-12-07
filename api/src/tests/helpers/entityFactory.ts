@@ -1,5 +1,5 @@
 import shortid from 'shortid';
-import { Category, Epic, Milestone, Roadmap, Task, User } from '../../models';
+import { Category, Epic, Milestone, Roadmap, RoadmapUser, Task, User } from '../../models';
 import authService from '../../services/authService';
 import { connection } from '../../services/databaseService';
 
@@ -125,6 +125,15 @@ const createEpic = async (roadmapId: number, modifier?: (t: Epic) => Epic) => {
   return connection().manager.save(epic);
 };
 
+const linkRoadmapToUser = async (roadmap: Roadmap, user: User) => {
+  const roadmapUser = new RoadmapUser();
+  roadmapUser.roadmap = roadmap;
+  roadmapUser.user = user;
+  roadmapUser.readonly = false;
+
+  return connection().manager.save(roadmapUser);
+};
+
 export default {
   defaultPassword,
   createAccount,
@@ -133,5 +142,6 @@ export default {
   createRoadmap,
   createTask,
   createMilestone,
-  createEpic
+  createEpic,
+  linkRoadmapToUser
 };

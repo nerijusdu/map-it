@@ -27,7 +27,7 @@ export class EntityServiceBase<TEntity> {
     options = options || {};
     const res = await connection()
       .manager
-      .findOne(this.entity, id, { where: { userId: this.user!.id }, ...options });
+      .findOne<TEntity>(this.entity, id, { where: { userId: this.user!.id }, ...options });
 
     if (!res) {
       throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);

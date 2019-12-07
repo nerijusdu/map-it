@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import authService from '../services/authService';
 import { EntityBase } from './entityBase';
 import { Roadmap } from './roadmap';
+import { RoadmapUser } from './roadmapUser';
 
 @Entity()
 export class User extends EntityBase {
@@ -28,6 +29,9 @@ export class User extends EntityBase {
 
   @OneToMany(() => Roadmap, (roadmap) => roadmap.user)
   public roadmaps: Roadmap[];
+
+  @OneToMany(() => RoadmapUser, (ru) => ru.user)
+  public sharedRoadmaps: RoadmapUser[];
 
   public comparePasswords = (input: string) => {
     return authService.verifyPassword(input, this.password);

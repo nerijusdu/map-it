@@ -3,9 +3,10 @@ import 'mocha';
 import shortid from 'shortid';
 import supertest from 'supertest';
 import app from '../../../app';
-import { Roadmap, User } from '../../../models';
+import { Roadmap, User, RoadmapUser } from '../../../models';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
+import respose from '../../../helpers/respose';
 
 const url: string = '/api/roadmaps';
 
@@ -34,7 +35,7 @@ describe('Roadmap post tests', () => {
     roadmap.endDate = endDate;
 
     const response = await server
-      .post('/api/roadmaps')
+      .post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(roadmap);
 
@@ -61,7 +62,7 @@ describe('Roadmap post tests', () => {
     roadmap.title = newTitle;
 
     const response = await server
-      .post('/api/roadmaps')
+      .post(url)
       .set('Authorization', `Bearer ${token}`)
       .send(roadmap);
 
@@ -76,6 +77,28 @@ describe('Roadmap post tests', () => {
     expect(editedRoadmap).to.exist;
     expect(editedRoadmap!.title).to.equal(roadmap.title);
   });
+
+  it('should add user to roadmap', async () => {
+    const roadmap = await entityFactory.createRoadmap(user.id);
+    const anotherUser = await entityFactory.createAccount();
+
+    const response = await server
+      .post(`${url}/assign`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        roadmapId: roadmap.id,
+        userId: anotherUser.id,
+        readonly: true
+      });
+
+    expect(response.status).to.equal(200);
+    const roadmapUser = await database
+      .connection()
+      .manager
+      .findOne(RoadmapUser, { where: { userId: anotherUser.id, roadmapId: roadmap.id } });
+    expect(roadmapUser).to.exist;
+    expect(roadmapUser!.readonly).to.equal(true);
+  });
 });
 
 describe('Roadmap delete tests', () => {
@@ -83,7 +106,7 @@ describe('Roadmap delete tests', () => {
     const roadmap = await entityFactory.createRoadmap(user.id);
 
     const response = await server
-      .delete(`/api/roadmaps/${roadmap.id}`)
+      .delete(`${url}/${roadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).to.equal(200);
@@ -101,7 +124,7 @@ describe('Roadmap delete tests', () => {
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
 
     const response = await server
-      .delete(`/api/roadmaps/${differentRoadmap.id}`)
+      .delete(`${url}/${differentRoadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
     expect(response.status).to.equal(200);
