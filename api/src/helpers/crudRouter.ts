@@ -1,9 +1,10 @@
 import { RequestHandler, Router } from 'express';
 import { AnyEntity, User } from '../models';
+import { IRoadmapEntity } from '../models/IRoadmapEntity';
 import { IEntityServiceBase } from '../services/entityServiceBase';
 import respose from './respose';
 
-export default (entityService: (user: User) => IEntityServiceBase<AnyEntity>,
+export default (entityService: (user: User) => IEntityServiceBase<any>,
                 relations?: string[],
                 overrides?: IOverrides) => {
   const router = Router();

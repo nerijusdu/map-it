@@ -6,11 +6,9 @@ import { HttpError, User } from '../models';
 import resources from '../resources';
 import authService from './authService';
 import { connection } from './databaseService';
-import { EntityServiceBase } from './entityServiceBase';
 
-class AccountService extends EntityServiceBase<User> {
-  constructor(user?: User) {
-    super(User, user);
+class AccountService {
+  constructor(private user?: User) {
   }
 
   public async login(email: string, password: string) {
@@ -107,6 +105,14 @@ class AccountService extends EntityServiceBase<User> {
 
     delete res.password;
     return res;
+  }
+
+  public async getById(id: number) {
+    const user = await connection().manager.findOne(User, id);
+    if (!user) {
+      throw new HttpError(resources.Generic_EntityNotFound('User'), 400);
+    }
+    return user;
   }
 
   private generateLongToken() {

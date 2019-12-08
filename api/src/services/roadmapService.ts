@@ -38,13 +38,6 @@ class RoadmapService extends EntityServiceBase<Roadmap> {
     return roadmap;
   }
 
-  public save(roadmap: Roadmap) {
-    const roadmapInstance = new Roadmap(roadmap);
-    roadmapInstance.userId = this.user!.id;
-
-    return super.save(roadmapInstance);
-  }
-
   public async assignUser(data: IAddUserDto) {
     const roadmap: Roadmap = await super.getById(data.roadmapId);
     const user: User = await accountService(this.user).getById(data.userId);
