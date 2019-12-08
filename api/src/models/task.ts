@@ -1,11 +1,12 @@
 import { IsDateString, IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Category } from './category';
+import { IRoadmapEntity } from './IRoadmapEntity';
 import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
 
 @Entity()
-export class Task extends OwnedEntity {
+export class Task extends OwnedEntity implements IRoadmapEntity {
 
   @Column()
   @IsDefined()

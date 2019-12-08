@@ -3,11 +3,11 @@ import { HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
 import categoryService from './categoryService';
 import { connection } from './databaseService';
-import { EntityServiceBase } from './entityServiceBase';
+import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
 
-class TaskService extends EntityServiceBase<Task> {
-  constructor(user?: User) {
+class TaskService extends RoadmapEntityServiceBase<Task> {
+  constructor(user: User) {
     super(Task, user);
   }
 
@@ -15,15 +15,9 @@ class TaskService extends EntityServiceBase<Task> {
     const taskInstance = new Task(task);
     taskInstance.userId = this.user!.id;
 
-    const res = await categoryService(this.user)
-      .getAll({
-        where: {
-          id: task.categoryId,
-          roadmapId: task.roadmapId
-        }
-      });
+    const res = await categoryService(this.user).getById(task.categoryId);
 
-    if (!res || res.length === 0) {
+    if (!res || res.roadmapId !== task.roadmapId) {
       throw new HttpError(resources.Task_CategoryNotFound, 400);
     }
 
@@ -45,4 +39,4 @@ class TaskService extends EntityServiceBase<Task> {
   }
 }
 
-export default (user?: User) => new TaskService(user);
+export default (user: User) => new TaskService(user);

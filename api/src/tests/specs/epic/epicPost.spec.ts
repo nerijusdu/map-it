@@ -105,7 +105,7 @@ describe('Epic delete tests', () => {
       .delete(`${url}/${differentEpic.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).to.equal(200);
+    expect(response.status).to.equal(400);
 
     const deletedEpic = await database
       .connection()

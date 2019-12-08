@@ -127,7 +127,7 @@ describe('Roadmap delete tests', () => {
       .delete(`${url}/${differentRoadmap.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).to.equal(200);
+    expect(response.status).to.equal(400);
 
     const deletedRoadmap = await database
       .connection()

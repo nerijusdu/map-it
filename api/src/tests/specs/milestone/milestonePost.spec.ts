@@ -101,7 +101,7 @@ describe('Milestone delete tests', () => {
       .delete(`${url}/${differentMilestone.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).to.equal(200);
+    expect(response.status).to.equal(400);
 
     const deletedMilestone = await database
       .connection()

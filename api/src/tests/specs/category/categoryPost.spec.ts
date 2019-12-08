@@ -166,7 +166,7 @@ describe('Category delete tests', () => {
       .delete(`${url}/${differentCategory.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).to.equal(200);
+    expect(response.status).to.equal(400);
 
     const deletedCategory = await database
       .connection()

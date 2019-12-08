@@ -1,11 +1,11 @@
 import { In } from 'typeorm';
 import { Category, Epic, User } from '../models';
 import { connection } from './databaseService';
-import { EntityServiceBase } from './entityServiceBase';
+import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
 
-class EpicService extends EntityServiceBase<Epic> {
-  constructor(user?: User) {
+class EpicService extends RoadmapEntityServiceBase<Epic> {
+  constructor(user: User) {
     super(Epic, user);
   }
 
@@ -13,6 +13,10 @@ class EpicService extends EntityServiceBase<Epic> {
     await connection().manager
       .update(Category, { userId: this.user!.id, epicId: id }, { epic: undefined });
     return super.delete(id);
+  }
+
+  public save(epic: Epic) {
+    return this.saveWithCategories(epic);
   }
 
   public async saveWithCategories(epic: Epic, categoryIds?: number[]) {
@@ -36,4 +40,4 @@ class EpicService extends EntityServiceBase<Epic> {
   }
 }
 
-export default (user?: User) => new EpicService(user);
+export default (user: User) => new EpicService(user);

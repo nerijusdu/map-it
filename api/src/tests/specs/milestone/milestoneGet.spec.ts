@@ -38,6 +38,20 @@ describe('Milestone get all tests', () => {
     const milestone = response.body[0] as Milestone;
     expect(milestone.id).to.equal(usersMilestone.id);
   });
+
+  it('should get milestones of shared roadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const usersRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    const milestone = await entityFactory.createMilestone(usersRoadmap.id);
+    await entityFactory.linkRoadmapToUser(usersRoadmap, user);
+
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+
+    const entity = response.body.find((x: Milestone) => x.id === milestone.id);
+    expect(entity).to.exist;
+  });
 });
 
 describe('Milestone get by id tests', () => {
@@ -74,5 +88,15 @@ describe('Milestone get by id tests', () => {
     const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Milestone.name));
+  });
+
+  it('should get milestone of shared roadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const usersRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    const milestone = await entityFactory.createMilestone(usersRoadmap.id);
+    await entityFactory.linkRoadmapToUser(usersRoadmap, user);
+
+    const response = await server.get(`${url}/${milestone.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
   });
 });

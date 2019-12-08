@@ -9,7 +9,7 @@ class RoadmapService extends EntityServiceBase<Roadmap> {
     super(Roadmap, user);
   }
 
-  public async getAll(options?: any) {
+  public async getAll() {
     return await connection().createQueryBuilder(Roadmap, 'roadmap')
       .leftJoin('roadmap.roadmapUsers', 'ru')
       .where('roadmap.user = :userId OR ru.userId = :userId', { userId: this.user!.id })

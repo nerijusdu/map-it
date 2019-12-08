@@ -38,6 +38,20 @@ describe('Category get all tests', () => {
     const category = response.body[0] as Category;
     expect(category.id).to.equal(usersCategory.id);
   });
+
+  it('should get category of shared roadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const usersRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    const usersCategory = await entityFactory.createCategory(usersRoadmap.id);
+    await entityFactory.linkRoadmapToUser(usersRoadmap, user);
+
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+
+    const entity = response.body.find((x: Category) => x.id === usersCategory.id);
+    expect(entity).to.exist;
+  });
 });
 
 describe('Category get by id tests', () => {
@@ -74,5 +88,15 @@ describe('Category get by id tests', () => {
     const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Category.name));
+  });
+
+  it('should get category of shared roadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const usersRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    const usersCategory = await entityFactory.createCategory(usersRoadmap.id);
+    await entityFactory.linkRoadmapToUser(usersRoadmap, user);
+
+    const response = await server.get(`${url}/${usersCategory.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
   });
 });

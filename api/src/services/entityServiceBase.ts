@@ -1,18 +1,20 @@
+import { DeleteResult, FindManyOptions, FindOneOptions } from 'typeorm';
 import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
+import { OwnedEntity } from '../models/ownedEntity';
 import resources from '../resources';
 import { connection } from './databaseService';
 
-export class EntityServiceBase<TEntity> {
+export class EntityServiceBase<TEntity extends OwnedEntity> implements IEntityServiceBase<TEntity> {
   // tslint:disable-next-line:ban-types
   constructor(protected entity: Function, protected user?: User) {
   }
 
-  public getAll(options?: any) {
+  public getAll(options?: FindManyOptions<TEntity>) {
     options = options || {};
     return connection()
       .manager
-      .find(this.entity, {
+      .find<TEntity>(this.entity, {
         where: {
           userId: this.user!.id
         },
@@ -23,7 +25,7 @@ export class EntityServiceBase<TEntity> {
       });
   }
 
-  public async getById(id: number, options?: any) {
+  public async getById(id: number, options?: FindOneOptions<TEntity>) {
     options = options || {};
     const res = await connection()
       .manager
@@ -40,14 +42,15 @@ export class EntityServiceBase<TEntity> {
     return connection().manager.save(this.entity, entity);
   }
 
-  public async update(id: number, entity: TEntity) {
-    await validate(entity);
-    return connection().manager.update(this.entity, { id, userId: this.user!.id }, entity);
+  public async delete(id: number) {
+    const entity = await this.getById(id);
+    return connection().manager.remove(entity);
   }
+}
 
-  public delete(id: number) {
-    return connection()
-      .manager
-      .delete(this.entity, { id, userId: this.user!.id });
-  }
+export interface IEntityServiceBase<TEntity> {
+  getAll: (options?: FindOneOptions<TEntity>) => Promise<TEntity[]>;
+  getById: (id: number, options?: FindOneOptions<TEntity>) => Promise<TEntity>;
+  save: (entity: TEntity) => Promise<TEntity>;
+  delete: (id: number) => Promise<TEntity>;
 }
