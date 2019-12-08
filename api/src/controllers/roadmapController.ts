@@ -5,7 +5,7 @@ import roadmapService from '../services/roadmapService';
 const router = crudRouter(roadmapService);
 
 router.post('/assign', respose(async (req, res) => {
-  const result = await roadmapService(req.user).assignUser(req.body);
+  const result = await roadmapService(req.user!).assignUser(req.body);
   return res.json(result);
 }));
 

@@ -1,30 +1,30 @@
+import validate from '../helpers/validate';
 import { HttpError, Roadmap, RoadmapUser, User } from '../models';
 import resources from '../resources';
 import accountService from './accountService';
 import { connection } from './databaseService';
-import { EntityServiceBase } from './entityServiceBase';
+import { IEntityServiceBase } from './entityServiceBase';
 
-class RoadmapService extends EntityServiceBase<Roadmap> {
-  constructor(user?: User) {
-    super(Roadmap, user);
+class RoadmapService implements IEntityServiceBase<Roadmap> {
+  constructor(private user: User) {
   }
 
   public async getAll() {
     return await connection().createQueryBuilder(Roadmap, 'roadmap')
       .leftJoin('roadmap.roadmapUsers', 'ru')
-      .where('roadmap.user = :userId OR ru.userId = :userId', { userId: this.user!.id })
+      .where('roadmap.user = :userId OR ru.userId = :userId', { userId: this.user.id })
       .orderBy('roadmap.id', 'ASC')
       .getMany();
   }
 
-  public async getById(id: number, options?: any): Promise<any> {
+  public async getById(id: number): Promise<any> {
     const roadmap = await connection().createQueryBuilder(Roadmap, 'roadmap')
       .leftJoinAndSelect('roadmap.tasks', 'tasks')
       .leftJoinAndSelect('roadmap.categories', 'categories')
       .leftJoinAndSelect('roadmap.milestones', 'milestones')
       .leftJoinAndSelect('roadmap.epics', 'epics')
       .leftJoin('roadmap.roadmapUsers', 'ru')
-      .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)', { id, userId: this.user!.id })
+      .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)', { id, userId: this.user.id })
       .orderBy('epics.id', 'ASC')
       .addOrderBy('categories.epicId', 'ASC')
       .addOrderBy('categories.id', 'ASC')
@@ -32,14 +32,24 @@ class RoadmapService extends EntityServiceBase<Roadmap> {
       .getOne();
 
     if (!roadmap) {
-      throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);
+      throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
     }
 
     return roadmap;
   }
 
+  public async save(entity: Roadmap) {
+    await validate(entity);
+    return connection().manager.save(Roadmap, entity);
+  }
+
+  public async delete(id: number) {
+    const entity = await this.getById(id);
+    return connection().manager.remove(entity);
+  }
+
   public async assignUser(data: IAddUserDto) {
-    const roadmap: Roadmap = await super.getById(data.roadmapId);
+    const roadmap: Roadmap = await this.getById(data.roadmapId);
     const user: User = await accountService(this.user).getById(data.userId);
     const roadmapUser = new RoadmapUser();
     roadmapUser.roadmap = roadmap;
@@ -56,4 +66,4 @@ interface IAddUserDto {
   readonly?: boolean;
 }
 
-export default (user?: User) => new RoadmapService(user);
+export default (user: User) => new RoadmapService(user);
