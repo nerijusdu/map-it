@@ -17,8 +17,8 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       .getMany();
   }
 
-  public async getById(id: number): Promise<any> {
-    const roadmap = await connection().createQueryBuilder(Roadmap, 'roadmap')
+  public async getById(id: number): Promise<Roadmap> {
+    const roadmap = await connection().createQueryBuilder<Roadmap>(Roadmap, 'roadmap')
       .leftJoinAndSelect('roadmap.tasks', 'tasks')
       .leftJoinAndSelect('roadmap.categories', 'categories')
       .leftJoinAndSelect('roadmap.milestones', 'milestones')

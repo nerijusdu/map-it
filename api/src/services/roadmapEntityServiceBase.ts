@@ -1,6 +1,6 @@
 import { FindManyOptions, FindOneOptions } from 'typeorm';
 import validate from '../helpers/validate';
-import { HttpError, User } from '../models';
+import { HttpError, User, Roadmap } from '../models';
 import { IRoadmapEntity } from '../models/IRoadmapEntity';
 import resources from '../resources';
 import { connection } from './databaseService';
@@ -37,13 +37,31 @@ export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements
   public async save(entity: TEntity) {
     entity.userId = this.user.id;
     await validate(entity);
-    await roadmapService(this.user).getById(entity.roadmapId);
+    await this.canEdit(entity.roadmapId);
     return connection().manager.save(this.entity, entity);
   }
 
   public async delete(id: number) {
     const entity = await this.getById(id);
+    await this.canEdit(entity.roadmapId);
     return connection().manager.remove(entity);
+  }
+
+  protected async canEdit(roadmapId: number) {
+    const roadmap = await connection().createQueryBuilder<Roadmap>(Roadmap, 'roadmap')
+      .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
+      .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)',
+        { id: roadmapId, userId: this.user.id })
+      .getOne();
+
+    if (!roadmap) {
+      throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
+    }
+
+    const roadmapUser = roadmap.roadmapUsers.find((x) => x.userId === this.user.id);
+    if (roadmap.userId !== this.user.id && (!roadmapUser || !roadmapUser!.readonly)) {
+      throw new HttpError(resources.Generic_ValidationError, 400);
+    }
   }
 
   protected getAllQuery() {
