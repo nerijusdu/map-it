@@ -1,11 +1,10 @@
-import { FindManyOptions, FindOneOptions } from 'typeorm';
+import { FindOneOptions } from 'typeorm';
 import validate from '../helpers/validate';
-import { HttpError, User, Roadmap } from '../models';
+import { HttpError, Roadmap, User } from '../models';
 import { IRoadmapEntity } from '../models/IRoadmapEntity';
 import resources from '../resources';
 import { connection } from './databaseService';
 import { IEntityServiceBase } from './entityServiceBase';
-import roadmapService from './roadmapService';
 
 export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements IEntityServiceBase<TEntity> {
   // tslint:disable-next-line: ban-types

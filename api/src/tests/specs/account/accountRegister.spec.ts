@@ -37,7 +37,7 @@ describe('Account registration tests', () =>  {
       .findOne(User, {
         email: user.email,
         name: user.name
-      });
+      }, { select: ['password']});
 
     expect(createdUser).to.exist;
     const passCorrect = await createdUser!.comparePasswords(user.password);

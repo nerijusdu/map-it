@@ -14,7 +14,7 @@ class AccountService {
   public async login(email: string, password: string) {
     const user = await connection()
       .manager
-      .findOne(User, { email });
+      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name'] });
 
     if (!user) {
       throw new HttpError(resources.Login_EmailIncorrect, 400);
@@ -61,7 +61,7 @@ class AccountService {
   public async refresh(email: string, refreshToken?: string) {
     const user = await connection()
       .manager
-      .findOne(User, { email });
+      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name', 'refreshToken'] });
 
     if (!user) {
       throw new HttpError(resources.Login_EmailIncorrect, 400);

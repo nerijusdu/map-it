@@ -99,6 +99,28 @@ describe('Roadmap post tests', () => {
     expect(roadmapUser).to.exist;
     expect(roadmapUser!.readonly).to.equal(true);
   });
+
+  it('should remove user from roadmap', async () => {
+    const roadmap = await entityFactory.createRoadmap(user.id);
+    const anotherUser = await entityFactory.createAccount();
+    await entityFactory.linkRoadmapToUser(roadmap, anotherUser);
+
+    const response = await server
+      .post(`${url}/assign`)
+      .set('Authorization', `Bearer ${token}`)
+      .send({
+        roadmapId: roadmap.id,
+        userId: anotherUser.id,
+        revert: true
+      });
+
+    expect(response.status).to.equal(200);
+    const roadmapUser = await database
+      .connection()
+      .manager
+      .findOne(RoadmapUser, { where: { userId: anotherUser.id, roadmapId: roadmap.id } });
+    expect(roadmapUser).to.not.exist;
+  });
 });
 
 describe('Roadmap delete tests', () => {

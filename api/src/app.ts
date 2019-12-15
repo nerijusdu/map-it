@@ -9,7 +9,8 @@ import {
   EpicController,
   MilestoneController,
   RoadmapController,
-  TaskController
+  TaskController,
+  UserController
 } from './controllers';
 import * as auth from './middleware/auth';
 import ErrorHandler from './middleware/errorHandler';
@@ -31,6 +32,7 @@ app.use('/api/tasks', TaskController);
 app.use('/api/categories', CategoryController);
 app.use('/api/milestones', MilestoneController);
 app.use('/api/epics', EpicController);
+app.use('/api/users', UserController);
 app.get('/api/health', (req, res) => {
   res.json(true);
 });

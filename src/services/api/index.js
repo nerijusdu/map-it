@@ -4,6 +4,7 @@ import category from './category';
 import milestone from './milestone';
 import epic from './epic';
 import task from './task';
+import user from './user';
 
 export default {
   ...account,
@@ -11,5 +12,6 @@ export default {
   ...category,
   ...milestone,
   ...epic,
-  ...task
+  ...task,
+  ...user
 };

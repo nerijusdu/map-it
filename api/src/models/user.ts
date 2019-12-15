@@ -13,7 +13,7 @@ export class User extends EntityBase {
   @IsDefined()
   public email: string;
 
-  @Column()
+  @Column({ select: false })
   @Length(6)
   @IsDefined()
   public password: string;
@@ -23,7 +23,7 @@ export class User extends EntityBase {
   @IsDefined()
   public name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   @IsOptional()
   public refreshToken?: string;
 

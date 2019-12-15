@@ -23,7 +23,9 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       .leftJoinAndSelect('roadmap.categories', 'categories')
       .leftJoinAndSelect('roadmap.milestones', 'milestones')
       .leftJoinAndSelect('roadmap.epics', 'epics')
-      .leftJoin('roadmap.roadmapUsers', 'ru')
+      .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
+      .leftJoinAndSelect('ru.user', 'roadmapUsers')
+      .addSelect('roadmapUsers.id')
       .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)', { id, userId: this.user.id })
       .orderBy('epics.id', 'ASC')
       .addOrderBy('categories.epicId', 'ASC')
@@ -51,6 +53,11 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
   public async assignUser(data: IAddUserDto) {
     const roadmap: Roadmap = await this.getById(data.roadmapId);
     const user: User = await accountService(this.user).getById(data.userId);
+
+    if (data.revert) {
+      return connection().manager.delete(RoadmapUser, { roadmapId: data.roadmapId, userId: data.userId });
+    }
+
     const roadmapUser = new RoadmapUser();
     roadmapUser.roadmap = roadmap;
     roadmapUser.user = user;
@@ -64,6 +71,7 @@ interface IAddUserDto {
   roadmapId: number;
   userId: number;
   readonly?: boolean;
+  revert?: boolean;
 }
 
 export default (user: User) => new RoadmapService(user);

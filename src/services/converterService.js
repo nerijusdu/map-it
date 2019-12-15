@@ -16,6 +16,7 @@ export default {
     description: roadmap.description,
     startDate: moment(roadmap.startDate),
     endDate: moment(roadmap.endDate),
-    createdDate: moment(roadmap.createdOn)
+    createdDate: moment(roadmap.createdOn),
+    roadmapUsers: roadmap.roadmapUsers
   })
 };
