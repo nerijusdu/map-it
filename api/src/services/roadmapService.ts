@@ -48,13 +48,28 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
     };
   }
 
+  public async getEntityById(id: number) {
+    const roadmap = await connection().createQueryBuilder<Roadmap>(Roadmap, 'roadmap')
+      .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
+      .leftJoinAndSelect('ru.user', 'roadmapUsers')
+      .addSelect('roadmapUsers.id')
+      .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)', { id, userId: this.user.id })
+      .getOne();
+
+    if (!roadmap) {
+      throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
+    }
+
+    return roadmap;
+  }
+
   public async save(entity: Roadmap) {
     await validate(entity);
     return connection().manager.save(Roadmap, entity);
   }
 
   public async delete(id: number) {
-    const entity = await this.getById(id);
+    const entity = await this.getEntityById(id);
     return connection().manager.remove(entity);
   }
 
