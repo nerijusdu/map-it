@@ -1,6 +1,6 @@
 <template>
   <div className="app-wrapper">
-    <Menu />
+    <Menu v-if="!roadmap.readonly"/>
     <TimelineView v-if="!!roadmap.id"/>
     <div v-if="!roadmap.id" class="no-roadmap">
       <div>No roadmap selected!</div>

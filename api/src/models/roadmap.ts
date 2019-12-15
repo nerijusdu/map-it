@@ -44,4 +44,6 @@ export class Roadmap extends OwnedEntity {
 
   @OneToMany(() => RoadmapUser, (roadmapUser) => roadmapUser.roadmap)
   public roadmapUsers: RoadmapUser[];
+
+  public readonly?: boolean;
 }

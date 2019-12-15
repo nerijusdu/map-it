@@ -29,10 +29,11 @@ class AccountService {
     await connection().manager.update(User, { email }, { refreshToken });
 
     return {
-        email: user.email,
-        token: authService.createToken({ payload: user }),
-        refreshToken,
-        expiresAt
+      id: user.id,
+      email: user.email,
+      token: authService.createToken({ payload: user }),
+      refreshToken,
+      expiresAt
     };
   }
 
@@ -42,6 +43,7 @@ class AccountService {
     const user = authService.getPayload(tokenStr);
 
     return {
+      id: user.id,
       email: user.email,
       token: tokenStr
     };
@@ -76,10 +78,11 @@ class AccountService {
     await connection().manager.update(User, { email }, { refreshToken: newRefreshToken });
 
     return {
-        email: user.email,
-        token: authService.createToken({ payload: user }),
-        refreshToken: newRefreshToken,
-        expiresAt
+      id: user.id,
+      email: user.email,
+      token: authService.createToken({ payload: user }),
+      refreshToken: newRefreshToken,
+      expiresAt
     };
   }
 

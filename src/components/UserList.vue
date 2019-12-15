@@ -17,12 +17,14 @@
               src="@/assets/trash.svg"
               class="clickable"
               @click="() => confirmDelete(u.id)"
-              alt="Delete"/>
+              alt="Delete"
+              v-if="!readonly"
+            />
           </div>
         </md-table-cell>
       </md-table-row>
     </md-table>
-    <md-table class="autocomplete-table">
+    <md-table class="autocomplete-table" v-if="!readonly">
       <md-table-row>
         <md-autocomplete
           v-model="term"
@@ -47,6 +49,7 @@
 </template>
 
 <script>
+import { mapState } from 'vuex';
 import api from '../services/api';
 
 export default {
@@ -57,8 +60,15 @@ export default {
     },
     users: {
       type: Array,
-      default: []
+      default: () => []
+    },
+    readonly: {
+      type: Boolean,
+      default: false
     }
+  },
+  computed: {
+    ...mapState('app', ['user'])
   },
   data: () => ({
     isReadonly: false,
@@ -110,6 +120,7 @@ export default {
       }, {
         ignoreLoading: true
       });
+
       this.$emit('update');
     }
   }

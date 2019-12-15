@@ -20,15 +20,24 @@
           :roadmapId="roadmap.id"
           :users="users"
           @update="getRoadmap"
+          :readonly="roadmap.readonly"
         />
       </div>
     </div>
     <div class="roadmap-controls-container">
-      <div class="clickable" :style="{ border: '1px solid var(--primary-color)'}" @click="() => editRoadmap({ roadmapId: roadmap.id, modal: $modal })">
+      <div
+        class="clickable"
+        :style="{ border: '1px solid var(--primary-color)'}"
+        @click="() => editRoadmap({ roadmapId: roadmap.id, modal: $modal })"
+        v-if="!roadmap.readonly">
         <img src="@/assets/edit.svg" alt="Edit"/>
         <div>Edit</div>
       </div>
-      <div class="clickable" :style="{ border: '1px solid var(--accent-color)'}" @click="() => confirmDelete(roadmap.id)">
+      <div
+        class="clickable"
+        :style="{ border: '1px solid var(--accent-color)'}"
+        @click="() => confirmDelete(roadmap.id)"
+        v-if="!roadmap.readonly">
         <img src="@/assets/trash.svg" alt="Delete"/>
         <div>Delete</div>
       </div>

@@ -59,7 +59,8 @@ export const getters = {
     startDate: moment(state.current.startDate),
     endDate: moment(state.current.endDate)
   }),
-  selectedRoadmap: state => state.current.id
+  selectedRoadmap: state => state.current.id,
+  readonly: state => state.current.readonly
 };
 
 export const actions = {

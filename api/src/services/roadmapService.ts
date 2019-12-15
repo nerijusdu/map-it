@@ -10,11 +10,16 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
   }
 
   public async getAll() {
-    return await connection().createQueryBuilder(Roadmap, 'roadmap')
-      .leftJoin('roadmap.roadmapUsers', 'ru')
+    const roadmaps = await connection().createQueryBuilder(Roadmap, 'roadmap')
+      .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
       .where('roadmap.user = :userId OR ru.userId = :userId', { userId: this.user.id })
       .orderBy('roadmap.id', 'ASC')
       .getMany();
+
+    return roadmaps.map((x) => ({
+      ...x,
+      readonly: x.roadmapUsers.some((y) => (Boolean)(y.userId === this.user.id && y.readonly))
+    }));
   }
 
   public async getById(id: number): Promise<Roadmap> {
@@ -37,7 +42,10 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
     }
 
-    return roadmap;
+    return {
+      ...roadmap,
+      readonly: roadmap.roadmapUsers.some((x) => (Boolean)(x.userId === this.user.id && x.readonly))
+    };
   }
 
   public async save(entity: Roadmap) {
