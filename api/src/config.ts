@@ -28,6 +28,17 @@ export const ORMConfigs: any[] = [
     logging: false
   },
   {
+    env: 'docker-dev',
+    type: 'postgres',
+    host: 'map-it-database',
+    port: 5432,
+    username: 'postgres',
+    password: 'root',
+    database: 'map-it',
+    synchronize: true,
+    logging: false
+  },
+  {
     env: 'test-local',
     type: 'postgres',
     host: 'localhost',

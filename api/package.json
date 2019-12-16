@@ -10,12 +10,10 @@
     "test-local": "SET NODE_ENV=test-local & nyc ts-mocha -p tsconfig.json src/tests/**/*.ts",
     "test-watch": "SET NODE_ENV=test-local & ts-mocha -p tsconfig.json src/tests/**/*.ts --watch-extensions ts --watch",
     "tsc": "tsc",
-    "watch-ts": "tsc -w",
-    "watch-node": "nodemon --exec ts-node build/app.js",
-    "watch": "concurrently -k -p \"[{name}]\" -n \"TypeScript,Node\" -c \"cyan.bold,green.bold\" \"npm run watch-ts\" \"npm run watch-node\"",
+    "watch": "ts-node-dev --poll --respawn --transpileOnly ./src/app.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
     "lint-fix": "tslint -c tslint.json 'src/**/*.ts' --fix",
-    "build": "tsc -p ."
+    "build": "tsc -p . --skipLibCheck"
   },
   "nyc": {
     "extension": [
@@ -44,10 +42,11 @@
     "chai": "^4.2.0",
     "concurrently": "^3.5.1",
     "mocha": "^5.2.0",
-    "nodemon": "^1.18.3",
+    "nodemon": "^2.0.2",
     "nyc": "^13.1.0",
     "supertest": "^3.3.0",
     "ts-mocha": "^6.0.0",
+    "ts-node-dev": "^1.0.0-pre.44",
     "tslint": "^5.11.0"
   },
   "dependencies": {
@@ -69,8 +68,8 @@
     "pg": "^7.4.3",
     "shortid": "^2.2.14",
     "swagger-ui-express": "^4.1.2",
-    "ts-node": "^7.0.1",
+    "ts-node": "^8.5.4",
     "typeorm": "^0.2.7",
-    "typescript": "^2.9.2"
+    "typescript": "^3.7.3"
   }
 }
