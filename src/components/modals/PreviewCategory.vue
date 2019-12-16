@@ -10,7 +10,7 @@
     </div>
     <div class="modal-footer">
       <md-button class="md-raised" @click="onClose">Close</md-button>
-      <md-button class="md-raised md-primary" @click="() => editCategory({ categoryId: category.id, modal: $modal })">Edit</md-button>
+      <md-button class="md-raised md-primary" v-if="!readonly" @click="() => editCategory({ categoryId: category.id, modal: $modal })">Edit</md-button>
     </div>
   </modal>
 </template>
@@ -21,7 +21,7 @@ import formatService from '../../services/formatService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['categoryToPreview'])
+    ...mapGetters('roadmap', ['categoryToPreview', 'readonly'])
   },
   watch: {
     categoryToPreview(val) {

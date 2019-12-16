@@ -4,6 +4,7 @@ import { Category } from './category';
 import { Epic } from './epic';
 import { Milestone } from './milestone';
 import { OwnedEntity } from './ownedEntity';
+import { RoadmapUser } from './roadmapUser';
 import { Task } from './task';
 
 @Entity()
@@ -40,4 +41,9 @@ export class Roadmap extends OwnedEntity {
 
   @OneToMany(() => Epic, (epic) => epic.roadmap)
   public epics: Epic[];
+
+  @OneToMany(() => RoadmapUser, (roadmapUser) => roadmapUser.roadmap)
+  public roadmapUsers: RoadmapUser[];
+
+  public readonly?: boolean;
 }

@@ -124,6 +124,31 @@ describe('Task post tests', () => {
     expect(editedTask!.title).to.equal(task.title);
   });
 
+  it('should fail editing task on readonly shared map', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const anotherRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    await entityFactory.createCategory(anotherRoadmap.id);
+    await entityFactory.linkRoadmapToUser(anotherRoadmap, user);
+    const task = await entityFactory.createTask(anotherRoadmap.id);
+
+    const oldTitle = task.title;
+    task.title = shortid.generate();
+
+    const response = await server
+      .post(url)
+      .set('Authorization', `Bearer ${token}`)
+      .send(task);
+
+    expect(response.status).to.equal(400);
+    const editedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(editedTask).to.exist;
+    expect(editedTask!.title).to.equal(oldTitle);
+  });
+
   it('should only allow to create tasks inside roadmaps timeframe', async () => {
     const task = new Task();
     task.title = shortid.generate();
@@ -172,7 +197,28 @@ describe('Task delete tests', () => {
       .delete(`${url}/${task.id}`)
       .set('Authorization', `Bearer ${token}`);
 
-    expect(response.status).to.equal(200);
+    expect(response.status).to.equal(400);
+
+    const deletedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(deletedTask).to.exist;
+  });
+
+  it('should fail deleting task on readonly shared map', async () => {
+    const differentUser = await entityFactory.createAccount();
+    const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
+    await entityFactory.createCategory(differentRoadmap.id);
+    await entityFactory.linkRoadmapToUser(differentRoadmap, user);
+    const task = await entityFactory.createTask(differentRoadmap.id);
+
+    const response = await server
+      .delete(`${url}/${task.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).to.equal(400);
 
     const deletedTask = await database
       .connection()

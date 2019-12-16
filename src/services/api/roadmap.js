@@ -16,5 +16,11 @@ export default {
   },
   deleteRoadmap(roadmapId, options) {
     return apiCall(`/roadmaps/${roadmapId}`, { method: 'DELETE' }, options);
+  },
+  assignUserToRoadmap(request, options) {
+    return apiCall('/roadmaps/assign', {
+      method: 'POST',
+      body: JSON.stringify(request)
+    }, options);
   }
 };

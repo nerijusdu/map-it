@@ -1,10 +1,11 @@
 import { IsDateString, IsDefined, Length } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';
+import { IRoadmapEntity } from './IRoadmapEntity';
 import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
 
 @Entity()
-export class Milestone extends OwnedEntity {
+export class Milestone extends OwnedEntity implements IRoadmapEntity {
   @Column()
   @IsDefined()
   @Length(3)

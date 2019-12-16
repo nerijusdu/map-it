@@ -6,17 +6,15 @@ import { HttpError, User } from '../models';
 import resources from '../resources';
 import authService from './authService';
 import { connection } from './databaseService';
-import { EntityServiceBase } from './entityServiceBase';
 
-class AccountService extends EntityServiceBase<User> {
-  constructor(user?: User) {
-    super(User, user);
+class AccountService {
+  constructor(private user?: User) {
   }
 
   public async login(email: string, password: string) {
     const user = await connection()
       .manager
-      .findOne(User, { email });
+      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name'] });
 
     if (!user) {
       throw new HttpError(resources.Login_EmailIncorrect, 400);
@@ -31,10 +29,11 @@ class AccountService extends EntityServiceBase<User> {
     await connection().manager.update(User, { email }, { refreshToken });
 
     return {
-        email: user.email,
-        token: authService.createToken({ payload: user }),
-        refreshToken,
-        expiresAt
+      id: user.id,
+      email: user.email,
+      token: authService.createToken({ payload: user }),
+      refreshToken,
+      expiresAt
     };
   }
 
@@ -44,6 +43,7 @@ class AccountService extends EntityServiceBase<User> {
     const user = authService.getPayload(tokenStr);
 
     return {
+      id: user.id,
       email: user.email,
       token: tokenStr
     };
@@ -63,7 +63,7 @@ class AccountService extends EntityServiceBase<User> {
   public async refresh(email: string, refreshToken?: string) {
     const user = await connection()
       .manager
-      .findOne(User, { email });
+      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name', 'refreshToken'] });
 
     if (!user) {
       throw new HttpError(resources.Login_EmailIncorrect, 400);
@@ -78,10 +78,11 @@ class AccountService extends EntityServiceBase<User> {
     await connection().manager.update(User, { email }, { refreshToken: newRefreshToken });
 
     return {
-        email: user.email,
-        token: authService.createToken({ payload: user }),
-        refreshToken: newRefreshToken,
-        expiresAt
+      id: user.id,
+      email: user.email,
+      token: authService.createToken({ payload: user }),
+      refreshToken: newRefreshToken,
+      expiresAt
     };
   }
 
@@ -107,6 +108,14 @@ class AccountService extends EntityServiceBase<User> {
 
     delete res.password;
     return res;
+  }
+
+  public async getById(id: number) {
+    const user = await connection().manager.findOne(User, id);
+    if (!user) {
+      throw new HttpError(resources.Generic_EntityNotFound('User'), 400);
+    }
+    return user;
   }
 
   private generateLongToken() {

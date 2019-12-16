@@ -36,6 +36,19 @@ describe('Roadmap get all tests', () => {
     const roadmap = response.body[0] as Roadmap;
     expect(roadmap.id).to.equal(usersRoadmap.id);
   });
+
+  it('should get shared roadmaps', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const sharedRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    await entityFactory.linkRoadmapToUser(sharedRoadmap, user);
+
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+
+    const roadmap = response.body.find((x: Roadmap) => x.id === sharedRoadmap.id);
+    expect(roadmap).to.exist;
+  });
 });
 
 describe('Roadmap get by id tests', () => {
@@ -143,5 +156,14 @@ describe('Roadmap get by id tests', () => {
     const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Roadmap.name));
+  });
+
+  it('should get sharedRoadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const sharedRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    await entityFactory.linkRoadmapToUser(sharedRoadmap, user);
+
+    const response = await server.get(`${url}/${sharedRoadmap.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
   });
 });

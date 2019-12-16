@@ -1,10 +1,10 @@
 import { Category, Task, User } from '../models';
 import { connection } from './databaseService';
-import { EntityServiceBase } from './entityServiceBase';
+import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
 
-class CategoryService extends EntityServiceBase<Category> {
-  constructor(user?: User) {
+class CategoryService extends RoadmapEntityServiceBase<Category> {
+  constructor(user: User) {
     super(Category, user);
   }
 
@@ -42,4 +42,4 @@ class CategoryService extends EntityServiceBase<Category> {
   }
 }
 
-export default (user?: User) => new CategoryService(user);
+export default (user: User) => new CategoryService(user);

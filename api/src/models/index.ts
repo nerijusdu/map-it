@@ -12,5 +12,8 @@ export * from './milestone';
 export * from './epic';
 export * from './httpError';
 export * from './entityBase';
+export * from './roadmapUser';
 
 export type AnyEntity = Roadmap | Task | Category | Milestone | Epic;
+
+export type RoadmapEntity = Task | Category | Milestone | Epic;

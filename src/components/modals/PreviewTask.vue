@@ -1,12 +1,12 @@
 <template>
   <modal name="previewTask" height="auto">
     <div class="modal-title">
-      <div class="delete-icon">
+      <div class="delete-icon" v-if="!readonly">
         <img @click="() => confirmDelete(task.id)" src="@/assets/trash.svg" alt="Delete"/>
       </div>
       <div class="title">{{ task.title }}</div>
       <div class="checkbox">
-        <md-checkbox v-model="task.isCompleted" @change="complete" class="md-primary" />
+        <md-checkbox v-model="task.isCompleted" @change="complete" class="md-primary" :disabled="readonly"/>
       </div>
     </div>
     <div class="modal-content">
@@ -23,7 +23,7 @@
     </div>
     <div class="modal-footer">
       <md-button class="md-raised" @click="onClose">Close</md-button>
-      <md-button class="md-raised md-primary" @click="() => editTask({ taskId: task.id, modal: $modal })">Edit</md-button>
+      <md-button class="md-raised md-primary" v-if="!readonly" @click="() => editTask({ taskId: task.id, modal: $modal })">Edit</md-button>
     </div>
   </modal>
 </template>
@@ -37,7 +37,7 @@ import resources from '../../services/resourceService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['taskToPreview'])
+    ...mapGetters('roadmap', ['taskToPreview', 'readonly'])
   },
   watch: {
     taskToPreview(val) {

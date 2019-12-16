@@ -4,6 +4,7 @@ import { errorTime } from '@/constants';
 
 const initialState = {
   user: {
+    id: window.localStorage.getItem('userId'),
     token: window.localStorage.getItem('token'),
     refreshToken: window.localStorage.getItem('refreshToken'),
     email: window.localStorage.getItem('email'),
@@ -30,12 +31,13 @@ export const actions = {
         : state.user.token;
     }
 
+    const id = window.localStorage.getItem('userId');
     const token = window.localStorage.getItem('token');
     const expiresAt = window.localStorage.getItem('tokenExpiresAt');
     const refreshToken = window.localStorage.getItem('refreshToken');
     const email = window.localStorage.getItem('email');
     if (token && expiresAt && moment(expiresAt).isAfter(now, 'second')) {
-      commit('mSaveUser', { token, refreshToken, email });
+      commit('mSaveUser', { token, refreshToken, email, id });
       return token;
     }
 
@@ -67,6 +69,7 @@ export const actions = {
       return;
     }
 
+    window.localStorage.setItem('userId', data.id);
     window.localStorage.setItem('token', data.token);
     window.localStorage.setItem('refreshToken', data.refreshToken);
     window.localStorage.setItem('email', data.email);
@@ -97,6 +100,7 @@ export const actions = {
     const email = state.user.email || window.localStorage.getItem('email');
     api.logout(refreshToken, email);
 
+    window.localStorage.removeItem('userId');
     window.localStorage.removeItem('token');
     window.localStorage.removeItem('refreshToken');
     window.localStorage.removeItem('email');
@@ -121,6 +125,7 @@ export const actions = {
 export const mutations = {
   mSaveUser(state, data) {
     state.user = {
+      id: data.id,
       token: data.token,
       refreshToken: data.refreshToken,
       email: data.email,

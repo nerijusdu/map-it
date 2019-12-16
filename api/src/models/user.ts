@@ -3,6 +3,7 @@ import { Column, Entity, OneToMany } from 'typeorm';
 import authService from '../services/authService';
 import { EntityBase } from './entityBase';
 import { Roadmap } from './roadmap';
+import { RoadmapUser } from './roadmapUser';
 
 @Entity()
 export class User extends EntityBase {
@@ -12,7 +13,7 @@ export class User extends EntityBase {
   @IsDefined()
   public email: string;
 
-  @Column()
+  @Column({ select: false })
   @Length(6)
   @IsDefined()
   public password: string;
@@ -22,12 +23,15 @@ export class User extends EntityBase {
   @IsDefined()
   public name: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, select: false })
   @IsOptional()
   public refreshToken?: string;
 
   @OneToMany(() => Roadmap, (roadmap) => roadmap.user)
   public roadmaps: Roadmap[];
+
+  @OneToMany(() => RoadmapUser, (ru) => ru.user)
+  public sharedRoadmaps: RoadmapUser[];
 
   public comparePasswords = (input: string) => {
     return authService.verifyPassword(input, this.password);

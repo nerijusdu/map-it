@@ -38,6 +38,20 @@ describe('Epic get all tests', () => {
     const epic = response.body[0] as Epic;
     expect(epic.id).to.equal(usersEpic.id);
   });
+
+  it('should get epic of shared roadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const usersRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    const epic = await entityFactory.createEpic(usersRoadmap.id);
+    await entityFactory.linkRoadmapToUser(usersRoadmap, user);
+
+    const response = await server.get(url).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+
+    const entity = response.body.find((x: Epic) => x.id === epic.id);
+    expect(entity).to.exist;
+  });
 });
 
 describe('Epic get by id tests', () => {
@@ -73,5 +87,15 @@ describe('Epic get by id tests', () => {
     const response = await server.get(`${url}/-1`).set('Authorization', `Bearer ${token}`);
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equal(resources.Generic_EntityNotFound(Epic.name));
+  });
+
+  it('should get epic of shared roadmap', async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const usersRoadmap = await entityFactory.createRoadmap(anotherUser.id);
+    const epic = await entityFactory.createEpic(usersRoadmap.id);
+    await entityFactory.linkRoadmapToUser(usersRoadmap, user);
+
+    const response = await server.get(`${url}/${epic.id}`).set('Authorization', `Bearer ${token}`);
+    expect(response.status).to.equal(200);
   });
 });

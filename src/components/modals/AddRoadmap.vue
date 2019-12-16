@@ -1,7 +1,7 @@
 <template>
   <modal name="addRoadmap" height="auto">
     <div class="modal-title">
-      <div>Create new roadmap</div>
+      <div>{{roadmapToEdit ? 'Edit roadmap' : 'Create new roadmap'}}</div>
     </div>
     <form class="modal-content">
       <md-field :class="getValidationClass('title')">

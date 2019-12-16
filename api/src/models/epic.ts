@@ -1,11 +1,12 @@
 import { IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Category } from './category';
+import { IRoadmapEntity } from './IRoadmapEntity';
 import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
 
 @Entity()
-export class Epic extends OwnedEntity {
+export class Epic extends OwnedEntity implements IRoadmapEntity {
 
   @Column()
   @IsDefined()

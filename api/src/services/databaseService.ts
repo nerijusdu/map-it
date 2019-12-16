@@ -1,7 +1,7 @@
 import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
 import { ORMConfigs } from '../config';
-import { Category, Epic, Milestone, Roadmap, Task, User } from '../models';
+import { Category, Epic, Milestone, Roadmap, RoadmapUser, Task, User } from '../models';
 
 let con: Connection;
 export let initPromise: Promise<void>;
@@ -17,6 +17,7 @@ export const init = () => {
     entities: [
       User,
       Roadmap,
+      RoadmapUser,
       Task,
       Category,
       Milestone,

@@ -14,13 +14,30 @@
         <div class="row-title">End date:</div>
         <div class="row-description">{{ roadmap.endDate.format(datePreviewFormat) }}</div>
       </div>
+      <div class="row-title">Users:</div>
+      <div>
+        <user-list
+          :roadmapId="roadmap.id"
+          :users="users"
+          @update="getRoadmap"
+          :readonly="roadmap.readonly"
+        />
+      </div>
     </div>
     <div class="roadmap-controls-container">
-      <div class="clickable" :style="{ border: '1px solid var(--primary-color)'}" @click="() => editRoadmap({ roadmapId: roadmap.id, modal: $modal })">
+      <div
+        class="clickable"
+        :style="{ border: '1px solid var(--primary-color)'}"
+        @click="() => editRoadmap({ roadmapId: roadmap.id, modal: $modal })"
+        v-if="!roadmap.readonly">
         <img src="@/assets/edit.svg" alt="Edit"/>
         <div>Edit</div>
       </div>
-      <div class="clickable" :style="{ border: '1px solid var(--accent-color)'}" @click="() => confirmDelete(roadmap.id)">
+      <div
+        class="clickable"
+        :style="{ border: '1px solid var(--accent-color)'}"
+        @click="() => confirmDelete(roadmap.id)"
+        v-if="!roadmap.readonly">
         <img src="@/assets/trash.svg" alt="Delete"/>
         <div>Delete</div>
       </div>
@@ -39,7 +56,9 @@ import api from '../services/api';
 import converterService from '../services/converterService';
 import resources from '../services/resourceService';
 import { datePreviewFormat } from '../constants';
-
+import UserList from './UserList';
+import roadmap from '../services/api/roadmap';
+// TODO: kickout on token refresh in this page
 export default {
   data: () => ({
     roadmap: {
@@ -48,6 +67,14 @@ export default {
     },
     datePreviewFormat
   }),
+  computed: {
+    users() {
+      return roadmap ? this.roadmap.roadmapUsers.map(x => ({
+        readonly: x.readonly,
+        ...x.user
+      })) : [];
+    }
+  },
   methods: {
     ...mapActions('roadmap', ['editRoadmap', 'deleteRoadmap', 'selectRoadmap']),
     confirmDelete(roadmapId) {
@@ -62,16 +89,22 @@ export default {
     },
     previewRoadmap(roadmapId) {
       this.$router.push(`/roadmaps/${roadmapId}`);
+    },
+    async getRoadmap() {
+      const id = this.$route.params.id;
+      const result = await api.getRoadmapById(id, { ignoreLoading: true });
+      if (!result || !result.ok) {
+        this.$router.push('/roadmaps');
+        return;
+      }
+      this.roadmap = converterService.roadmapFromApi(result.data);
     }
   },
-  async created() {
-    const id = this.$route.params.id;
-    const result = await api.getRoadmapById(id, { ignoreLoading: true });
-    if (!result || !result.ok) {
-      this.$router.push('/roadmaps');
-      return;
-    }
-    this.roadmap = converterService.roadmapFromApi(result.data);
+  created() {
+    this.getRoadmap();
+  },
+  components: {
+    UserList
   }
 };
 </script>

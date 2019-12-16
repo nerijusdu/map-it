@@ -18,12 +18,13 @@
               class="clickable"
               @click="() => editRoadmap({ roadmapId: r.id, modal: $modal })"
               alt="Edit"
-              />
+              v-show="!r.readonly"/>
             <img
               src="@/assets/trash.svg"
               class="clickable"
               @click="() => confirmDelete(r.id)"
-              alt="Delete"/>
+              alt="Delete"
+              v-show="!r.readonly"/>
             <img
               src="@/assets/arrow-right.svg"
               class="clickable"
