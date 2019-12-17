@@ -1,0 +1,26 @@
+version: "3"
+
+services:
+  map-it-db-prod:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: map-it
+    volumes:
+      - map-it-db-prod-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  map-it-prod:
+    depends_on:
+      - map-it-db-prod
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - 80:80
+    links:
+      - map-it-db-prod
+
+volumes:
+  map-it-db-prod-data:
