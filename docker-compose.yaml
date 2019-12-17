@@ -20,7 +20,7 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: map-it
     volumes:
-      - map-it-postgres-data:/var/lib/postgresql/data
+      - map-it-db-data:/var/lib/postgresql/data
     ports:
       - 5432:5432
   map-it-frontend:
@@ -32,7 +32,5 @@ services:
     ports:
       - 8080:8080
 
-# docker volume create --name map-it-postgres-data -d local
 volumes:
-    map-it-postgres-data:
-      external: true
+  map-it-db-data:
