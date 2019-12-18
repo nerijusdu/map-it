@@ -4,6 +4,8 @@ export const JWTAge = 900;
 
 export const JWTSecret = process.env.JWT_SECRET || 'deveopmentSecret';
 
+export const logsDir = process.env.LOGS_DIR || './logs';
+
 export const ORMConfigs: any[] = [
   {
     env: 'prod',
