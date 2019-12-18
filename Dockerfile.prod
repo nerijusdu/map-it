@@ -1,0 +1,28 @@
+FROM node:10
+
+ENV NODE_ENV prod
+ENV DB_HOST map-it-db-prod
+ENV DB_USER postgres
+ENV DB_PASSWORD root
+ENV PORT 80
+
+# Build backend
+WORKDIR /usr/src/app
+COPY ./api/package.json .
+COPY ./api/package-lock.json .
+RUN npm install
+ADD ./api /usr/src/app
+
+# Build frontend
+WORKDIR /usr/src/app/frontend
+COPY package.json .
+COPY package-lock.json .
+RUN npm install
+ADD . /usr/src/app/frontend
+RUN npm run build
+COPY ./dist /usr/src/app/public
+
+WORKDIR /usr/src/app
+RUN npm run build
+CMD ["npm", "start"]
+EXPOSE 80

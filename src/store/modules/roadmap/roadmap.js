@@ -113,12 +113,16 @@ export const actions = {
     commit('app/mToggleLoading', true, { root: true });
     const res = await api.getRoadmaps({ ignoreLoading: true });
     if (!res) {
+      commit('app/mToggleLoading', false, { root: true });
+      commit('mToggleInitialising', false);
       return;
     }
 
     commit('mSetRoadmaps', res.data.map(x => converters.roadmapFromApi(x)));
 
     if (res.data.length === 0) {
+      commit('app/mToggleLoading', false, { root: true });
+      commit('mToggleInitialising', false);
       return;
     }
 

@@ -1,0 +1,36 @@
+version: "3"
+
+services:
+  map-it-api:
+    depends_on:
+      - map-it-database
+    volumes:
+      - ./api:/usr/src/app
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - 8081:8081
+    links:
+     - map-it-database
+  map-it-database:
+    image: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: root
+      POSTGRES_DB: map-it
+    volumes:
+      - map-it-db-data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  map-it-frontend:
+    volumes:
+      - ./src:/usr/src/app/src
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+
+volumes:
+  map-it-db-data:
