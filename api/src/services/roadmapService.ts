@@ -1,6 +1,6 @@
-import validate from '../helpers/validate';
 import { HttpError, Roadmap, RoadmapUser, User } from '../models';
 import resources from '../resources';
+import validate from '../utils/validate';
 import accountService from './accountService';
 import { connection } from './databaseService';
 import { IEntityServiceBase } from './entityServiceBase';

@@ -23,6 +23,9 @@ export class User extends EntityBase {
   @IsDefined()
   public name: string;
 
+  @Column({ default: false })
+  public isAdmin: boolean;
+
   @Column({ nullable: true, select: false })
   @IsOptional()
   public refreshToken?: string;

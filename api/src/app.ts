@@ -16,6 +16,7 @@ import * as auth from './middleware/auth';
 import ErrorHandler from './middleware/errorHandler';
 import * as database from './services/databaseService';
 import swaggerDocument from './swagger.json';
+import logger from './utils/logger';
 
 database.init();
 
@@ -41,7 +42,7 @@ app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use(ErrorHandler);
 
 if (!(process.env.NODE_ENV || '').trim().startsWith('test')) {
-  app.listen(PORT, () => console.log(`Listening at http://localhost:${PORT}/`));
+  app.listen(PORT, () => logger.info(`Listening at http://localhost:${PORT}/`));
 }
 
 export default app;

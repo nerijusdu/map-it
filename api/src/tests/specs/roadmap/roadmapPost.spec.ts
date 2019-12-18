@@ -3,10 +3,9 @@ import 'mocha';
 import shortid from 'shortid';
 import supertest from 'supertest';
 import app from '../../../app';
-import { Roadmap, User, RoadmapUser } from '../../../models';
+import { Roadmap, RoadmapUser, User } from '../../../models';
 import * as database from '../../../services/databaseService';
 import entityFactory from '../../helpers/entityFactory';
-import respose from '../../../helpers/respose';
 
 const url: string = '/api/roadmaps';
 

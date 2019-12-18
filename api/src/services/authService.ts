@@ -4,6 +4,7 @@ import { JWTAge, JWTSecret } from '../config';
 import { HttpError } from '../models';
 import { User } from '../models/user';
 import resources from '../resources';
+import logger from '../utils/logger';
 
 const getPayload = (token: string): User => {
   const payload = jwt.decode(token) as {[key: string]: any};
@@ -31,7 +32,8 @@ const createToken = (data: ITokenData) => {
 
   const token = jwt.sign({ data: {
     id: data.payload.id,
-    email: data.payload.email
+    email: data.payload.email,
+    isAdmin: data.payload.isAdmin
   } }, JWTSecret, { expiresIn: data.maxAge });
 
   return token;
@@ -39,7 +41,7 @@ const createToken = (data: ITokenData) => {
 
 const encryptPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt).catch((err) => console.log(err));
+  return bcrypt.hash(password, salt).catch((err) => { logger.error(err); });
 };
 
 const verifyPassword = (inputPass: string, encryptedPass: string) => {

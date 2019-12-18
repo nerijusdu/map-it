@@ -1,9 +1,9 @@
 import moment from 'moment';
 import shortid from 'shortid';
 import { JWTAge } from '../config';
-import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
 import resources from '../resources';
+import validate from '../utils/validate';
 import authService from './authService';
 import { connection } from './databaseService';
 
@@ -14,7 +14,7 @@ class AccountService {
   public async login(email: string, password: string) {
     const user = await connection()
       .manager
-      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name'] });
+      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name', 'isAdmin'] });
 
     if (!user) {
       throw new HttpError(resources.Login_EmailIncorrect, 400);
@@ -31,6 +31,7 @@ class AccountService {
     return {
       id: user.id,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: authService.createToken({ payload: user }),
       refreshToken,
       expiresAt
@@ -45,6 +46,7 @@ class AccountService {
     return {
       id: user.id,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: tokenStr
     };
   }
@@ -63,7 +65,7 @@ class AccountService {
   public async refresh(email: string, refreshToken?: string) {
     const user = await connection()
       .manager
-      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name', 'refreshToken'] });
+      .findOne(User, { email }, { select: ['password', 'email', 'id', 'name', 'refreshToken', 'isAdmin'] });
 
     if (!user) {
       throw new HttpError(resources.Login_EmailIncorrect, 400);
@@ -80,6 +82,7 @@ class AccountService {
     return {
       id: user.id,
       email: user.email,
+      isAdmin: user.isAdmin,
       token: authService.createToken({ payload: user }),
       refreshToken: newRefreshToken,
       expiresAt

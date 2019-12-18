@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import respose from '../helpers/respose';
 import { User } from '../models';
 import accountService from '../services/accountService';
+import respose from '../utils/respose';
 
 const router = Router();
 
@@ -35,6 +35,10 @@ router.post('/register', respose(async (req, res) => {
 
   const result = await accountService().register(user);
   return res.json(result);
+}));
+
+router.get('/iamadmin', respose((req, res) => {
+  return res.json(true);
 }));
 
 export const AccountController = router;

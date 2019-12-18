@@ -1,10 +1,14 @@
 FROM node:10
 
 ENV NODE_ENV docker-dev
+ENV PORT 9091
 
 WORKDIR /usr/src/app
+
+COPY package.json .
+COPY package-lock.json .
 
 RUN npm install
 
 CMD ["npm", "run", "watch"]
-EXPOSE 8081
+EXPOSE 9091

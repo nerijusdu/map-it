@@ -1,8 +1,8 @@
 import { FindOneOptions } from 'typeorm';
-import validate from '../helpers/validate';
 import { HttpError, Roadmap, User } from '../models';
 import { IRoadmapEntity } from '../models/IRoadmapEntity';
 import resources from '../resources';
+import validate from '../utils/validate';
 import { connection } from './databaseService';
 import { IEntityServiceBase } from './entityServiceBase';
 
