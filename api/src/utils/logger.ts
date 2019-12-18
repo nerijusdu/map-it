@@ -32,18 +32,16 @@ if (process.env.NODE_ENV !== 'prod') {
 } else if (process.env.LOGS_BLOB_NAME) {
   logger.add(new azureBlobTransport({
     account: {
-      account: {
-        name: process.env.LOGS_BLOB_ACCOUNT_NAME,
-        key: process.env.LOGS_BLOB_ACCOUNT_SECRET
-      },
-      containerName: process.env.LOGS_BLOB_CONTAINER,
-      blobName: process.env.LOGS_BLOB_NAME,
-      level: 'info',
-      bufferLogSize : 1,
-      syncTimeout : 0,
-      rotatePeriod : '',
-      eol : '\n'
-    }
+      name: process.env.LOGS_BLOB_ACCOUNT_NAME,
+      key: process.env.LOGS_BLOB_ACCOUNT_SECRET
+    },
+    containerName: process.env.LOGS_BLOB_CONTAINER,
+    blobName: process.env.LOGS_BLOB_NAME,
+    level: 'info',
+    bufferLogSize : 1,
+    syncTimeout : 0,
+    rotatePeriod : '',
+    eol : '\n'
   }));
 }
 
