@@ -17,14 +17,13 @@
       </md-field>
     </div>
     <div class="flex">
+      <div class="navigation-item flex-center" v-show="isAdmin">
+        <div>I am admin</div>
+      </div>
       <div class="navigation-item flex-center" @click="$router.push('/roadmaps')">
         <div class="navigation-item-icon"><img src="@/assets/map.svg"/></div>
         <div>Roadmaps</div>
       </div>
-      <!-- <div class="navigation-item flex-center">
-        <div class="navigation-item-icon"><img src="@/assets/settings.svg"/></div>
-        <div>Settings</div>
-      </div> -->
       <md-menu class="navigation-item flex-center" md-size="small" md-align-trigger>
         <div class="flex-center" md-menu-trigger>
           <div class="navigation-item-icon"><img src="@/assets/user.svg"/></div>
@@ -48,6 +47,7 @@ export default {
   computed: {
     ...mapState({
       roadmaps: state => state.roadmap.all.map(r => ({ id: r.id, title: r.title })),
+      isAdmin: state => state.app.user.isAdmin,
       isInitialized: state => state.roadmap.isInitialized
     }),
     ...mapGetters('roadmap', ['selectedRoadmap'])

@@ -3,17 +3,22 @@ import resources from '../resources';
 import auth from '../services/authService';
 
 const publicUrls = [
-  '/api/account/login',
-  '/api/account/register',
-  '/api/account/refresh',
-  '/api/account/logout',
-  '/api/health',
-  '/swagger'
+  /\/api\/account\/login(\?.*)?/,
+  /\/api\/account\/register(\?.*)?/,
+  /\/api\/account\/refresh(\?.*)?/,
+  /\/api\/account\/logout(\?.*)?/,
+  /\/api\/health(\?.*)?/,
+  /\/swagger(.*)?/
+];
+const adminUrls = [
+  /\/api\/account\/iamadmin/,
 ];
 const staticContent = /\.(css|html|js|ico|png)|\/$/;
 
 export const verifyUser = (async (req, res, next) => {
-  if (publicUrls.find((x) => x === req.url) || staticContent.test(req.url)) {
+  if (publicUrls.find((x) => x.test(req.url)) ||
+      staticContent.test(req.url) ||
+      (adminUrls.find((x) => x.test(req.url)) && !req.user?.isAdmin)) {
     next();
     return;
   }

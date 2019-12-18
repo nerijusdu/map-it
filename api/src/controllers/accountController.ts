@@ -37,4 +37,8 @@ router.post('/register', respose(async (req, res) => {
   return res.json(result);
 }));
 
+router.get('/iamadmin', respose((req, res) => {
+  return res.json(true);
+}));
+
 export const AccountController = router;

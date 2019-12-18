@@ -32,7 +32,8 @@ const createToken = (data: ITokenData) => {
 
   const token = jwt.sign({ data: {
     id: data.payload.id,
-    email: data.payload.email
+    email: data.payload.email,
+    isAdmin: data.payload.isAdmin
   } }, JWTSecret, { expiresIn: data.maxAge });
 
   return token;
