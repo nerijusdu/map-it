@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import respose from '../helpers/respose';
 import { User } from '../models';
 import accountService from '../services/accountService';
+import respose from '../utils/respose';
 
 const router = Router();
 

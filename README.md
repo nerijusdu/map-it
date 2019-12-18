@@ -1,9 +1,6 @@
 # map-it
 Roadmap tool.
 
-## First time API project setup
-- Install [PostgreSQL](https://www.postgresql.org/download/) 
-- Create database with name 'map-it'
-- `npm install -g typescript ts-node`
-- Navigate to `/api` folder
-- run `npm install`
+# Run locally
+- Have [Docker](https://docs.docker.com/install/) installed
+- Run `docker-compose up`

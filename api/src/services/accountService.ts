@@ -1,9 +1,9 @@
 import moment from 'moment';
 import shortid from 'shortid';
 import { JWTAge } from '../config';
-import validate from '../helpers/validate';
 import { HttpError, User } from '../models';
 import resources from '../resources';
+import validate from '../utils/validate';
 import authService from './authService';
 import { connection } from './databaseService';
 

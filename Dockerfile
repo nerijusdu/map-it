@@ -12,4 +12,4 @@ RUN npm install
 ADD . /usr/src/app
 
 CMD ["npm", "run", "dev"]
-EXPOSE 8080
+EXPOSE 9090

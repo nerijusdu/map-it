@@ -2,6 +2,7 @@ import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
 import { ORMConfigs } from '../config';
 import { Category, Epic, Milestone, Roadmap, RoadmapUser, Task, User } from '../models';
+import logger from '../utils/logger';
 
 let con: Connection;
 export let initPromise: Promise<void>;
@@ -25,7 +26,7 @@ export const init = () => {
     ]
   })
     .then((data) => { con = data; })
-    .catch((e) => console.log('connection failed', e));
+    .catch((e) => { logger.error('connection failed', e); });
 };
 
 export const close = () => con && con.isConnected

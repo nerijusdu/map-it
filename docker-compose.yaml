@@ -10,7 +10,7 @@ services:
       context: ./api
       dockerfile: Dockerfile
     ports:
-      - 8081:8081
+      - 9091:9091
     links:
      - map-it-database
   map-it-database:
@@ -30,7 +30,7 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - 8080:8080
+      - 9090:9090
 
 volumes:
   map-it-db-data:
