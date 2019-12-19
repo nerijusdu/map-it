@@ -8,8 +8,8 @@
         <md-select v-model="roadmapSelection" @md-selected="updateRoadmap()">
           <md-option
             v-for="r in roadmaps"
-            v-bind:key="r.id"
-            v-bind:value="r.id"
+            :key="r.id"
+            :value="r.id"
           >
             {{ r.title }}
           </md-option>

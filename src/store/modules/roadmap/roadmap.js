@@ -114,7 +114,7 @@ export const actions = {
     const res = await api.getRoadmaps({ ignoreLoading: true });
     if (!res) {
       commit('app/mToggleLoading', false, { root: true });
-      commit('mToggleInitialising', false);
+      commit('mToggleInitialising', true);
       return;
     }
 
@@ -122,7 +122,7 @@ export const actions = {
 
     if (res.data.length === 0) {
       commit('app/mToggleLoading', false, { root: true });
-      commit('mToggleInitialising', false);
+      commit('mToggleInitialising', true);
       return;
     }
 

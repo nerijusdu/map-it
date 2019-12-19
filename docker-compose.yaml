@@ -26,6 +26,8 @@ services:
   map-it-frontend:
     volumes:
       - ./src:/usr/src/app/src
+      - ./static:/usr/src/app/static
+      - ./build:/usr/src/app/build
     build:
       context: .
       dockerfile: Dockerfile

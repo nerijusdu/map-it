@@ -13,6 +13,7 @@ const initialState = {
   },
   isInitialized: false,
   isLoading: false,
+  isOnline: true,
   message: {
     text: '',
     isError: false
@@ -114,6 +115,15 @@ export const actions = {
     dispatch('roadmap/reset', null, { root: true });
     router.push('Login');
   },
+  toggleOnline({ commit, dispatch, state }, isOnline) {
+    if (state.isOnline && !isOnline) {
+      dispatch('showError', 'Oof! You are offline. You can keep using the app, but some things might not be up to date.');
+    }
+    if (!state.isOnline && isOnline) {
+      dispatch('showMessage', 'Yay! You are back online.');
+    }
+    commit('mToggleOnline', isOnline);
+  },
   async init({ commit, state, dispatch }) {
     if (state.isInitialized) {
       return;
@@ -148,6 +158,9 @@ export const mutations = {
   },
   mLogout(state) {
     state.isInitialized = false;
+  },
+  mToggleOnline(state, isOnline) {
+    state.isOnline = isOnline;
   }
 };
 

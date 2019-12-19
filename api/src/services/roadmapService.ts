@@ -65,6 +65,7 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
 
   public async save(entity: Roadmap) {
     await validate(entity);
+    entity.userId = this.user.id;
     return connection().manager.save(Roadmap, entity);
   }
 
