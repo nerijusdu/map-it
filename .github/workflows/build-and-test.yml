@@ -11,6 +11,8 @@ env:
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_USER: ${{ secrets.DB_USER }}
   DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
+  AZURE_WEBAPP_PACKAGE_PATH: './api'
+  AZURE_WEBAPP_NAME: map-it-dev
 
 jobs:
   build-and-test:
@@ -35,3 +37,32 @@ jobs:
         npm install
         npm run build
         npm run test
+  deploy-dev:
+    name: Deploy to dev environment
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@develop
+    - name: Use Node.js ${{ env.NODE_VERSION }}
+      uses: actions/setup-node@v1
+      with:
+        node-version: ${{ env.NODE_VERSION }}
+    - name: build and copy frontend
+      run: |
+        export NODE_ENV=prod
+        npm config set unsafe-perm=true
+        npm install
+        npm run build
+        cp -R dist/. api/public/
+    - name: npm install and build backend
+      run: |
+        export NODE_ENV=prod
+        cd api
+        npm config set unsafe-perm=true
+        npm install
+        npm run build
+    - name: 'Deploy API to Azure WebApp'
+      uses: azure/webapps-deploy@v1
+      with:
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.AZURE_DEV_PUBLISH_PROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
