@@ -36,7 +36,7 @@
     </md-table>
     <div class="flex add-button">
       <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addRoadmap')">
-        <i class="fas fa-plus"/>
+        <img src="@/assets/plus.svg" alt="Add"/>
       </md-button>
     </div>
   </div>
