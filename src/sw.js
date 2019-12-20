@@ -10,7 +10,7 @@ const PRECACHE_URLS = [
   'static/js/manifest.js',
   'static/css/app.css',
   // Development mode
-  'app.js'
+  // 'app.js'
 ];
 
 const apiUrl = self.location.host.startsWith('localhost')
