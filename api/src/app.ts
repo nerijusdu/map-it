@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import compression from 'compression';
 import cors from 'cors';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
@@ -23,8 +24,16 @@ database.init();
 const app: express.Application = express();
 
 app.use(cors());
+app.use(compression());
 app.use(bodyParser.json());
 app.use(auth.verifyUser);
+if (process.env.NODE_ENV === 'prod') {
+  app.use((req, res) => {
+    if (!req.secure){
+      res.redirect('https://' + req.headers.host + req.url);
+    }
+  });
+}
 
 app.use(express.static('public'));
 app.use('/api/roadmaps', RoadmapController);

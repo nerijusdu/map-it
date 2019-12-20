@@ -78,6 +78,11 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         from: path.resolve(__dirname, '../src/sw.js'),
         to: './',
         ignore: ['.*']
+      },
+      {
+        from: path.resolve(__dirname, '../static/robots.txt'),
+        to: './',
+        ignore: ['.*']
       }
     ])
   ]

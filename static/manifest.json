@@ -1,0 +1,21 @@
+{
+  "short_name": "Map-It",
+  "name": "Map-It",
+  "icons": [
+    {
+      "src": "/static/logo192.png",
+      "type": "image/png",
+      "sizes": "192x192"
+    },
+    {
+      "src": "/static/logo512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "start_url": "/",
+  "background_color": "#33333d",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#33333d"
+}
