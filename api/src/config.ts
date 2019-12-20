@@ -14,7 +14,7 @@ export const ORMConfigs: any[] = [
     port: 5432,
     username: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: 'map-it',
+    database: process.env.DB_NAME || 'map-it',
     synchronize: true,
     logging: false
   },
