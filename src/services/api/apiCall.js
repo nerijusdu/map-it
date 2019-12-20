@@ -55,6 +55,7 @@ export class ApiCall {
 
   parseResponse = res => res.json()
     .then(data => ({
+      statusText: res.statusText,
       status: res.status,
       ok: res.ok,
       data
@@ -67,6 +68,12 @@ export class ApiCall {
         this.store.dispatch('app/logout', router);
       }
       return null;
+    }
+    if (res.statusText === 'CACHED' && this.store.state.app.isOnline) {
+      this.store.dispatch('app/toggleOnline', false);
+    }
+    if (res.statusText === 'OK' && !this.store.state.app.isOnline) {
+      this.store.dispatch('app/toggleOnline', true);
     }
     return res;
   }
