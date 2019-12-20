@@ -1,7 +1,7 @@
 const RUNTIME = 'runtime';
-const PRECACHE = 'static-files-v1';
+const PRECACHE = 'static-files-v2';
 const PRECACHE_URLS = [
-  'index.html',
+  '/',
   'static/favicon-16x16.png',
   'static/favicon-32x32.png',
   'static/favicon.ico',
