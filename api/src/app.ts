@@ -27,13 +27,6 @@ app.use(cors());
 app.use(compression());
 app.use(bodyParser.json());
 app.use(auth.verifyUser);
-if (process.env.NODE_ENV === 'prod') {
-  app.use((req, res) => {
-    if (!req.secure){
-      res.redirect('https://' + req.headers.host + req.url);
-    }
-  });
-}
 
 app.use(express.static('public'));
 app.use('/api/roadmaps', RoadmapController);
