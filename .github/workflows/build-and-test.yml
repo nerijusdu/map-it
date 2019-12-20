@@ -39,9 +39,10 @@ jobs:
         npm run test
   deploy-dev:
     name: Deploy to dev environment
+    needs: build-and-test
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@develop
+    - uses: actions/checkout@master
     - name: Use Node.js ${{ env.NODE_VERSION }}
       uses: actions/setup-node@v1
       with:
