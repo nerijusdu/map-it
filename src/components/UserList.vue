@@ -1,5 +1,5 @@
 <template>
-  <div class="user-lis-container">
+  <div class="user-list-container">
     <md-table md-card>
       <md-table-row>
         <md-table-head>Name</md-table-head>
@@ -128,6 +128,10 @@ export default {
 </script>
 
 <style scoped>
+.user-list-container {
+  width: 100%;
+}
+
 .autocomplete-table {
   padding-left: 10px;
   padding-right: 10px;

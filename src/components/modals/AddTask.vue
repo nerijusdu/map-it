@@ -1,5 +1,5 @@
 <template>
-  <modal name="addTask" height="auto">
+  <modal name="addTask" height="auto" @closed="onClose">
     <div class="modal-title">
       <div>{{ title }}</div>
     </div>

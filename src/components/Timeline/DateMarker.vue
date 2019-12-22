@@ -103,4 +103,10 @@ export default {
   position: relative;
   left: -20px;
 }
+
+@media only screen and (max-width: 600px) {
+  .arrow-down {
+    top: -15px;
+  }
+}
 </style>
