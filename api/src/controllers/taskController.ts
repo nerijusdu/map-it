@@ -9,4 +9,4 @@ router.get('/:id/complete', respose(async (req, res) => {
   return res.json({});
 }));
 
-export const TaskController = router;
+export default router;

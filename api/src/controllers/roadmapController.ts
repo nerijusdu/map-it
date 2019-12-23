@@ -9,4 +9,4 @@ router.post('/assign', respose(async (req, res) => {
   return res.json(result);
 }));
 
-export const RoadmapController = router;
+export default router;

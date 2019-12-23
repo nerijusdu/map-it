@@ -4,15 +4,7 @@ import cors from 'cors';
 import express from 'express';
 import swaggerUi from 'swagger-ui-express';
 import {PORT} from './config';
-import {
-  AccountController,
-  CategoryController,
-  EpicController,
-  MilestoneController,
-  RoadmapController,
-  TaskController,
-  UserController
-} from './controllers';
+import { registerControllers } from './controllers';
 import * as auth from './middleware/auth';
 import ErrorHandler from './middleware/errorHandler';
 import * as database from './services/databaseService';
@@ -29,13 +21,7 @@ app.use(bodyParser.json());
 app.use(auth.verifyUser);
 
 app.use(express.static('public'));
-app.use('/api/roadmaps', RoadmapController);
-app.use('/api/account', AccountController);
-app.use('/api/tasks', TaskController);
-app.use('/api/categories', CategoryController);
-app.use('/api/milestones', MilestoneController);
-app.use('/api/epics', EpicController);
-app.use('/api/users', UserController);
+registerControllers(app);
 app.get('/api/health', (req, res) => {
   res.json(true);
 });
