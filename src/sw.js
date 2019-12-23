@@ -1,10 +1,19 @@
 const RUNTIME = 'runtime';
-const PRECACHE = 'static-files-v2';
+const PRECACHE = 'static-files-v3';
 const PRECACHE_URLS = [
   '/',
+  'static/manifest.json',
+  'static/logo192.png',
+  'static/logo512.png',
   'static/favicon-16x16.png',
   'static/favicon-32x32.png',
   'static/favicon.ico',
+  'static/js/0.js',
+  'static/js/1.js',
+  'static/js/2.js',
+  'static/js/3.js',
+  'static/js/4.js',
+  'static/js/5.js',
   'static/js/app.js',
   'static/js/vendor.js',
   'static/js/manifest.js',

@@ -169,5 +169,9 @@ export default {
     margin-left: 5%;
     margin-right: 5%;
   }
+
+  .roadmap-controls-container {
+  align-items: flex-start;
+  }
 }
 </style>

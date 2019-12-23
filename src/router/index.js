@@ -1,12 +1,13 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 import authService from '../services/authService';
-import Timeline from '../components/Timeline/Index';
-import Login from '../components/Login';
-import Register from '../components/Register';
-import Navigation from '../components/Navigation';
-import RoadmapList from '../components/RoadmapList';
-import RoadmapPreview from '../components/RoadmapPreview';
+
+const Timeline = () => import('../components/Timeline/Index');
+const Login = () => import('../components/Login');
+const Register = () => import('../components/Register');
+const Navigation = () => import('../components/Navigation');
+const RoadmapList = () => import('../components/RoadmapList');
+const RoadmapPreview = () => import('../components/RoadmapPreview');
 
 Vue.use(Router);
 

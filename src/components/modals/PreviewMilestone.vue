@@ -27,10 +27,12 @@ export default {
   },
   watch: {
     milestoneToPreview(val) {
-      this.milestone = {
-        ...val,
-        date: moment(val.date)
-      };
+      if (val) {
+        this.milestone = {
+          ...val,
+          date: moment(val.date)
+        };
+      }
     }
   },
   data: () => ({

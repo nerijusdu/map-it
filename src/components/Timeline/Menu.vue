@@ -7,7 +7,7 @@
     </div> -->
     <div class="flex add-button" v-if="!!selectedRoadmap">
       <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addTask')">
-        <i class="fas fa-plus"/>
+        <img src="@/assets/plus.svg" alt="Add"/>
       </md-button>
     </div>
   </div>

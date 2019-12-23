@@ -12,7 +12,7 @@
       </div>
       <div class="subcategory-container">
         <div
-          :class="['subcategory', getTasks(c.id).length === 0 ? 'no-tasks' : '']"
+          :class="['subcategory', getTasks(c.id).length === 0 && roadmapTasks !== 0 ? 'no-tasks' : '']"
           v-for="c in renderCategories"
           :key="c.id">
           <div
@@ -27,6 +27,7 @@
             <md-tooltip md-direction="top">{{c.title}}</md-tooltip>
             <div class="title">{{c.title}}</div>
           </div>
+          <div :class="['subcategory-separator', !roadmapTasks ? 'no-tasks' : '']"></div>
           <div class="rows-container">
             <div
               v-for="task in getTasks(c.id)"
@@ -51,11 +52,14 @@
 </template>
 
 <script>
-import { mapGetters, mapActions } from 'vuex';
+import { mapGetters, mapActions, mapState } from 'vuex';
 
 export default {
   props: ['category', 'subCategories'],
   computed: {
+    ...mapState({
+      roadmapTasks: state => state.roadmap.current.tasks.length
+    }),
     ...mapGetters('roadmap', {
       getTasks: 'tasksByCategory',
       timeFrame: 'roadmapTimeFrame'
@@ -159,6 +163,11 @@ export default {
   text-overflow: ellipsis;
 }
 
+.subcategory-separator {
+  height: 1px;
+  display: none;
+}
+
 @media only screen and (max-width: 600px) {
   .category, .subcategory {
     flex-direction: column;
@@ -188,6 +197,13 @@ export default {
 
   .label.main {
     display: none;
+  }
+
+  .subcategory-separator:not(.no-tasks) {
+    display: block;
+    width: 100%;
+    border-bottom: 2px solid white;
+    margin-bottom: 5px;
   }
 }
 </style>

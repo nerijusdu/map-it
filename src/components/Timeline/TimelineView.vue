@@ -17,7 +17,7 @@
         :style="{ width: `${dayWidth}%` }"
       >{{day}}</div>
     </div>
-    <Milestones :taskCount="tasks.length" :categoryCount="categories.length"/>
+    <Milestones />
     <div class="flex">
       <div class="table">
         <Category

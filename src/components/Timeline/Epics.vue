@@ -6,7 +6,10 @@
       :key="epic.id"
       :style="{
         background: epic.color,
-        height: `${((epic.taskCount + epic.emptyCategories) * 35) + (epic.categoryCount * 5) - 10}px`
+        height: `${isMobileView
+          ? (epic.taskCount * 35) + (epic.categoryCount * 55) - 10
+          : ((epic.taskCount + epic.emptyCategories) * 35) + (epic.categoryCount * 5) - 10
+        }px`
       }"
       @click="() => previewEpic({ epicId: epic.id, modal: $modal })">
       {{epic.title}}
@@ -18,11 +21,19 @@
 import { mapGetters, mapActions } from 'vuex';
 
 export default {
+  data: () => ({
+    isMobileView: window.innerWidth <= 600
+  }),
   computed: {
     ...mapGetters('roadmap', ['epicList'])
   },
   methods: {
     ...mapActions('roadmap', ['previewEpic'])
+  },
+  created() {
+    window
+      .matchMedia('(max-width: 600px)')
+      .addListener((e) => { this.isMobileView = !!e.matches; });
   }
 };
 </script>
@@ -46,5 +57,12 @@ export default {
 
 .epic:not(:first-of-type) {
   margin-top: 10px;
+}
+
+
+@media only screen and (max-width: 600px) {
+  .epics-container {
+    margin-top: 20px;
+  }
 }
 </style>

@@ -18,16 +18,16 @@
     </div>
     <div class="flex">
       <div class="navigation-item flex-center" v-show="isAdmin">
-        <div>I am admin</div>
+        <div class="navigation-item-title">I am admin</div>
       </div>
       <div class="navigation-item flex-center" @click="$router.push('/roadmaps')">
         <div class="navigation-item-icon"><img src="@/assets/map.svg"/></div>
-        <div>Roadmaps</div>
+        <div class="navigation-item-title">Roadmaps</div>
       </div>
       <md-menu class="navigation-item flex-center" md-size="small" md-align-trigger>
         <div class="flex-center" md-menu-trigger>
           <div class="navigation-item-icon"><img src="@/assets/user.svg"/></div>
-          <div>Profile</div>
+          <div class="navigation-item-title">Profile</div>
         </div>
         <md-menu-content>
           <md-menu-item @click="logout">Logout</md-menu-item>
@@ -121,8 +121,12 @@ export default {
 }
 
 @media only screen and (max-width: 600px) {
-  .roadmap-select {
+  .navigation-item-title {
     display: none;
+  }
+
+  .navigation-item-icon {
+    margin-right: 0px;
   }
 }
 </style>
