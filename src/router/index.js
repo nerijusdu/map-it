@@ -8,6 +8,7 @@ const Register = () => import('../components/Register');
 const Navigation = () => import('../components/Navigation');
 const RoadmapList = () => import('../components/RoadmapList');
 const RoadmapPreview = () => import('../components/RoadmapPreview');
+const Logs = () => import('../components/Logs');
 
 Vue.use(Router);
 
@@ -48,6 +49,14 @@ const router = new Router({
       name: 'RoadmapPreview',
       components: {
         default: RoadmapPreview,
+        navigation: Navigation
+      }
+    },
+    {
+      path: '/logs',
+      name: 'Logs',
+      components: {
+        default: Logs,
         navigation: Navigation
       }
     }

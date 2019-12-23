@@ -5,6 +5,7 @@ import milestone from './milestone';
 import epic from './epic';
 import task from './task';
 import user from './user';
+import logs from './logs';
 
 export default {
   ...account,
@@ -13,5 +14,6 @@ export default {
   ...milestone,
   ...epic,
   ...task,
+  ...logs,
   ...user
 };
