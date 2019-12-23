@@ -1,11 +1,18 @@
+import shortid from 'shortid';
 import { createLogger, format, transports } from 'winston';
 import { logsDir } from '../config';
 // tslint:disable-next-line: no-var-requires
 const azureBlobTransport = require('winston3-azureblob-transport');
 
+const addIdentifierFormat = format((info) => {
+  info.log_id = shortid.generate();
+  return info;
+});
+
 const logger = createLogger({
   level: 'info',
   format: format.combine(
+    addIdentifierFormat(),
     format.timestamp({
       format: 'YYYY-MM-DD HH:mm:ss'
     }),
@@ -15,12 +22,7 @@ const logger = createLogger({
   ),
   transports: [
     new transports.File({
-      filename: `${logsDir}/api-errors.log`,
-      level: 'error'
-    }),
-    new transports.File({
-      filename: `${logsDir}/api.log`,
-      level: 'info'
+      filename: `${logsDir}/api.log`
     })
   ]
 });

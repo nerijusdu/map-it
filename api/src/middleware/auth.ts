@@ -12,6 +12,7 @@ const publicUrls = [
 ];
 const adminUrls = [
   /\/api\/account\/iamadmin/,
+  /\/api\/logs.*/
 ];
 const staticContent = /\.(css|html|js|ico|png)|\/$/;
 
