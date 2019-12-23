@@ -4,7 +4,7 @@
       :style="{
         background: `${isMouseOver ? color : 'transparent'}`,
         height: `${dateMarkerHeigh}px`,
-        'margin-left': `${(window.width - categoryLabelSize) * percentage / 100 + categoryLabelSize}px`
+        'margin-left': `${((window.width - otherElementsSize) * percentage / 100) + categoryLabelSize}px`
       }"
       @click="click"
     >
@@ -30,6 +30,10 @@ export default {
       type: Number,
       required: true
     },
+    hasEpics: {
+      type: Boolean,
+      default: false
+    },
     title: {
       type: String,
       required: true
@@ -49,7 +53,11 @@ export default {
   },
   computed: {
     categoryLabelSize() {
-      return this.window.width > 600 ? 200 : 10;
+      return this.window.width > 600 ? 195 : 10;
+    },
+    otherElementsSize() {
+      const epicSize = this.hasEpics ? 40 : 0;
+      return this.categoryLabelSize + epicSize;
     }
   },
   created() {

@@ -3,6 +3,7 @@
     <DateMarker
       :percentage="currentDateMarkerMargin"
       :dateMarkerHeigh="isMobileView ? mobileDateMarkerHeight : dateMarkerHeight"
+      :hasEpics="hasEpics"
       title="Today"
       v-show="showCurrentDate"
     />
@@ -11,6 +12,7 @@
       :key="milestone.id"
       :percentage="calculatePercentage(timeFrame, { startDate: timeFrame.startDate, endDate: moment(milestone.date) })"
       :dateMarkerHeigh="isMobileView ? mobileDateMarkerHeight : dateMarkerHeight"
+      :hasEpics="hasEpics"
       :title="milestone.title"
       :color="milestone.color"
       :click="() => previewMilestone({ milestoneId: milestone.id, modal: $modal })"
@@ -32,7 +34,8 @@ export default {
   }),
   computed: {
     ...mapState({
-      roadmap: state => state.roadmap.current
+      roadmap: state => state.roadmap.current,
+      hasEpics: state => state.roadmap.current.epics.length > 0
     }),
     ...mapGetters('roadmap', {
       timeFrame: 'roadmapTimeFrame'
@@ -73,8 +76,7 @@ export default {
         {
           startDate: this.timeFrame.startDate,
           endDate: moment()
-        },
-        true
+        }
       );
     }
   },
