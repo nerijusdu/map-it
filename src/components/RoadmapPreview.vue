@@ -58,7 +58,7 @@ import resources from '../services/resourceService';
 import { datePreviewFormat } from '../constants';
 import UserList from './UserList';
 import roadmap from '../services/api/roadmap';
-// TODO: kickout on token refresh in this page
+
 export default {
   data: () => ({
     roadmap: {

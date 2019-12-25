@@ -23,16 +23,17 @@ export const verifyUser = (async (req, res, next) => {
     return;
   }
 
-  if (adminUrls.find((x) => x.test(req.url)) && req.user?.isAdmin !== true) {
-    res.status(403).json({ message: 'Unauthorized' });
-    return;
-  }
-
   const tokenStr = (req.headers.authorization || '').substring('Bearer '.length);
 
   try {
     const token: any = await auth.verifyToken(tokenStr);
     req.user = token.data;
+
+    if (adminUrls.find((x) => x.test(req.url)) && token.data.isAdmin !== true) {
+      res.status(403).json({ message: 'Unauthorized' });
+      return;
+    }
+
     next();
   } catch (e) {
     res.status(401)

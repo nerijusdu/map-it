@@ -86,7 +86,7 @@ export default {
 
       if (res.ok) {
         this.data = res.data.items;
-        this.totalPages = res.data.pageCount;
+        this.totalPages = res.data.pageCount || 1;
       }
     }
   },
