@@ -81,7 +81,6 @@ export default {
 
       const res = await this.fetchDataFunc({
         page: this.page,
-        pageSize: 5,
         ...filters
       });
 

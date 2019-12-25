@@ -22,6 +22,7 @@ export default {
       body: JSON.stringify(userInfo)
     }, {
       ignoreAuth: true,
+      ignoreLoading: true,
       ...options
     });
   },
