@@ -17,8 +17,9 @@
       </md-field>
     </div>
     <div class="flex">
-      <div class="navigation-item flex-center" v-show="isAdmin">
-        <div class="navigation-item-title">I am admin</div>
+      <div class="navigation-item flex-center" v-show="isAdmin" @click="$router.push('/logs')">
+        <div class="navigation-item-icon"><img src="@/assets/book.svg"/></div>
+        <div class="navigation-item-title">Logs</div>
       </div>
       <div class="navigation-item flex-center" @click="$router.push('/roadmaps')">
         <div class="navigation-item-icon"><img src="@/assets/map.svg"/></div>

@@ -11,6 +11,7 @@ const initialState = {
     email: window.localStorage.getItem('email'),
     expiresAt: moment(window.localStorage.getItem('tokenExpiresAt'))
   },
+  isRefreshingToken: false,
   isInitialized: false,
   isLoading: false,
   isOnline: true,
@@ -46,7 +47,7 @@ export const actions = {
 
     return dispatch('refreshToken');
   },
-  async refreshToken({ state, dispatch }) {
+  async refreshToken({ state, dispatch, commit }) {
     let { email, refreshToken } = state.user;
     if (!email || !refreshToken) {
       refreshToken = window.localStorage.getItem('refreshToken');
@@ -56,10 +57,21 @@ export const actions = {
       return false;
     }
 
+    if (state.isRefreshingToken) {
+      return new Promise((resolve) => {
+        setTimeout(async () => {
+          const res = await dispatch('refreshToken');
+          resolve(res);
+        }, 500);
+      });
+    }
+
+    commit('mRefreshTokenToggle', true);
     const result = await api.refreshToken({
       email,
       refreshToken
     });
+    commit('mRefreshTokenToggle', false);
     if (!result || !result.ok) {
       return false;
     }
@@ -161,6 +173,9 @@ export const mutations = {
   },
   mToggleOnline(state, isOnline) {
     state.isOnline = isOnline;
+  },
+  mRefreshTokenToggle(state, isRefreshing) {
+    state.isRefreshingToken = isRefreshing;
   }
 };
 

@@ -9,4 +9,4 @@ router.get('/', respose(async (req, res) => {
   return res.json(result);
 }));
 
-export const UserController = router;
+export default router;

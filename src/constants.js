@@ -11,6 +11,10 @@ export const publicUrls = [
   '/register'
 ];
 
+export const adminUrls = [
+  '/logs'
+];
+
 export const errorTime = 5 * 1000;
 
 export const validationRules = {
