@@ -1,6 +1,7 @@
 <template>
   <div class="logs-container">
     <paged-list
+      ref="list"
       title="Logs"
       uniqueColumn="log_id"
       :fetchDataFunc="api.getLogs"
@@ -29,6 +30,7 @@
         </div>
       </template>
     </paged-list>
+    <md-button class="md-raised md-accent" @click="clearLogs">Clear logs</md-button>
   </div>
 </template>
 
@@ -46,6 +48,17 @@ export default {
       if (!res.ok) return;
 
       this.$modal.show('preview-log', { ...res.data });
+    },
+    clearLogs() {
+      this.$modal.show('confirmation', {
+        content: 'Are you sure you want to delete all log entries?',
+        confirmAction: async () => {
+          const res = await api.clearLogs();
+          if (res.ok) {
+            this.$refs.list.getData();
+          }
+        }
+      });
     }
   },
   components: {

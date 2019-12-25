@@ -59,6 +59,7 @@
     "@types/pg": "^7.4.10",
     "@types/shortid": "0.0.29",
     "@types/swagger-ui-express": "^4.1.0",
+    "azure-storage": "^2.10.3",
     "bcrypt": "3.0.2",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.18.3",

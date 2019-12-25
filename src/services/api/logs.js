@@ -7,5 +7,8 @@ export default {
   },
   getLogById(logId, options) {
     return apiCall(`/logs/${logId}`, {}, options);
+  },
+  clearLogs(options) {
+    return apiCall('/logs', { method: 'DELETE' }, options);
   }
 };

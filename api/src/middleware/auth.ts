@@ -12,14 +12,13 @@ const publicUrls = [
 ];
 const adminUrls = [
   /\/api\/account\/iamadmin/,
-  /\/api\/logs.*/
+  /\/api\/logs(.*)/
 ];
 const staticContent = /\.(css|html|js|ico|png)|\/$/;
 
 export const verifyUser = (async (req, res, next) => {
   if (publicUrls.find((x) => x.test(req.url)) ||
-      staticContent.test(req.url) ||
-      (adminUrls.find((x) => x.test(req.url)) && !req.user?.isAdmin)) {
+      staticContent.test(req.url)) {
     next();
     return;
   }
@@ -29,6 +28,12 @@ export const verifyUser = (async (req, res, next) => {
   try {
     const token: any = await auth.verifyToken(tokenStr);
     req.user = token.data;
+
+    if (adminUrls.find((x) => x.test(req.url)) && token.data.isAdmin !== true) {
+      res.status(403).json({ message: 'Unauthorized' });
+      return;
+    }
+
     next();
   } catch (e) {
     res.status(401)
