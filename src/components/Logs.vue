@@ -11,6 +11,7 @@
         { name: 'Timestamp', field: 'timestamp' }
       ]"
       :filterValues="{ onlyErrors: false }"
+      @rowClick="handleRowClick"
     >
       <template v-slot:filters="props">
         <div class="checkbox">
@@ -39,6 +40,14 @@ export default {
   data: () => ({
     api
   }),
+  methods: {
+    async handleRowClick(item) {
+      const res = await api.getLogById(item.log_id, { ignoreLoading: true });
+      if (!res.ok) return;
+
+      this.$modal.show('preview-log', { ...res.data });
+    }
+  },
   components: {
     PagedList
   }

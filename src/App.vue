@@ -3,10 +3,8 @@
     <modals />
     <message />
     <router-view name="navigation" />
-    <loading v-if="isLoading"/>
-    <transition name="page" mode="out-in">
-      <router-view v-if="!isLoading"/>
-    </transition>
+    <loading v-show="isLoading"/>
+    <router-view v-show="!isLoading"/>
   </div>
 </template>
 
@@ -39,15 +37,6 @@ export default {
 </script>
 
 <style>
-.page-enter-active, .page-leave-active {
-  transition-duration: 0.3s;
-  transition-property: opacity;
-  transition-timing-function: ease;
-  overflow: hidden;
-}
-.page-enter, .page-leave-active {
-  opacity: 0;
-}
 #app {
   height: 100%;
   width: 100%;

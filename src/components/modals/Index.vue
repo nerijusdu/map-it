@@ -7,6 +7,7 @@
     <PreviewEpic />
     <AddRoadmap />
     <Confirmation />
+    <PreviewLog />
   </div>
 </template>
 
@@ -18,6 +19,7 @@ import PreviewMilestone from './PreviewMilestone';
 import PreviewEpic from './PreviewEpic';
 import AddRoadmap from './AddRoadmap';
 import Confirmation from './Confirmation';
+import PreviewLog from './PreviewLog';
 
 export default {
   components: {
@@ -27,6 +29,7 @@ export default {
     PreviewMilestone,
     PreviewEpic,
     AddRoadmap,
+    PreviewLog,
     Confirmation
   }
 };

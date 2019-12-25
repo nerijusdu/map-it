@@ -20,8 +20,15 @@
         {{c.name}}
       </md-table-head>
     </md-table-row>
-    <md-table-row v-for="dataItem in data" :key="dataItem[uniqueColumn]">
-      <md-table-cell class="clickable"  v-for="c in columns" :key="c.field+c.name">
+    <md-table-row
+      v-for="dataItem in data"
+      :key="dataItem[uniqueColumn]"
+      @click="handleClick(dataItem)">
+      <md-table-cell
+        class="clickable"
+        v-for="c in columns"
+        :key="c.field+c.name"
+      >
         {{ dataItem[c.field] }}
       </md-table-cell>
     </md-table-row>
@@ -58,6 +65,9 @@ export default {
     totalPages: 1
   }),
   methods: {
+    handleClick(item) {
+      this.$emit('rowClick', item);
+    },
     changePage(page) {
       if (page > 0 && page <= this.totalPages) {
         this.page = page;
@@ -73,8 +83,6 @@ export default {
         page: this.page,
         pageSize: 5,
         ...filters
-      }, {
-        ignoreLoading: true
       });
 
       if (res.ok) {
