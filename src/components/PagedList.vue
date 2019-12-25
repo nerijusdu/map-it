@@ -1,5 +1,5 @@
 <template>
-  <md-table>
+  <md-table class="paged-list">
     <md-table-toolbar class="toolbar">
       <h1>{{title}}</h1>
       <div class="page-controls">
@@ -21,6 +21,7 @@
       </md-table-head>
     </md-table-row>
     <md-table-row
+      class="main-bg-color"
       v-for="dataItem in data"
       :key="dataItem[uniqueColumn]"
       @click="handleClick(dataItem)">
@@ -97,6 +98,10 @@ export default {
 </script>
 
 <style scoped>
+.paged-list, .header, .main-bg-color {
+  background-color: var(--main-bg-color);
+}
+
 .toolbar {
   display: flex;
   justify-content: space-between;
