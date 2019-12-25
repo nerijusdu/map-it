@@ -14,4 +14,9 @@ router.get('/:log_id', respose(async (req, res) => {
   return res.json(result);
 }));
 
+router.delete('/', respose(async (res, req) => {
+  const result = await logsService().clear();
+  return req.json(result);
+}));
+
 export default router;

@@ -1,4 +1,5 @@
 import azure from 'azure-storage';
+import { promisify } from 'util';
 
 export class StorageService {
   private blobService: azure.BlobService;
@@ -6,16 +7,16 @@ export class StorageService {
     this.blobService = azure.createBlobService(accountName, accountKey);
   }
 
-  public async getBlobText(container: string, blobname: string): Promise<string> {
-    return new Promise((resolve, reject) => {
-      this.blobService.getBlobToText(container, blobname, (error, text) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(text);
-        }
-      });
-    });
+  public async getBlobText(container: string, blobname: string) {
+    const getBlobText = promisify(this.blobService.getBlobToText).bind(this.blobService);
+    return getBlobText(container, blobname);
+  }
+
+  public async clearBlob(container: string, blobname: string) {
+    const deleteBlob = promisify(this.blobService.deleteBlob).bind(this.blobService);
+    const createBlob = promisify(this.blobService.createAppendBlobFromText).bind(this.blobService);
+    await deleteBlob(container, blobname);
+    await createBlob(container, blobname, '');
   }
 }
 

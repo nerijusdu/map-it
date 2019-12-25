@@ -12,15 +12,19 @@ const publicUrls = [
 ];
 const adminUrls = [
   /\/api\/account\/iamadmin/,
-  /\/api\/logs.*/
+  /\/api\/logs(.*)/
 ];
 const staticContent = /\.(css|html|js|ico|png)|\/$/;
 
 export const verifyUser = (async (req, res, next) => {
   if (publicUrls.find((x) => x.test(req.url)) ||
-      staticContent.test(req.url) ||
-      (adminUrls.find((x) => x.test(req.url)) && !req.user?.isAdmin)) {
+      staticContent.test(req.url)) {
     next();
+    return;
+  }
+
+  if (adminUrls.find((x) => x.test(req.url)) && req.user?.isAdmin !== true) {
+    res.status(403).json({ message: 'Unauthorized' });
     return;
   }
 

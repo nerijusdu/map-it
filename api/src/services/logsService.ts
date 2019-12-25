@@ -5,12 +5,16 @@ import { logsDir } from '../config';
 import { IPagedRequest, IPagedResult } from '../models/pagingModels';
 import { StorageService } from './storageService';
 
+const logFile = `${logsDir}/api.log`;
+const containerName = process.env.LOGS_BLOB_CONTAINER;
+const blobName = process.env.LOGS_BLOB_NAME;
+
 interface IQueryOptions extends IPagedRequest {
   level?: string;
 }
 
 class LogsService {
-  private logCache: LogEntry[];
+  private logCache?: LogEntry[];
   private storageService: StorageService;
 
   constructor() {
@@ -57,6 +61,29 @@ class LogsService {
     return result.find((x: LogEntry) => x.log_id === id);
   }
 
+  public async clear() {
+    this.logCache = undefined;
+    return process.env.LOGS_BLOB_NAME
+      ? this.clearLogsFromBlob()
+      : this.clearLogsFromFile();
+  }
+
+  private clearLogsFromBlob() {
+    return this.storageService.clearBlob(containerName!, blobName!);
+  }
+
+  private clearLogsFromFile() {
+    return new Promise((resolve, reject) => {
+      fs.writeFile(logFile, '', (err) => {
+        if (err) {
+          reject(err);
+        } else {
+          resolve();
+        }
+      });
+    });
+  }
+
   private async readLogs(noCache: boolean = false) {
     if (noCache || !this.logCache) {
       const result = process.env.LOGS_BLOB_NAME
@@ -71,7 +98,7 @@ class LogsService {
   private readLogsFromFile(): Promise<LogEntry[]> {
     return new Promise((resolve) => {
       const readInterface = readline.createInterface({
-        input: fs.createReadStream(`${logsDir}/api.log`)
+        input: fs.createReadStream(logFile)
       });
       const items: LogEntry[] = [];
       readInterface.on('line', (line) => {
@@ -82,7 +109,7 @@ class LogsService {
   }
 
   private async readLogsFromBlob(): Promise<LogEntry[]> {
-    const file = await this.storageService.getBlobText('map-it-logs', 'api.log');
+    const file = await this.storageService.getBlobText(containerName!, blobName!);
     return file
       .split(/\r?\n/)
       .filter((str) => !!(str || '').trim())
