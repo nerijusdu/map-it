@@ -1,6 +1,8 @@
 import api from './api';
 import { publicVapidKey } from '../constants';
 
+let registration;
+
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding)
@@ -18,23 +20,16 @@ const urlBase64ToUint8Array = (base64String) => {
   return outputArray;
 };
 
-const subscribe = async (subscription) => {
-  window.localStorage.removeItem('pushNotificationSubscription');
-
-  await api.subscribeToNotifications(subscription, {
-    ignoreLoading: true,
-    errorHandler: (res, defaultErrorHandler) => {
-      if (res.status === 401) {
-        window.localStorage.setItem('pushNotificationSubscription', JSON.stringify(subscription));
-        return null;
-      }
-
-      return defaultErrorHandler(res);
-    }
-  });
-};
+const subscribe = subscription => api.subscribeToNotifications(subscription, {
+  ignoreLoading: true,
+  errorHandler: (res, defaultErrorHandler) => res.status === 401 ? null : defaultErrorHandler(res)
+});
 
 const setupPushNotifications = async (workerRegister) => {
+  if (!registration) {
+    registration = workerRegister;
+  }
+
   const subscription = await workerRegister.pushManager.subscribe({
     userVisibleOnly: true,
     applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
@@ -43,7 +38,33 @@ const setupPushNotifications = async (workerRegister) => {
   await subscribe(subscription);
 };
 
+const onLogin = async () => {
+  if (!registration) return;
+
+  const state = await registration.pushManager.permissionState({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+  });
+  if (state === 'granted') {
+    await setupPushNotifications(registration);
+  }
+};
+
+const onLogout = async () => {
+  if (!registration) return;
+
+  const state = await registration.pushManager.permissionState({
+    userVisibleOnly: true,
+    applicationServerKey: urlBase64ToUint8Array(publicVapidKey)
+  });
+  const subscription = await registration.pushManager.getSubscription();
+  if (state === 'granted' && subscription) {
+    await api.unsubscribeFromNotifications(subscription, { ignoreLoading: true });
+  }
+};
+
 export default {
   setupPushNotifications,
-  subscribe
+  onLogin,
+  onLogout
 };

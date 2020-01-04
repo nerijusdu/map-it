@@ -14,42 +14,57 @@ class NotificationService {
 
   public async subscribe(subscription: webpush.PushSubscription) {
     if (!this.user) {
-      throw new HttpError('Not logged in.', 400, { retryAfterLogin: true });
+      throw new HttpError('Not logged in.', 400);
     }
 
-    // TODO: support multiple subscriptions
-    let userNotification = await connection()
+    const userNotification = await connection()
       .manager
-      .findOne(UserNotification, { where: { userId: this.user.id }});
+      .findOne(UserNotification, { where: {
+        userId: this.user.id,
+        endpoint: subscription.endpoint,
+        p256dhKey: subscription.keys.p256dh,
+        authKey: subscription.keys.auth
+      }});
 
-    if (!userNotification) {
-      userNotification = new UserNotification();
-      userNotification.userId = this.user.id;
+    if (userNotification) {
+      return;
     }
 
-    userNotification.endpoint = subscription.endpoint;
-    userNotification.p256dhKey = subscription.keys.p256dh;
-    userNotification.authKey = subscription.keys.auth;
+    const newUserNotification = new UserNotification();
+    newUserNotification.userId = this.user.id;
+    newUserNotification.endpoint = subscription.endpoint;
+    newUserNotification.p256dhKey = subscription.keys.p256dh;
+    newUserNotification.authKey = subscription.keys.auth;
 
-    connection().manager.save(userNotification);
+    await connection().manager.save(newUserNotification);
+  }
+
+  public async unsubscribe(subscription: webpush.PushSubscription) {
+    await connection().manager.delete(UserNotification, {
+      endpoint: subscription.endpoint,
+      p256dhKey: subscription.keys.p256dh,
+      authKey: subscription.keys.auth
+    });
   }
 
   public async sendNotification(userId: number, payload: INotificationPayload) {
-    const userNotification = await connection()
+    const userNotifications = await connection()
       .manager
-      .findOne(UserNotification, { where: { userId }});
+      .find(UserNotification, { where: { userId }});
 
-    if (!userNotification) {
+    if (!userNotifications) {
       return false;
     }
 
-    await webpush.sendNotification({
-      endpoint: userNotification.endpoint,
-      keys: {
-        p256dh: userNotification.p256dhKey,
-        auth: userNotification.authKey
-      }
-    }, JSON.stringify(payload));
+    userNotifications.forEach((un) =>
+      webpush.sendNotification({
+        endpoint: un.endpoint,
+        keys: {
+          p256dh: un.p256dhKey,
+          auth: un.authKey
+        }
+      }, JSON.stringify(payload))
+    );
 
     return true;
   }

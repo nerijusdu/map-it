@@ -9,4 +9,9 @@ router.post('/subscribe', respose(async (req, res) => {
   return res.json({});
 }));
 
+router.post('/unsubscribe', respose(async (req, res) => {
+  await notificationService().unsubscribe(req.body);
+  return res.json({});
+}));
+
 export default router;

@@ -5,7 +5,7 @@ import respose from '../utils/respose';
 const router = crudRouter(taskService, ['category', 'roadmap']);
 
 router.get('/:id/complete', respose(async (req, res) => {
-  await taskService(req.user!).complete(req.params.id, req.query.revert);
+  await taskService(req.user!).complete(req.params.id, req.query.revert === 'true');
   return res.json({});
 }));
 

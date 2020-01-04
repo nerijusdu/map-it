@@ -116,6 +116,7 @@ export const actions = {
     const refreshToken = state.user.refreshToken || window.localStorage.getItem('refreshToken');
     const email = state.user.email || window.localStorage.getItem('email');
     api.logout(refreshToken, email);
+    notificationService.onLogout();
 
     window.localStorage.removeItem('userId');
     window.localStorage.removeItem('token');
@@ -139,11 +140,7 @@ export const actions = {
   },
   async onLogin({ dispatch }) {
     await dispatch('roadmap/init', null, { root: true });
-
-    const pushSubscription = window.localStorage.getItem('pushNotificationSubscription');
-    if (pushSubscription) {
-      await notificationService.subscribe(JSON.parse(pushSubscription));
-    }
+    await notificationService.onLogin();
   },
   async init({ commit, state, dispatch }) {
     if (state.isInitialized) {

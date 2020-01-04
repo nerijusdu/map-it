@@ -33,10 +33,12 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
     return super.save(taskInstance);
   }
 
-  public async complete(id: number, revert?: boolean) {
+  public async complete(id: number, revert: boolean) {
     const task = await super.getById(id);
-    await connection().manager
-      .update(Task, { id, userId: this.user!.id }, { isCompleted: !revert });
+    await super.canEdit(task.roadmapId);
+    await connection()
+      .manager
+      .update(Task, { id }, { isCompleted: !revert });
 
     if (!revert && this.user.id !== task.userId) {
       await notificationService().sendNotification(task.userId, {
