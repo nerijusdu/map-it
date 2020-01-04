@@ -13,7 +13,7 @@ interface IQueryOptions extends IPagedRequest {
   level?: string;
 }
 
-class LogsService {
+export class LogsService {
   private logCache?: LogEntry[];
   private storageService: StorageService;
 
@@ -51,7 +51,7 @@ class LogsService {
 
     return {
       pageCount: Math.ceil(allItems.length / pageSize),
-      pageNumber: 1,
+      pageNumber: page,
       items
     };
   }
