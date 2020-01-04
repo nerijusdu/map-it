@@ -10,7 +10,7 @@ env:
   AZURE_WEBAPP_PACKAGE_PATH: './api'
   NODE_VERSION: '10.16.0'
   NODE_ENV: prod
-  VAPID_KEYS_PUBLIC: ${{ env.VAPID_KEYS_PUBLIC }}
+  VAPID_KEYS_PUBLIC: ${{ secrets.VAPID_KEYS_PUBLIC }}
 
 jobs:
   build-and-deploy:
