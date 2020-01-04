@@ -9,13 +9,4 @@ router.post('/subscribe', respose(async (req, res) => {
   return res.json({});
 }));
 
-router.get('/test', respose(async (req, res) => {
-  const result = await notificationService().sendNotification(req.query.user, {
-    title: 'test push',
-    body: 'have some content',
-    url: '/#/roadmaps'
-  });
-  return res.json({ success: result });
-}));
-
 export default router;

@@ -58,7 +58,7 @@ export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements
     }
 
     const roadmapUser = roadmap.roadmapUsers.find((x) => x.userId === this.user.id);
-    if (roadmap.userId !== this.user.id && (!roadmapUser || !roadmapUser!.readonly)) {
+    if (roadmap.userId !== this.user.id && (!roadmapUser || roadmapUser!.readonly)) {
       throw new HttpError(resources.Generic_ValidationError, 400);
     }
   }

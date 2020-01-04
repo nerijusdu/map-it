@@ -126,7 +126,7 @@ export const actions = {
     commit('mSaveUser', { token: null, refreshToken: null, email: null });
     commit('mLogout');
     dispatch('roadmap/reset', null, { root: true });
-    router.push('Login');
+    router.push('/login');
   },
   toggleOnline({ commit, dispatch, state }, isOnline) {
     if (state.isOnline && !isOnline) {

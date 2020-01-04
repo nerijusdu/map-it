@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import TimelineView from './TimelineView';
 import Menu from './Menu';
 
@@ -22,6 +22,28 @@ export default {
     ...mapState({
       roadmap: state => state.roadmap.current
     })
+  },
+  methods: mapActions('roadmap', ['selectRoadmap']),
+  beforeRouteEnter(to, from, next) {
+    next((vm) => {
+      const id = parseInt(to.params.id, 10);
+      if (id && vm.roadmap.id !== id) {
+        vm.selectRoadmap(id);
+      }
+      if (!id) {
+        vm.$router.push(`/timeline/${vm.roadmap.id || 'empty'}`);
+      }
+    });
+  },
+  async beforeRouteUpdate(to, from, next) {
+    const id = parseInt(to.params.id, 10);
+    if (id && this.roadmap.id !== id) {
+      await this.selectRoadmap(id);
+    }
+    if (!id) {
+      return next(`/timeline/${this.roadmap.id || 'empty'}`);
+    }
+    return next();
   }
 };
 </script>

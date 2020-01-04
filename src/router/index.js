@@ -20,6 +20,13 @@ const router = new Router({
     },
     {
       path: '/timeline',
+      components: {
+        default: Timeline,
+        navigation: Navigation
+      }
+    },
+    {
+      path: '/timeline/:id',
       name: 'Timeline',
       components: {
         default: Timeline,

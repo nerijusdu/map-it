@@ -3,6 +3,7 @@ import { HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
 import categoryService from './categoryService';
 import { connection } from './databaseService';
+import notificationService from './notificationService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
 
@@ -33,9 +34,17 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
   }
 
   public async complete(id: number, revert?: boolean) {
-    await super.getById(id);
+    const task = await super.getById(id);
     await connection().manager
       .update(Task, { id, userId: this.user!.id }, { isCompleted: !revert });
+
+    if (!revert && this.user.id !== task.userId) {
+      await notificationService().sendNotification(task.userId, {
+        title: `Task completed`,
+        body: `${task.title} was completed by ${this.user.name}`,
+        url: `/#/timeline/${task.roadmapId}`
+      });
+    }
   }
 }
 

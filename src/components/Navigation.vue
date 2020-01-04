@@ -4,8 +4,8 @@
       <img src="@/assets/logo.svg"/>
     </div>
     <div class="grow flex-center-v">
-      <md-field class="roadmap-select">
-        <md-select v-model="roadmapSelection" @md-selected="updateRoadmap()">
+      <md-field class="roadmap-select" v-show="roadmaps.length > 0">
+        <md-select v-model="roadmapSelection" @md-selected="updateRoadmap">
           <md-option
             v-for="r in roadmaps"
             :key="r.id"
