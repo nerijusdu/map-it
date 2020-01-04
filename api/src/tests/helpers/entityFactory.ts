@@ -1,5 +1,15 @@
+
 import shortid from 'shortid';
-import { Category, Epic, Milestone, Roadmap, RoadmapUser, Task, User } from '../../models';
+import {
+  Category,
+  Epic,
+  Milestone,
+  Roadmap,
+  RoadmapUser,
+  Task,
+  User,
+  UserNotification
+} from '../../models';
 import authService from '../../services/authService';
 import { connection } from '../../services/databaseService';
 
@@ -134,6 +144,16 @@ const linkRoadmapToUser = async (roadmap: Roadmap, user: User, readonly: boolean
   return connection().manager.save(roadmapUser);
 };
 
+const createNotificationSubscription = async (userId: number) => {
+  const subscription = new UserNotification();
+  subscription.userId = userId;
+  subscription.endpoint = shortid.generate();
+  subscription.p256dhKey = shortid.generate();
+  subscription.authKey = shortid.generate();
+
+  return connection().manager.save(subscription);
+}
+
 export default {
   defaultPassword,
   createAccount,
@@ -143,5 +163,6 @@ export default {
   createTask,
   createMilestone,
   createEpic,
-  linkRoadmapToUser
+  linkRoadmapToUser,
+  createNotificationSubscription
 };

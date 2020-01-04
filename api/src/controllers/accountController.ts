@@ -37,8 +37,4 @@ router.post('/register', response(async (req, res) => {
   return res.json(result);
 }));
 
-router.get('/iamadmin', response((req, res) => {
-  return res.json(true);
-}));
-
 export default router;
