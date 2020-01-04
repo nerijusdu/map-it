@@ -8,7 +8,7 @@
     "start": "node build/app.js",
     "test": "ts-mocha --timeout 30000 -p tsconfig.json 'src/tests/**/*.ts'",
     "test-local": "SET NODE_ENV=test-local & nyc ts-mocha -p tsconfig.json src/tests/**/*.ts",
-    "test-watch": "SET NODE_ENV=test-local & ts-mocha -p tsconfig.json src/tests/**/*test.ts --watch-extensions ts --watch",
+    "test-watch": "SET NODE_ENV=test-local & ts-mocha -p tsconfig.json src/tests/**/*.ts --watch-extensions ts --watch",
     "tsc": "tsc",
     "watch": "ts-node-dev --poll --respawn --transpileOnly ./src/app.ts",
     "lint": "tslint -c tslint.json 'src/**/*.ts'",
