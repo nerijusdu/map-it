@@ -125,11 +125,11 @@ const createEpic = async (roadmapId: number, modifier?: (t: Epic) => Epic) => {
   return connection().manager.save(epic);
 };
 
-const linkRoadmapToUser = async (roadmap: Roadmap, user: User) => {
+const linkRoadmapToUser = async (roadmap: Roadmap, user: User, readonly: boolean = false) => {
   const roadmapUser = new RoadmapUser();
   roadmapUser.roadmap = roadmap;
   roadmapUser.user = user;
-  roadmapUser.readonly = false;
+  roadmapUser.readonly = readonly;
 
   return connection().manager.save(roadmapUser);
 };
