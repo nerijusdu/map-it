@@ -1,6 +1,7 @@
 import moment from 'moment';
 import api from '@/services/api';
 import { errorTime } from '@/constants';
+import notificationService from '../../services/notificationService';
 
 const initialState = {
   user: {
@@ -91,7 +92,7 @@ export const actions = {
     window.localStorage.setItem('email', data.email);
     window.localStorage.setItem('tokenExpiresAt', data.expiresAt);
     commit('mSaveUser', data);
-    dispatch('roadmap/init', null, { root: true });
+    dispatch('onLogin');
   },
   showError({ commit }, error) {
     if (error) {
@@ -136,12 +137,20 @@ export const actions = {
     }
     commit('mToggleOnline', isOnline);
   },
+  async onLogin({ dispatch }) {
+    await dispatch('roadmap/init', null, { root: true });
+
+    const pushSubscription = window.localStorage.getItem('pushNotificationSubscription');
+    if (pushSubscription) {
+      await notificationService.subscribe(JSON.parse(pushSubscription));
+    }
+  },
   async init({ commit, state, dispatch }) {
     if (state.isInitialized) {
       return;
     }
     if (state.user.token) {
-      await dispatch('roadmap/init', null, { root: true });
+      await dispatch('onLogin');
     }
 
     commit('mInit');

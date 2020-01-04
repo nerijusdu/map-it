@@ -8,7 +8,8 @@ const publicUrls = [
   /\/api\/account\/refresh(\?.*)?/,
   /\/api\/account\/logout(\?.*)?/,
   /\/api\/health(\?.*)?/,
-  /\/swagger(.*)?/
+  /\/swagger(.*)?/,
+  /\/api\/notifications\/test(.*)?/
 ];
 const adminUrls = [
   /\/api\/account\/iamadmin/,

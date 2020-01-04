@@ -1,3 +1,4 @@
+// tslint:disable: max-line-length
 export const PORT = process.env.PORT || 9091;
 
 export const JWTAge = 900;
@@ -5,6 +6,12 @@ export const JWTAge = 900;
 export const JWTSecret = process.env.JWT_SECRET || 'deveopmentSecret';
 
 export const logsDir = process.env.LOGS_DIR || './logs';
+
+// default values generated for testing
+export const vapidKeys = {
+  publicKey: process.env.VAPID_KEYS_PUBLIC || 'BOVb65HC53gtCEUyE-K39AXwiQt_rsyA16jS8OB7xz0D1_56pPJq7DYDWlBMKewTTJGkoe2IJZVy_rFK6GZFSR0',
+  privateKey: process.env.VAPID_KEYS_PRIVATE || 'qNLKiXhZKkxwQ63e6inSh5JIV_A9Dagtl-Ymgr3zfAk'
+};
 
 export const ORMConfigs: any[] = [
   {

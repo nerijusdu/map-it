@@ -4,6 +4,7 @@ import CategoryController from './categoryController';
 import EpicController from './epicController';
 import LogsController from './logsController';
 import MilestoneController from './milestoneController';
+import NotificationController from './notificationController';
 import RoadmapController from './roadmapController';
 import TaskController from './taskController';
 import UserController from './userController';
@@ -17,4 +18,5 @@ export const registerControllers = (app: Application) => {
   app.use('/api/epics', EpicController);
   app.use('/api/users', UserController);
   app.use('/api/logs', LogsController);
+  app.use('/api/notifications', NotificationController);
 };

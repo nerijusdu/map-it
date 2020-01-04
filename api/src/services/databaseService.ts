@@ -1,7 +1,16 @@
 import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
 import { ORMConfigs } from '../config';
-import { Category, Epic, Milestone, Roadmap, RoadmapUser, Task, User } from '../models';
+import {
+  Category,
+  Epic,
+  Milestone,
+  Roadmap,
+  RoadmapUser,
+  Task,
+  User,
+  UserNotification
+} from '../models';
 import logger from '../utils/logger';
 
 let con: Connection;
@@ -22,7 +31,8 @@ export const init = () => {
       Task,
       Category,
       Milestone,
-      Epic
+      Epic,
+      UserNotification
     ]
   })
     .then((data) => { con = data; })

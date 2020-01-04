@@ -29,7 +29,7 @@ export class ApiCall {
       headers
     })
       .then(this.parseResponse)
-      .then(this.handleErrors)
+      .then(res => this.handleErrors(res, options))
       .catch((err) => {
         this.store.dispatch('app/showError', 'Something went wrong!');
         console.error(err);
@@ -61,13 +61,21 @@ export class ApiCall {
       data
     }))
 
-  handleErrors = (res) => {
+  defaultErrorHandler = (res) => {
+    this.store.dispatch('app/showError', res.data.message);
+    if (res.status === 401) {
+      this.store.dispatch('app/logout', router);
+    }
+    return null;
+  }
+
+  handleErrors = (res, options) => {
     if (!res.ok) {
-      this.store.dispatch('app/showError', res.data.message);
-      if (res.status === 401) {
-        this.store.dispatch('app/logout', router);
+      if (options.errorHandler) {
+        return options.errorHandler(res, this.defaultErrorHandler);
       }
-      return null;
+
+      return this.defaultErrorHandler(res);
     }
     if (res.statusText === 'CACHED' && this.store.state.app.isOnline) {
       this.store.dispatch('app/toggleOnline', false);

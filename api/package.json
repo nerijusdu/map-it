@@ -59,6 +59,7 @@
     "@types/pg": "^7.4.10",
     "@types/shortid": "0.0.29",
     "@types/swagger-ui-express": "^4.1.0",
+    "@types/web-push": "^3.3.0",
     "azure-storage": "^2.10.3",
     "bcrypt": "3.0.2",
     "bcryptjs": "^2.4.3",
@@ -74,6 +75,7 @@
     "ts-node": "^8.5.4",
     "typeorm": "^0.2.7",
     "typescript": "^3.7.3",
+    "web-push": "^3.4.3",
     "winston": "^3.2.1",
     "winston3-azureblob-transport": "^0.1.0"
   }
