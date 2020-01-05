@@ -14,6 +14,7 @@ import './services/api';
 import Modals from './components/modals/Index';
 import Loading from './components/Loading';
 import Message from './components/Message';
+import notificationService from './services/notificationService';
 
 export default {
   name: 'App',
@@ -30,8 +31,12 @@ export default {
   methods: {
     ...mapActions('app', ['init'])
   },
-  created() {
-    this.init();
+  async created() {
+    await this.init();
+    if ('serviceWorker' in navigator) {
+      const workerRegistration = await navigator.serviceWorker.register('sw.js');
+      notificationService.setupPushNotifications(workerRegistration);
+    }
   }
 };
 </script>

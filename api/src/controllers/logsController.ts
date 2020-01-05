@@ -1,20 +1,20 @@
 import { Router } from 'express';
 import logsService from '../services/logsService';
-import respose from '../utils/respose';
+import response from '../utils/response';
 
 const router = Router();
 
-router.get('/', respose(async (req, res) => {
+router.get('/', response(async (req, res) => {
   const result = await logsService().getAll(req.query);
   return res.json(result);
 }));
 
-router.get('/:log_id', respose(async (req, res) => {
+router.get('/:log_id', response(async (req, res) => {
   const result = await logsService().getById(req.params.log_id);
   return res.json(result);
 }));
 
-router.delete('/', respose(async (res, req) => {
+router.delete('/', response(async (res, req) => {
   await logsService().clear();
   return req.json({});
 }));

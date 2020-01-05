@@ -1,11 +1,11 @@
 import taskService from '../services/taskService';
 import crudRouter from '../utils/crudRouter';
-import respose from '../utils/respose';
+import response from '../utils/response';
 
 const router = crudRouter(taskService, ['category', 'roadmap']);
 
-router.get('/:id/complete', respose(async (req, res) => {
-  await taskService(req.user!).complete(req.params.id, req.query.revert);
+router.get('/:id/complete', response(async (req, res) => {
+  await taskService(req.user!).complete(req.params.id, req.query.revert === 'true');
   return res.json({});
 }));
 

@@ -6,6 +6,7 @@ import epic from './epic';
 import task from './task';
 import user from './user';
 import logs from './logs';
+import notifications from './notifications';
 
 export default {
   ...account,
@@ -15,5 +16,6 @@ export default {
   ...epic,
   ...task,
   ...logs,
-  ...user
+  ...user,
+  ...notifications
 };

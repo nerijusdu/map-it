@@ -78,6 +78,46 @@ const onFetchHandler = (e) => {
   e.respondWith(fetchPromise);
 };
 
+const pushNotificationHandler = (e) => {
+  const data = e.data.json();
+  self.registration.showNotification(data.title, {
+    body: data.body,
+    data,
+    icon: '/static/logo192.png'
+  });
+};
+
+const notificationClickHandler = (e) => {
+  const url = e.notification.data.url;
+  if (!url) {
+    return;
+  }
+
+  e.notification.close(); // Android needs explicit close
+
+  // eslint-disable-next-line no-undef
+  const clientsVar = clients;
+  const openUrlPromise = clientsVar
+    .matchAll({ type: 'window' })
+    .then((windowClients) => {
+      for (let i = 0; i < windowClients.length; i += 1) {
+        const client = windowClients[i];
+        if (client.url === url && 'focus' in client) {
+          return client.focus();
+        }
+      }
+
+      if (clientsVar.openWindow) {
+        return clientsVar.openWindow(url);
+      }
+
+      return null;
+    });
+  e.waitUntil(openUrlPromise);
+};
+
 self.addEventListener('install', cacheStaticFiles);
 self.addEventListener('activate', removeOldCaches);
 self.addEventListener('fetch', onFetchHandler);
+self.addEventListener('push', pushNotificationHandler);
+self.addEventListener('notificationclick', notificationClickHandler);

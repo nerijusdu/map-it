@@ -128,7 +128,7 @@ describe('Task post tests', () => {
     const anotherUser = await entityFactory.createAccount();
     const anotherRoadmap = await entityFactory.createRoadmap(anotherUser.id);
     await entityFactory.createCategory(anotherRoadmap.id);
-    await entityFactory.linkRoadmapToUser(anotherRoadmap, user);
+    await entityFactory.linkRoadmapToUser(anotherRoadmap, user, true);
     const task = await entityFactory.createTask(anotherRoadmap.id);
 
     const oldTitle = task.title;
@@ -211,7 +211,7 @@ describe('Task delete tests', () => {
     const differentUser = await entityFactory.createAccount();
     const differentRoadmap = await entityFactory.createRoadmap(differentUser.id);
     await entityFactory.createCategory(differentRoadmap.id);
-    await entityFactory.linkRoadmapToUser(differentRoadmap, user);
+    await entityFactory.linkRoadmapToUser(differentRoadmap, user, true);
     const task = await entityFactory.createTask(differentRoadmap.id);
 
     const response = await server

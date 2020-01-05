@@ -1,10 +1,10 @@
-import azure from 'azure-storage';
+import { BlobService, createBlobService } from 'azure-storage';
 import { promisify } from 'util';
 
 export class StorageService {
-  private blobService: azure.BlobService;
+  private blobService: BlobService;
   constructor(accountName: string, accountKey: string) {
-    this.blobService = azure.createBlobService(accountName, accountKey);
+    this.blobService = createBlobService(accountName, accountKey);
   }
 
   public async getBlobText(container: string, blobname: string) {

@@ -3,6 +3,7 @@ import api from '../../../services/api';
 import { roadmapMonthFormat } from '../../../constants';
 import converters from '../../../services/converterService';
 import formatService from '../../../services/formatService';
+import router from '../../../router';
 
 const initialState = {
   current: {},
@@ -102,6 +103,8 @@ export const actions = {
     window.localStorage.setItem('roadmapId', roadmapId);
 
     commit('mSelectRoadmap', result.data);
+    router.push(`/timeline/${roadmapId}`);
+
     return true;
   },
   async init({ commit, state, dispatch }) {

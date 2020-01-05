@@ -4,6 +4,7 @@ import validate from '../utils/validate';
 import accountService from './accountService';
 import { connection } from './databaseService';
 import { IEntityServiceBase } from './entityServiceBase';
+import notificationService from './notificationService';
 
 class RoadmapService implements IEntityServiceBase<Roadmap> {
   constructor(private user: User) {
@@ -87,7 +88,16 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
     roadmapUser.user = user;
     roadmapUser.readonly = data.readonly;
 
-    return connection().manager.save(RoadmapUser, roadmapUser);
+    const result = await connection().manager.save(RoadmapUser, roadmapUser);
+    if (result) {
+      await notificationService().sendNotification(user.id, {
+        title: 'New roadmap added',
+        body: `You have been added to ${roadmap.title} roadmap by ${this.user.name}`,
+        url: `/#/roadmaps/${roadmap.id}`
+      });
+    }
+
+    return result;
   }
 }
 

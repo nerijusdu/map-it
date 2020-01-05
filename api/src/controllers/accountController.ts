@@ -1,33 +1,33 @@
 import { Router } from 'express';
 import { User } from '../models';
 import accountService from '../services/accountService';
-import respose from '../utils/respose';
+import response from '../utils/response';
 
 const router = Router();
 
-router.post('/login', respose(async (req, res) => {
+router.post('/login', response(async (req, res) => {
   const { email, password } = req.body;
 
   const result = await accountService().login(email, password);
   return res.json(result);
 }));
 
-router.get('/verify', respose((req, res) => {
+router.get('/verify', response((req, res) => {
   const result = accountService().verify(req.headers.authorization);
   return res.json(result);
 }));
 
-router.post('/refresh', respose(async (req, res) => {
+router.post('/refresh', response(async (req, res) => {
   const result = await accountService().refresh(req.body.email, req.body.refreshToken);
   return res.json(result);
 }));
 
-router.post('/logout', respose(async (req, res) => {
+router.post('/logout', response(async (req, res) => {
   await accountService().logout(req.body.email, req.body.refreshToken);
   return res.json({});
 }));
 
-router.post('/register', respose(async (req, res) => {
+router.post('/register', response(async (req, res) => {
   const user = new User();
   user.email = req.body.email;
   user.password = req.body.password;
@@ -35,10 +35,6 @@ router.post('/register', respose(async (req, res) => {
 
   const result = await accountService().register(user);
   return res.json(result);
-}));
-
-router.get('/iamadmin', respose((req, res) => {
-  return res.json(true);
 }));
 
 export default router;

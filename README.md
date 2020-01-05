@@ -12,6 +12,6 @@ Roadmap tool.
   - Create database `map-it-test`
 - DB in Docker
   - `docker pull postgres:11`
-  - `docker run --rm --name pg-docker -e POSTGRES_DB=map-it-test -p 5432:5432 postgres:11`
+  - `docker run --name pg-docker-map-it-test -e POSTGRES_DB=map-it-test -p 5432:5432 postgres:11`
 
 - `npm run test-local` or `npm run test-watch`

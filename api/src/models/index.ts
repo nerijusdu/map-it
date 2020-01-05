@@ -13,6 +13,7 @@ export * from './epic';
 export * from './httpError';
 export * from './entityBase';
 export * from './roadmapUser';
+export * from './userNotification';
 
 export type AnyEntity = Roadmap | Task | Category | Milestone | Epic;
 

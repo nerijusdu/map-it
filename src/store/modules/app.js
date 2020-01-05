@@ -1,6 +1,7 @@
 import moment from 'moment';
 import api from '@/services/api';
 import { errorTime } from '@/constants';
+import notificationService from '../../services/notificationService';
 
 const initialState = {
   user: {
@@ -91,7 +92,7 @@ export const actions = {
     window.localStorage.setItem('email', data.email);
     window.localStorage.setItem('tokenExpiresAt', data.expiresAt);
     commit('mSaveUser', data);
-    dispatch('roadmap/init', null, { root: true });
+    dispatch('onLogin');
   },
   showError({ commit }, error) {
     if (error) {
@@ -115,6 +116,7 @@ export const actions = {
     const refreshToken = state.user.refreshToken || window.localStorage.getItem('refreshToken');
     const email = state.user.email || window.localStorage.getItem('email');
     api.logout(refreshToken, email);
+    notificationService.onLogout();
 
     window.localStorage.removeItem('userId');
     window.localStorage.removeItem('token');
@@ -125,7 +127,7 @@ export const actions = {
     commit('mSaveUser', { token: null, refreshToken: null, email: null });
     commit('mLogout');
     dispatch('roadmap/reset', null, { root: true });
-    router.push('Login');
+    router.push('/login');
   },
   toggleOnline({ commit, dispatch, state }, isOnline) {
     if (state.isOnline && !isOnline) {
@@ -136,12 +138,16 @@ export const actions = {
     }
     commit('mToggleOnline', isOnline);
   },
+  async onLogin({ dispatch }) {
+    await dispatch('roadmap/init', null, { root: true });
+    await notificationService.onLogin();
+  },
   async init({ commit, state, dispatch }) {
     if (state.isInitialized) {
       return;
     }
     if (state.user.token) {
-      await dispatch('roadmap/init', null, { root: true });
+      await dispatch('onLogin');
     }
 
     commit('mInit');

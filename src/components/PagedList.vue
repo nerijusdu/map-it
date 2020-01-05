@@ -98,7 +98,7 @@ export default {
 </script>
 
 <style scoped>
-.paged-list, .header, .main-bg-color {
+.paged-list, .header, .toolbar, .main-bg-color {
   background-color: var(--main-bg-color);
 }
 
