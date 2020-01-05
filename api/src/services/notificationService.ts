@@ -1,7 +1,7 @@
 import webpush from 'web-push';
 import { vapidKeys } from '../config';
 import { HttpError, User, UserNotification } from '../models';
-import { connection } from './databaseService';
+import { connection } from './util/databaseService';
 
 webpush.setVapidDetails(
   'mailto:test@test.com',

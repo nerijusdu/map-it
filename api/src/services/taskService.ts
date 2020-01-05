@@ -2,10 +2,10 @@ import moment from 'moment';
 import { HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
 import categoryService from './categoryService';
-import { connection } from './databaseService';
 import notificationService from './notificationService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
+import { connection } from './util/databaseService';
 
 class TaskService extends RoadmapEntityServiceBase<Task> {
   constructor(user: User) {

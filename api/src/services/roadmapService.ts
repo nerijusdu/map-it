@@ -2,9 +2,9 @@ import { HttpError, Roadmap, RoadmapUser, User } from '../models';
 import resources from '../resources';
 import validate from '../utils/validate';
 import accountService from './accountService';
-import { connection } from './databaseService';
 import { IEntityServiceBase } from './entityServiceBase';
 import notificationService from './notificationService';
+import { connection } from './util/databaseService';
 
 class RoadmapService implements IEntityServiceBase<Roadmap> {
   constructor(private user: User) {

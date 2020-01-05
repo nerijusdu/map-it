@@ -4,8 +4,8 @@ import { JWTAge } from '../config';
 import { HttpError, User } from '../models';
 import resources from '../resources';
 import validate from '../utils/validate';
-import authService from './authService';
-import { connection } from './databaseService';
+import authService from './util/authService';
+import { connection } from './util/databaseService';
 
 class AccountService {
   constructor(private user?: User) {

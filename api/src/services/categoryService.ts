@@ -1,7 +1,7 @@
 import { Category, Task, User } from '../models';
-import { connection } from './databaseService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
+import { connection } from './util/databaseService';
 
 class CategoryService extends RoadmapEntityServiceBase<Category> {
   constructor(user: User) {

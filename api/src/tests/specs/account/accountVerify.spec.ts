@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import 'mocha';
 import supertest from 'supertest';
 import app from '../../../app';
-import * as database from '../../../services/databaseService';
+import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
 const url: string = '/api/account/verify';

@@ -1,5 +1,5 @@
 import { User } from '../models';
-import { connection } from './databaseService';
+import { connection } from './util/databaseService';
 
 class UserService {
   constructor(private user: User) {}

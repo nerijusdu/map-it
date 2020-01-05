@@ -5,7 +5,7 @@ import supertest from 'supertest';
 import app from '../../../app';
 import { Category, Roadmap, Task, User } from '../../../models';
 import resources from '../../../resources';
-import * as database from '../../../services/databaseService';
+import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
 const url: string = '/api/tasks';

@@ -1,6 +1,6 @@
 import 'reflect-metadata';
 import { Connection, createConnection } from 'typeorm';
-import { ORMConfigs } from '../config';
+import { ORMConfigs } from '../../config';
 import {
   Category,
   Epic,
@@ -10,8 +10,8 @@ import {
   Task,
   User,
   UserNotification
-} from '../models';
-import logger from '../utils/logger';
+} from '../../models';
+import logger from '../../utils/logger';
 
 let con: Connection;
 export let initPromise: Promise<void>;

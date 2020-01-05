@@ -3,8 +3,8 @@ import { HttpError, Roadmap, User } from '../models';
 import { IRoadmapEntity } from '../models/IRoadmapEntity';
 import resources from '../resources';
 import validate from '../utils/validate';
-import { connection } from './databaseService';
 import { IEntityServiceBase } from './entityServiceBase';
+import { connection } from './util/databaseService';
 
 export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements IEntityServiceBase<TEntity> {
   // tslint:disable-next-line: ban-types

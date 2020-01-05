@@ -1,6 +1,6 @@
 import { RequestHandler } from 'express';
 import resources from '../resources';
-import authService from '../services/authService';
+import authService from '../services/util/authService';
 
 export default (handler: RequestHandler, options: IResponseOptions = {}): RequestHandler => async (req, res, next) => {
   if (!options.isPublic) {

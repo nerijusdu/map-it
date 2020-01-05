@@ -4,7 +4,7 @@ import { promisify } from 'util';
 import { LogEntry } from 'winston';
 import { logsDir } from '../config';
 import { IPagedRequest, IPagedResult } from '../models/pagingModels';
-import { StorageService } from './storageService';
+import { StorageService } from './util/storageService';
 
 export const logFile = `${logsDir}/api.log`;
 const containerName = process.env.LOGS_BLOB_CONTAINER;

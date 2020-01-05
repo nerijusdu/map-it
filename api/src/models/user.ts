@@ -1,6 +1,6 @@
 import { IsDefined, IsEmail, IsOptional, Length } from 'class-validator';
 import { Column, Entity, OneToMany } from 'typeorm';
-import authService from '../services/authService';
+import authService from '../services/util/authService';
 import { EntityBase } from './entityBase';
 import { Roadmap } from './roadmap';
 import { RoadmapUser } from './roadmapUser';

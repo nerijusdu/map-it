@@ -6,7 +6,7 @@ import swaggerUi from 'swagger-ui-express';
 import {PORT} from './config';
 import { registerControllers } from './controllers';
 import ErrorHandler from './middleware/errorHandler';
-import * as database from './services/databaseService';
+import * as database from './services/util/databaseService';
 import swaggerDocument from './swagger.json';
 
 database.init();

@@ -10,8 +10,8 @@ import {
   User,
   UserNotification
 } from '../../models';
-import authService from '../../services/authService';
-import { connection } from '../../services/databaseService';
+import authService from '../../services/util/authService';
+import { connection } from '../../services/util/databaseService';
 
 const defaultPassword = 'Test123';
 
@@ -152,7 +152,7 @@ const createNotificationSubscription = async (userId: number) => {
   subscription.authKey = shortid.generate();
 
   return connection().manager.save(subscription);
-}
+};
 
 export default {
   defaultPassword,
