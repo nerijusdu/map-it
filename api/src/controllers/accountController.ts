@@ -10,7 +10,7 @@ router.post('/login', response(async (req, res) => {
 
   const result = await accountService().login(email, password);
   return res.json(result);
-}));
+}, { isPublic: true }));
 
 router.get('/verify', response((req, res) => {
   const result = accountService().verify(req.headers.authorization);
@@ -20,12 +20,12 @@ router.get('/verify', response((req, res) => {
 router.post('/refresh', response(async (req, res) => {
   const result = await accountService().refresh(req.body.email, req.body.refreshToken);
   return res.json(result);
-}));
+}, { isPublic: true }));
 
 router.post('/logout', response(async (req, res) => {
   await accountService().logout(req.body.email, req.body.refreshToken);
   return res.json({});
-}));
+}, { isPublic: true }));
 
 router.post('/register', response(async (req, res) => {
   const user = new User();
@@ -35,6 +35,6 @@ router.post('/register', response(async (req, res) => {
 
   const result = await accountService().register(user);
   return res.json(result);
-}));
+}, { isPublic: true }));
 
 export default router;

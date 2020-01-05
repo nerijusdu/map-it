@@ -12,6 +12,6 @@ router.post('/subscribe', response(async (req, res) => {
 router.post('/unsubscribe', response(async (req, res) => {
   await notificationService().unsubscribe(req.body);
   return res.json({});
-}));
+}, { isPublic: true }));
 
 export default router;
