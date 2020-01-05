@@ -105,7 +105,7 @@ describe('apiCall', () => {
       }
     };
 
-    const result = instance.handleErrors(res);
+    const result = instance.handleErrors(res, {});
 
     expect(result).toBeNull();
   });
@@ -118,7 +118,7 @@ describe('apiCall', () => {
       }
     };
 
-    const result = instance.handleErrors(res);
+    const result = instance.handleErrors(res, {});
 
     expect(result).toBe(res);
     expect(console.warn).toHaveBeenCalledTimes(0);
