@@ -7,7 +7,7 @@ const initialState = {
   user: {
     id: window.localStorage.getItem('userId'),
     token: window.localStorage.getItem('token'),
-    isAdmin: window.localStorage.getItem('isAdmin'),
+    isAdmin: window.localStorage.getItem('isAdmin') === 'true',
     refreshToken: window.localStorage.getItem('refreshToken'),
     email: window.localStorage.getItem('email'),
     expiresAt: moment(window.localStorage.getItem('tokenExpiresAt'))
