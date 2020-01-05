@@ -1,11 +1,12 @@
 import fs from 'fs';
 import readline from 'readline';
+import { promisify } from 'util';
 import { LogEntry } from 'winston';
 import { logsDir } from '../config';
 import { IPagedRequest, IPagedResult } from '../models/pagingModels';
 import { StorageService } from './storageService';
 
-const logFile = `${logsDir}/api.log`;
+export const logFile = `${logsDir}/api.log`;
 const containerName = process.env.LOGS_BLOB_CONTAINER;
 const blobName = process.env.LOGS_BLOB_NAME;
 
@@ -73,15 +74,8 @@ export class LogsService {
   }
 
   private clearLogsFromFile() {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(logFile, '', (err) => {
-        if (err) {
-          reject(err);
-        } else {
-          resolve();
-        }
-      });
-    });
+    const writeFile = promisify(fs.writeFile).bind(fs);
+    return writeFile(logFile, '');
   }
 
   private async readLogs(noCache: boolean = false) {

@@ -1,11 +1,14 @@
 // tslint:disable: no-string-literal
 import { expect } from 'chai';
+import mockfs from 'mock-fs';
+import path from 'path';
 import shortid from 'shortid';
 import { ImportMock } from 'ts-mock-imports';
-import logsService, { LogsService } from '../../services/logsService';
+import logsService, { logFile } from '../../services/logsService';
 import * as storageService from '../../services/storageService';
 
-const mockManager = ImportMock.mockClass(storageService, 'StorageService');
+let storageServiceMock = ImportMock.mockClass(storageService, 'StorageService');
+const logPath = path.resolve(__dirname, '../../../', logFile);
 
 const generateLogEntry = () => ({
   log_id: shortid.generate(),
@@ -14,7 +17,16 @@ const generateLogEntry = () => ({
   timestamp: shortid.generate()
 });
 
+after(() => mockfs.restore());
+
 describe('LogsService.getAll tests', () => {
+  before(() => {
+    storageServiceMock = ImportMock.mockClass(storageService, 'StorageService');
+  });
+  after(() => {
+    storageServiceMock.restore();
+  });
+
   it('should get all logs', async () => {
     const service = logsService();
     const logEntry = generateLogEntry();
@@ -70,6 +82,13 @@ describe('LogsService.getAll tests', () => {
 });
 
 describe('LogsService.getById tests', () => {
+  before(() => {
+    storageServiceMock = ImportMock.mockClass(storageService, 'StorageService');
+  });
+  after(() => {
+    storageServiceMock.restore();
+  });
+
   it('should get all logs', async () => {
     const service = logsService();
     const logEntry = generateLogEntry();
@@ -96,30 +115,36 @@ describe('LogsService.clear tests', () => {
   afterEach(() => {
     process.env.LOGS_BLOB_NAME = env.LOGS_BLOB_NAME;
   });
+  before(() => {
+    storageServiceMock = ImportMock.mockClass(storageService, 'StorageService');
+  });
+  after(() => {
+    storageServiceMock.restore();
+  });
 
   it('should clear from file', async () => {
     process.env.LOGS_BLOB_NAME = '';
     const service = logsService();
-    let clearLogsFromFileCalled = false;
-    service['clearLogsFromFile'] = () => {
-      clearLogsFromFileCalled = true;
-      return Promise.resolve();
-    };
+    const config: any = {};
+    config[logPath] = JSON.stringify(generateLogEntry());
+    mockfs(config);
     service['logCache'] = [generateLogEntry()];
 
     await service.clear();
-    expect(clearLogsFromFileCalled).to.equal(true);
     expect(service['logCache']).to.be.undefined;
+
+    const logs = await service.getAll();
+    expect(logs.items.length).to.equal(0);
   });
 
   it('should clear from blob storage', async () => {
     let blobCleared = false;
-    mockManager.set('clearBlob', () => {
+    storageServiceMock.set('clearBlob', () => {
       blobCleared = true;
       return Promise.resolve();
     });
     process.env.LOGS_BLOB_NAME = shortid.generate();
-    const service = new LogsService();
+    const service = logsService();
     service['logCache'] = [generateLogEntry()];
 
     await service.clear();
@@ -129,6 +154,13 @@ describe('LogsService.clear tests', () => {
 });
 
 describe('LogsService.readLogs tests', () => {
+  before(() => {
+    storageServiceMock = ImportMock.mockClass(storageService, 'StorageService');
+  });
+  after(() => {
+    storageServiceMock.restore();
+  });
+
   it('should get logs from cache', async () => {
     const service = logsService();
     const logEntry = generateLogEntry();
@@ -145,18 +177,23 @@ describe('LogsService.readLogs tests', () => {
     const service = logsService();
     const logEntry = generateLogEntry();
     service['logCache'] = [generateLogEntry()];
-    service['readLogsFromFile'] = () => Promise.resolve([logEntry]);
+    const config: any = {};
+    config[logPath] =
+      JSON.stringify(logEntry) +
+      '\r\n' +
+      JSON.stringify(generateLogEntry());
+    mockfs(config);
 
     const result = await service['readLogs'](true);
     expect(result).to.be.an('array');
-    expect(result.length).to.equal(1);
+    expect(result.length).to.equal(2);
     expect(result[0].log_id).to.equal(logEntry.log_id);
-    expect(service['logCache'].length).to.equal(1);
+    expect(service['logCache'].length).to.equal(2);
     expect(service['logCache'][0].log_id).to.equal(logEntry.log_id);
   });
 
   it('should get logs from blob', async () => {
-    mockManager.set('getBlobText', () => Promise.resolve(
+    storageServiceMock.set('getBlobText', () => Promise.resolve(
       JSON.stringify(logEntry) +
       '\r\n' +
       JSON.stringify(generateLogEntry())
