@@ -9,6 +9,7 @@ build
 coverage
 .nyc_output
 .secret.*
+.env
 
 # Editor directories and files
 .idea

@@ -98,7 +98,7 @@ class AccountService {
     if (existingUser) {
       throw new HttpError(resources.Registration_EmailExists, 400);
     }
-    const pass = await authService.encryptPassword(newUser.password);
+    const pass = await authService.encryptPassword(newUser.password!);
 
     if (!pass) {
       throw new Error('Password hashing failed');
@@ -121,9 +121,51 @@ class AccountService {
     return user;
   }
 
+  public async getByUniqueIdentifier(uniqueIdentifier: string) {
+    const user = await connection()
+      .manager
+      .findOne(User, { where: { uniqueIdentifier }});
+
+    if (!user) {
+      throw new HttpError(resources.Generic_EntityNotFound('User'), 400);
+    }
+
+    return user;
+  }
+
+  public async getOrCreate(uniqueIdentifier: string, userInfo: IOtherUserInfo) {
+    let userQuery = connection().createQueryBuilder<User>(User, 'user')
+      .where('user.uniqueIdentifier = :uniqueIdentifier', { uniqueIdentifier });
+
+    if (userInfo.email) {
+      userQuery = userQuery.orWhere('user.email = :email', { email: userInfo.email });
+    }
+
+    const user = await userQuery.getOne();
+    if (user) {
+      return user;
+    }
+
+    const newUser = new User();
+    newUser.uniqueIdentifier = uniqueIdentifier;
+    newUser.email = userInfo.email;
+    newUser.name = userInfo.name;
+
+    const res = await connection()
+      .getRepository(User)
+      .save(newUser);
+
+    return res;
+  }
+
   private generateLongToken() {
     return `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
   }
+}
+
+interface IOtherUserInfo {
+  email: string;
+  name: string;
 }
 
 export default (user?: User) => new AccountService(user);
