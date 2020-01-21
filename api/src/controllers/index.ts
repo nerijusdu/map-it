@@ -1,5 +1,6 @@
 import { Application } from 'express';
 import AccountController from './accountController';
+import ActionsController from './actionsController';
 import CategoryController from './categoryController';
 import EpicController from './epicController';
 import LogsController from './logsController';
@@ -19,4 +20,5 @@ export const registerControllers = (app: Application) => {
   app.use('/api/users', UserController);
   app.use('/api/logs', LogsController);
   app.use('/api/notifications', NotificationController);
+  app.use('/api/actions', ActionsController);
 };
