@@ -2,6 +2,7 @@ import api from './api';
 import { publicVapidKey } from '../constants';
 
 let registration;
+const noVapidKey = !publicVapidKey || publicVapidKey === 'undefined';
 
 const urlBase64ToUint8Array = (base64String) => {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
@@ -26,6 +27,7 @@ const subscribe = subscription => api.subscribeToNotifications(subscription, {
 });
 
 const setupPushNotifications = async (workerRegister) => {
+  if (noVapidKey) return;
   if (!registration) {
     registration = workerRegister;
   }
@@ -39,7 +41,7 @@ const setupPushNotifications = async (workerRegister) => {
 };
 
 const onLogin = async () => {
-  if (!registration) return;
+  if (!registration || noVapidKey) return;
 
   const state = await registration.pushManager.permissionState({
     userVisibleOnly: true,
@@ -51,7 +53,7 @@ const onLogin = async () => {
 };
 
 const onLogout = async () => {
-  if (!registration) return;
+  if (!registration || noVapidKey) return;
 
   const state = await registration.pushManager.permissionState({
     userVisibleOnly: true,

@@ -5,7 +5,7 @@ services:
     depends_on:
       - map-it-database
     volumes:
-      - ./api:/usr/src/app
+      - ./api/src:/usr/src/app/src
     build:
       context: ./api
       dockerfile: Dockerfile
