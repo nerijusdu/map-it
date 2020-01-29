@@ -6,7 +6,7 @@ on:
       - develop
 
 env:
-  NODE_VERSION: '10.16.0'
+  NODE_VERSION: '12.14.0'
   NODE_ENV: test
   DB_HOST: ${{ secrets.DB_HOST }}
   DB_USER: ${{ secrets.DB_USER }}

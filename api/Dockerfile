@@ -1,4 +1,4 @@
-FROM node:10
+FROM node:12
 
 ENV NODE_ENV docker-dev
 ENV PORT 9091
