@@ -13,6 +13,8 @@ export const vapidKeys = {
   privateKey: process.env.VAPID_KEYS_PRIVATE || 'qNLKiXhZKkxwQ63e6inSh5JIV_A9Dagtl-Ymgr3zfAk'
 };
 
+export const GoogleActionsClientId = process.env.GOOGLE_ACTIONS_CLIENT_ID;
+
 export const ORMConfigs: any[] = [
   {
     env: 'prod',

@@ -4,6 +4,8 @@ services:
   map-it-api:
     depends_on:
       - map-it-database
+    environment:
+      - GOOGLE_ACTIONS_CLIENT_ID=${GOOGLE_ACTIONS_CLIENT_ID}
     volumes:
       - ./api/src:/usr/src/app/src
     build:

@@ -13,10 +13,13 @@ export class User extends EntityBase {
   @IsDefined()
   public email: string;
 
-  @Column({ select: false })
+  @Column({ select: false, nullable: true })
   @Length(6)
-  @IsDefined()
-  public password: string;
+  public password?: string;
+
+  @Column({ unique: true, nullable: true })
+  @IsOptional()
+  public uniqueIdentifier?: string;
 
   @Column()
   @Length(3)
@@ -37,6 +40,6 @@ export class User extends EntityBase {
   public sharedRoadmaps: RoadmapUser[];
 
   public comparePasswords = (input: string) => {
-    return authService.verifyPassword(input, this.password);
+    return authService.verifyPassword(input, this.password!);
   }
 }
