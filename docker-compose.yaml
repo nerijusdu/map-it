@@ -7,7 +7,7 @@ services:
     environment:
       - GOOGLE_ACTIONS_CLIENT_ID=${GOOGLE_ACTIONS_CLIENT_ID}
     volumes:
-      - ./api:/usr/src/app
+      - ./api/src:/usr/src/app/src
     build:
       context: ./api
       dockerfile: Dockerfile
