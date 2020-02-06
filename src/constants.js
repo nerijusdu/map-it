@@ -2,7 +2,7 @@ export const datePreviewFormat = 'DD MMMM YYYY';
 
 export const roadmapMonthFormat = 'MMM YYYY';
 
-export const apiUrl = process.env.API_URL || 'http://localhost:8081/api';
+export const apiUrl = process.env.API_URL || 'http://localhost:9091/api';
 
 export const loginUrl = '/login';
 
@@ -22,3 +22,12 @@ export const validationRules = {
 };
 
 export const publicVapidKey = process.env.VAPID_KEYS_PUBLIC || 'BOVb65HC53gtCEUyE-K39AXwiQt_rsyA16jS8OB7xz0D1_56pPJq7DYDWlBMKewTTJGkoe2IJZVy_rFK6GZFSR0';
+
+export const googleCredentials = {
+  client_id: process.env.GOOGLE_CLIENT_ID || '',
+  scope: 'https://www.googleapis.com/auth/userinfo.profile',
+  auth_uri: 'https://accounts.google.com/o/oauth2/v2/auth',
+  redirect_uris: [
+    `${apiUrl}/account/callback`
+  ]
+};

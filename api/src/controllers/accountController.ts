@@ -2,6 +2,8 @@ import { Router } from 'express';
 import { User } from '../models';
 import accountService from '../services/accountService';
 import response from '../utils/response';
+import googleAuthService from '../services/googleAuthService';
+import { webUrl } from '../config';
 
 const router = Router();
 
@@ -35,6 +37,12 @@ router.post('/register', response(async (req, res) => {
 
   const result = await accountService().register(user);
   return res.json(result);
+}, { isPublic: true }));
+
+router.get('/callback', response(async (req, res) => {
+  const success = await googleAuthService().handleCallBack(req.query);
+
+  res.redirect(`${webUrl}/#/settings?googleAuthSuccess=${success}`);
 }, { isPublic: true }));
 
 export default router;

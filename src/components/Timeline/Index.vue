@@ -28,7 +28,7 @@ export default {
     next((vm) => {
       const id = parseInt(to.params.id, 10);
       if (id && vm.roadmap.id !== id) {
-        vm.selectRoadmap(id);
+        vm.selectRoadmap({ roadmapId: id });
       }
       if (!id) {
         vm.$router.push(`/timeline/${vm.roadmap.id || 'empty'}`);
@@ -38,7 +38,7 @@ export default {
   async beforeRouteUpdate(to, from, next) {
     const id = parseInt(to.params.id, 10);
     if (id && this.roadmap.id !== id) {
-      await this.selectRoadmap(id);
+      await this.selectRoadmap({ roadmapId: id });
     }
     if (!id) {
       return next(`/timeline/${this.roadmap.id || 'empty'}`);

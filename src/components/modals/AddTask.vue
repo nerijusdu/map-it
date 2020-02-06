@@ -247,7 +247,7 @@ export default {
       }
       this.$modal.hide('addTask');
       if (refresh) {
-        this.selectRoadmap(this.roadmapId);
+        this.selectRoadmap({ roadmapId: this.roadmapId });
       }
     },
     onClose() {

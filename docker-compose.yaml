@@ -6,6 +6,8 @@ services:
       - map-it-database
     environment:
       - GOOGLE_ACTIONS_CLIENT_ID=${GOOGLE_ACTIONS_CLIENT_ID}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     volumes:
       - ./api/src:/usr/src/app/src
     build:
@@ -26,6 +28,8 @@ services:
     ports:
       - 5432:5432
   map-it-frontend:
+    environment: 
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
     volumes:
       - ./src:/usr/src/app/src
       - ./static:/usr/src/app/static

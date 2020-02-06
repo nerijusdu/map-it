@@ -35,6 +35,7 @@
           <div class="navigation-item-title">Profile</div>
         </div>
         <md-menu-content>
+          <md-menu-item @click="$router.push('/settings')">Settings</md-menu-item>
           <md-menu-item @click="logout">Logout</md-menu-item>
         </md-menu-content>
       </md-menu>
@@ -75,6 +76,7 @@
               <div>Profile</div>
             </div>
             <md-list slot="md-expand">
+              <md-list-item class="md-inset" @click="$router.push('/settings')">Settings</md-list-item>
               <md-list-item class="md-inset" @click="logout">Logout</md-list-item>
             </md-list>
           </md-list-item>
@@ -115,7 +117,7 @@ export default {
     },
     updateRoadmap() {
       if (this.roadmapSelection && this.isInitialized) {
-        this.selectRoadmap(this.roadmapSelection);
+        this.selectRoadmap({ roadmapId: this.roadmapSelection });
       }
     }
   },

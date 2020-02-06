@@ -9,6 +9,7 @@ const Navigation = () => import('../components/Navigation');
 const RoadmapList = () => import('../components/RoadmapList');
 const RoadmapPreview = () => import('../components/RoadmapPreview');
 const Logs = () => import('../components/Logs');
+const Settings = () => import('../components/Settings');
 
 Vue.use(Router);
 
@@ -64,6 +65,14 @@ const router = new Router({
       name: 'Logs',
       components: {
         default: Logs,
+        navigation: Navigation
+      }
+    },
+    {
+      path: '/settings',
+      name: 'Settings',
+      components: {
+        default: Settings,
         navigation: Navigation
       }
     }

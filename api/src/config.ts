@@ -13,7 +13,18 @@ export const vapidKeys = {
   privateKey: process.env.VAPID_KEYS_PRIVATE || 'qNLKiXhZKkxwQ63e6inSh5JIV_A9Dagtl-Ymgr3zfAk'
 };
 
-export const GoogleActionsClientId = process.env.GOOGLE_ACTIONS_CLIENT_ID;
+export const GoogleActionsClientId = process.env.GOOGLE_ACTIONS_CLIENT_ID || '';
+
+export const webUrl = process.env.WEB_URL || 'http://localhost:9090';
+
+export const googleAuth = {
+  client_id: process.env.GOOGLE_CLIENT_ID || '',
+  client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
+  token_uri: 'https://oauth2.googleapis.com/token',
+  redirect_uris: [
+    (process.env.API_URL || 'http://localhost:9091') + '/api/account/callback'
+  ]
+};
 
 export const ORMConfigs: any[] = [
   {

@@ -158,6 +158,12 @@ class AccountService {
     return res;
   }
 
+  public setUniqueIdentifier(userId: number, uniqueIdentifier: string) {
+    return connection()
+      .manager
+      .update(User, { id: userId }, { uniqueIdentifier });
+  }
+
   private generateLongToken() {
     return `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
   }
