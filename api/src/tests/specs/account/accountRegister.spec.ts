@@ -61,7 +61,7 @@ describe('Account registration tests', () =>  {
 
     const passwordErrors = response.body.data.find((x: any) => x.property === 'password');
     expect(passwordErrors).to.exist;
-    expect(passwordErrors.errors).to.have.lengthOf(2);
+    expect(passwordErrors.errors).to.have.lengthOf(1);
   });
 
   it('should not create account with existing email', async () => {
