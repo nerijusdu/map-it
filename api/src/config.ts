@@ -21,6 +21,7 @@ export const googleAuth = {
   client_id: process.env.GOOGLE_CLIENT_ID || '',
   client_secret: process.env.GOOGLE_CLIENT_SECRET || '',
   token_uri: 'https://oauth2.googleapis.com/token',
+  userinfo_uri: 'https://www.googleapis.com/oauth2/v2/userinfo?alt=json',
   redirect_uris: [
     (process.env.API_URL || 'http://localhost:9091') + '/api/account/callback'
   ]

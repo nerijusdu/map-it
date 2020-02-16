@@ -1,14 +1,7 @@
-import fetch, { RequestInit } from 'node-fetch';
 import { googleAuth, webUrl } from '../config';
 import logger from '../utils/logger';
 import accountService from './accountService';
-
-const handleFetch = (url: string, opts: RequestInit) => 
-  fetch(url, opts)
-  .catch(err => {
-    logger.error(err);
-    return null;
-  });
+import fetch from '../utils/fetch';
 
 class GoogleAuthService {
   private async getAccessToken(code: string) {
@@ -19,7 +12,7 @@ class GoogleAuthService {
       redirect_uri: googleAuth.redirect_uris[0],
       grant_type: 'authorization_code'
     };
-    const result = await handleFetch(googleAuth.token_uri, {
+    const result = await fetch(googleAuth.token_uri, {
       method: 'POST',
       body: JSON.stringify(params)
     });
@@ -37,8 +30,8 @@ class GoogleAuthService {
   }
 
   private async getUserInfo(token: string) {
-    const result = await handleFetch(
-      'https://www.googleapis.com/oauth2/v2/userinfo?alt=json',
+    const result = await fetch(
+      googleAuth.userinfo_uri,
       {
         method: 'GET',
         headers: {

@@ -6,6 +6,7 @@ import { User } from '../../../models';
 import resources from '../../../resources';
 import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
+import shortid from 'shortid';
 
 const url: string = '/api/account/login';
 
@@ -53,5 +54,29 @@ describe('Account login tests', () => {
 
     expect(response.status).to.equal(400);
     expect(response.body.message).to.equal(resources.Login_PasswordIncorrect);
+  });
+
+  it('should login with code', async () => {
+    const code = shortid.generate();
+    const user = await entityFactory.createAccount(x => {
+      x.authCode = code;
+      return x;
+    });
+
+    const response = await server.post(url).send({ code });
+
+    expect(response.status).to.equal(200);
+    expect(response.body.email).to.equal(user.email);
+    expect(response.body.token).to.be.a('string');
+  });
+
+  it('should fail when code is incorrect', async () => {
+    const response = await server.post(url)
+      .send({
+        code: 'wrongCode'
+      });
+
+    expect(response.status).to.equal(400);
+    expect(response.body.message).to.be.a('string');
   });
 });
