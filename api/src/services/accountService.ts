@@ -38,6 +38,32 @@ class AccountService {
     };
   }
 
+  public async loginWithCode(code: string) {
+    const user = await connection()
+      .manager
+      .findOne(User, { authCode: code }, { select: ['email', 'id', 'name', 'isAdmin'] });
+    
+    if (!user) {
+      throw new HttpError(resources.Generic_ErrorMessage, 400);
+    }
+    
+    const refreshToken = this.generateLongToken();
+    const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
+    await connection().manager.update(User, { email: user.email }, { 
+      refreshToken,
+      authCode: undefined
+    });
+
+    return {
+      id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      token: authService.createToken({ payload: user }),
+      refreshToken,
+      expiresAt
+    };
+  }
+
   public verify(token?: string) {
     const tokenStr = (token || '').substring('Bearer '.length);
 
@@ -162,6 +188,14 @@ class AccountService {
     return connection()
       .manager
       .update(User, { id: userId }, { uniqueIdentifier });
+  }
+
+  public async generateAuthCode(userId: number) {
+    const authCode = this.generateLongToken();
+    await connection()
+      .manager
+      .update(User, { id: userId }, { authCode });
+    return authCode;
   }
 
   private generateLongToken() {

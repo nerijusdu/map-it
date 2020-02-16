@@ -3,14 +3,16 @@ import { User } from '../models';
 import accountService from '../services/accountService';
 import response from '../utils/response';
 import googleAuthService from '../services/googleAuthService';
-import { webUrl } from '../config';
 
 const router = Router();
 
 router.post('/login', response(async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, code } = req.body;
 
-  const result = await accountService().login(email, password);
+  const result = code
+    ? await accountService().loginWithCode(code)
+    : await accountService().login(email, password);
+
   return res.json(result);
 }, { isPublic: true }));
 
@@ -40,9 +42,9 @@ router.post('/register', response(async (req, res) => {
 }, { isPublic: true }));
 
 router.get('/callback', response(async (req, res) => {
-  const success = await googleAuthService().handleCallBack(req.query);
+  const redirectUrl = await googleAuthService().handleCallBack(req.query);
 
-  res.redirect(`${webUrl}/#/settings?googleAuthSuccess=${success}`);
+  res.redirect(redirectUrl);
 }, { isPublic: true }));
 
 export default router;

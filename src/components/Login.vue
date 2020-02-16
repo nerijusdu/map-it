@@ -20,6 +20,11 @@
         <md-button class="md-raised md-primary" @click="validateForm">
           <div>Login</div>
         </md-button>
+        <md-button class="md-raised google-button" @click="useGoogle">
+          <div class="google-button-content">
+            <img src="@/assets/googleLogo32px.svg" width="24px"/>
+          </div>
+        </md-button>
       </div>
     </form>
   </div>
@@ -29,8 +34,21 @@
 import { validationMixin } from 'vuelidate';
 import { required, email } from 'vuelidate/lib/validators';
 import { mapActions } from 'vuex';
+import qs from 'querystring';
+import { googleCredentials } from '../constants';
 import resources from '../services/resourceService';
 import api from '../services/api';
+
+const params = {
+  include_granted_scopes: true,
+  client_id: googleCredentials.client_id,
+  scope: googleCredentials.scope,
+  redirect_uri: googleCredentials.redirect_uris[0],
+  response_type: 'code',
+  state: '0'
+};
+
+const googleAuthUrl = `${googleCredentials.auth_uri}?${qs.stringify(params)}`;
 
 export default {
   mixins: [validationMixin],
@@ -42,7 +60,7 @@ export default {
     resources
   }),
   methods: {
-    ...mapActions('app', ['saveUser']),
+    ...mapActions('app', ['saveUser', 'showError']),
     async submit() {
       const user = await api.login(this.user, { ignoreAuth: true });
 
@@ -50,6 +68,9 @@ export default {
         this.saveUser({ ...user.data, isLogin: true });
         this.$router.push('/timeline');
       }
+    },
+    useGoogle() {
+      window.location.href = googleAuthUrl;
     },
     register() {
       this.$router.push('/register');
@@ -71,10 +92,29 @@ export default {
       email: { required, email },
       password: { required }
     }
+  },
+  async mounted() {
+    if (this.$route.query.code) {
+      const success = this.$route.query.code.toLowerCase() !== 'false';
+
+      if (success) {
+        const user = await api.login({ code: this.$route.query.code }, { ignoreAuth: true });
+
+        if (user) {
+          this.saveUser({ ...user.data, isLogin: true });
+          this.$router.push('/timeline');
+        }
+      } else {
+        this.showError('Login failed!');
+        this.$router.replace({
+          ...this.$router.currentRoute,
+          query: {}
+        });
+      }
+    }
   }
 };
 </script>
-
 
 <style scoped>
 .container {
@@ -85,7 +125,6 @@ export default {
 
 .form {
   width: 280px;
-  height: 250px;
   padding-left: 10px;
   padding-right: 10px;
   padding-bottom: 10px;
@@ -97,7 +136,14 @@ export default {
 
 .form-footer {
   display: flex;
-  justify-content: flex-end;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.form-footer > .md-button {
+  flex-grow: 1;
+  display: flex;
+  margin-left: 0px;
 }
 
 .form-header {

@@ -25,7 +25,7 @@ export const publicVapidKey = process.env.VAPID_KEYS_PUBLIC || 'BOVb65HC53gtCEUy
 
 export const googleCredentials = {
   client_id: process.env.GOOGLE_CLIENT_ID || '',
-  scope: 'https://www.googleapis.com/auth/userinfo.profile',
+  scope: 'openid profile email',
   auth_uri: 'https://accounts.google.com/o/oauth2/v2/auth',
   redirect_uris: [
     `${apiUrl}/account/callback`

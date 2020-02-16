@@ -21,6 +21,9 @@ export class User extends EntityBase {
   @IsOptional()
   public uniqueIdentifier?: string;
 
+  @Column({ nullable: true })
+  public authCode?: string;
+
   @Column()
   @Length(3)
   @IsDefined()

@@ -1,5 +1,5 @@
 import fetch, { RequestInit } from 'node-fetch';
-import { googleAuth } from '../config';
+import { googleAuth, webUrl } from '../config';
 import logger from '../utils/logger';
 import accountService from './accountService';
 
@@ -38,7 +38,7 @@ class GoogleAuthService {
 
   private async getUserInfo(token: string) {
     const result = await handleFetch(
-      'https://www.googleapis.com/oauth2/v1/userinfo?alt=json',
+      'https://www.googleapis.com/oauth2/v2/userinfo?alt=json',
       {
         method: 'GET',
         headers: {
@@ -54,29 +54,45 @@ class GoogleAuthService {
 
     return {
       error: data.error,
-      id: data.id
+      id: data.id,
+      name: data.name,
+      email: data.email
     };
   }
 
-  public async handleCallBack(query: any): Promise<boolean> {
+  public async handleCallBack(query: any): Promise<string> {
     const code = query.code;
     const userId = parseInt(query.state || '0', 10);
+
+    const redirectUrl = userId !== 0
+      ? (success: any) => `${webUrl}/#/settings?googleAuthSuccess=${success}`
+      : (authCode: any) => `${webUrl}/#/login?code=${authCode}`;
+    
     
     const tokenData = await this.getAccessToken(code);
     if (tokenData.error) {
       logger.warn(`Failed handling google callback. Failed fetching access token. Code: ${code}; User Id: ${userId}; Error: ${tokenData.error}`);
-      return false;
+      return redirectUrl(false);
     }
 
     const userData = await this.getUserInfo(tokenData.token);
     if (userData.error) {
       logger.warn(`Failed handling google callback. Failed fetching user info. Token: ${tokenData.token}; User Id: ${userId}; Error: ${userData.error}`);
-      return false;
+      return redirectUrl(false);
     }
 
-    await accountService().setUniqueIdentifier(userId, userData.id)
+    if (userId === 0) {
+      const user = await accountService().getOrCreate(userData.id, {
+        email: userData.email,
+        name: userData.name
+      });
 
-    return true;
+      const authCode = await accountService().generateAuthCode(user.id);
+      return redirectUrl(authCode);
+    }
+
+    await accountService().setUniqueIdentifier(userId, userData.id);
+    return redirectUrl(true);
   }
 }
 
