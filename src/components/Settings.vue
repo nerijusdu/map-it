@@ -1,13 +1,15 @@
 <template>
   <div>
-    Settings
-    <a :href="authUrl">Link google account</a>
+    <md-button class="md-button md-raised md-primary" @click="window.location.href = authUrl">
+      <span>Link Google account</span>
+      <img src="@/assets/link.svg"/>
+    </md-button>
   </div>
 </template>
 
 <script>
 import qs from 'querystring';
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 import { googleCredentials } from '../constants';
 
 
@@ -27,6 +29,25 @@ export default {
       };
 
       return `${googleCredentials.auth_uri}?${qs.stringify(params)}`;
+    }
+  },
+  methods: {
+    ...mapActions('app', ['showError', 'showMessage'])
+  },
+  mounted() {
+    if (this.$route.query.googleAuthSuccess) {
+      const success = this.$route.query.googleAuthSuccess.toLowerCase() === 'true';
+
+      if (success) {
+        this.showMessage('Acount linked successfully!');
+      } else {
+        this.showError('Account linking failed!');
+      }
+
+      this.$router.replace({
+        ...this.$router.currentRoute,
+        query: {}
+      });
     }
   }
 };
