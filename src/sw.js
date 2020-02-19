@@ -1,5 +1,5 @@
 const RUNTIME = 'runtime';
-const PRECACHE = 'static-files-v3';
+const PRECACHE = 'static-files-v4';
 const PRECACHE_URLS = [
   '/',
   'static/manifest.json',
@@ -14,6 +14,9 @@ const PRECACHE_URLS = [
   'static/js/3.js',
   'static/js/4.js',
   'static/js/5.js',
+  'static/js/6.js',
+  'static/js/7.js',
+  'static/js/8.js',
   'static/js/app.js',
   'static/js/vendor.js',
   'static/js/manifest.js',
