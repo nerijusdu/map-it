@@ -104,12 +104,8 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
     const roadmap = await connection().createQueryBuilder(Roadmap, 'roadmap')
       .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
       .where('(roadmap.user = :userId OR ru.userId = :userId)', { userId: this.user.id })
-      .andWhere('LOWER(roadmap.title) = LOWER(:name)', { name })
+      .andWhere('LOWER(roadmap.title) LIKE LOWER(:name)', { name: `${name}%` })
       .getOne();
-
-    if (!roadmap) {
-      throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
-    }
 
     return roadmap;
   }

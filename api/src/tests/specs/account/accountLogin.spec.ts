@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import 'mocha';
+import shortid from 'shortid';
 import supertest from 'supertest';
 import app from '../../../app';
 import { User } from '../../../models';
 import resources from '../../../resources';
 import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
-import shortid from 'shortid';
 
 const url: string = '/api/account/login';
 
@@ -58,7 +58,7 @@ describe('Account login tests', () => {
 
   it('should login with code', async () => {
     const code = shortid.generate();
-    const user = await entityFactory.createAccount(x => {
+    const user = await entityFactory.createAccount((x) => {
       x.authCode = code;
       return x;
     });

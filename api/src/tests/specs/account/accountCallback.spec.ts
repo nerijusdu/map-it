@@ -1,12 +1,12 @@
 import { expect } from 'chai';
 import mockfs from 'mock-fs';
-import supertest from 'supertest';
 import shortid from 'shortid';
+import supertest from 'supertest';
+import { ImportMock } from 'ts-mock-imports';
 import app from '../../../app';
 import { User } from '../../../models';
-import { ImportMock } from 'ts-mock-imports';
-import * as fetch from '../../../utils/fetch';
 import * as database from '../../../services/util/databaseService';
+import * as fetch from '../../../utils/fetch';
 import entityFactory from '../../helpers/entityFactory';
 
 const url: string = '/api/account/callback';
@@ -61,7 +61,7 @@ describe('Google callback tests', () => {
 
   it('should login with google', async () => {
     const id = shortid.generate();
-    const user = await entityFactory.createAccount(x => {
+    const user = await entityFactory.createAccount((x) => {
       x.uniqueIdentifier = id;
       return x;
     });

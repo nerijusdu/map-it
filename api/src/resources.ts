@@ -7,5 +7,6 @@ export default {
     Generic_PleaseLogin: 'Please login.',
     Generic_ValidationError: 'Provided data is not valid.',
     Generic_EntityNotFound: (entity: string) => `${entity} not found`,
-    Task_CategoryNotFound: 'Category associated with selected Roadmap was not found'
+    Task_CategoryNotFound: 'Category associated with selected Roadmap was not found',
+    Assistant_EntityNotFound: (entity: string) => `Sorry, I couldn't find this ${entity}`
 };

@@ -1,9 +1,13 @@
 import { BasicCard, dialogflow } from 'actions-on-google';
+import moment from 'moment';
 import { GoogleActionsClientId } from '../config';
+import { Task } from '../models';
+import resources from '../resources';
 import googleAuth from '../utils/googleAuth';
 import accountService from './accountService';
-import roadmapService from './roadmapService';
 import categoryService from './categoryService';
+import roadmapService from './roadmapService';
+import taskService from './taskService';
 
 const app = dialogflow({
   clientId: GoogleActionsClientId
@@ -31,24 +35,22 @@ app.intent('Get categories', async (conv, params) => {
   const user = await googleAuth(conv);
   if (!user) { return; }
 
-  const roadmap = await roadmapService(user)
-    .getByName(params.roadmap as string)
-    .catch(() => {
-      conv.ask('Sorry, I coudn\'t find this roadmap.');
-      return null;
-    });
+  const roadmap = await roadmapService(user).getByName(params.roadmap as string);
 
-  if (!roadmap) { return; }
+  if (!roadmap) {
+    conv.ask(resources.Assistant_EntityNotFound('roadmap'));
+    return;
+  }
 
   const categories = await categoryService(user)
     .getForRoadmap(roadmap.id);
-  
-  if (categories.length == 0) {
+
+  if (categories.length === 0) {
     conv.ask('Sorry I didn\'t find any categories for this roadmap.');
     return;
   }
 
-  conv.ask('Here are your categories');
+  conv.ask(`Here are the categories for ${params.roadmap}`);
   conv.ask(new BasicCard({
     title: 'Categories:',
     text : categories.map((x) => `- ${x.title}`).join('  \n')
@@ -73,9 +75,37 @@ app.intent('Get Signin', async (conv, params, signin: any) => {
 app.intent('Create a task', async (conv, params) => {
   const user = await googleAuth(conv);
   if (!user) { return; }
+  console.log(params.title, params.category, params.roadmap);
 
-  console.log(params.title, params.startDate, params.endDate);
-  conv.ask('Yeet!');
+  const roadmap = await roadmapService(user).getByName(params.roadmap as string);
+  if (!roadmap) {
+    conv.ask(resources.Assistant_EntityNotFound('roadmap'));
+    return;
+  }
+
+  const category = await categoryService(user).getByName(params.category as string);
+  if (!category) {
+    conv.ask(resources.Assistant_EntityNotFound('category'));
+    return;
+  }
+
+  const task = new Task();
+  task.title = params.title as string;
+  task.categoryId =  category.id;
+  task.roadmapId = roadmap.id;
+  task.startDate = moment().toDate();
+  task.endDate = moment().add(1, 'day').toDate();
+
+  const newTask = await taskService(user)
+    .save(task)
+    .catch((err) => {
+      conv.ask(err.message);
+      return null;
+    });
+
+  if (!newTask) { return; }
+
+  conv.ask(`Created a task ${task.title} in ${roadmap.title} with category ${category.title}`);
 });
 
 export default app;

@@ -1,8 +1,7 @@
-import { Category, Task, User, HttpError } from '../models';
+import { Category, Task, User } from '../models';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
 import { connection } from './util/databaseService';
-import resources from '../resources';
 
 class CategoryService extends RoadmapEntityServiceBase<Category> {
   constructor(user: User) {
@@ -42,19 +41,13 @@ class CategoryService extends RoadmapEntityServiceBase<Category> {
     return result;
   }
 
-  public async getByName(name: string) {
-    var category = await this.getAllQuery()
-      .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `%${name}%`})
+  public getByName(name: string) {
+    return this.getAllQuery()
+      .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `${name}%`})
       .getOne();
-
-    if (!category) {
-      throw new HttpError(resources.Generic_EntityNotFound('Category'), 400);
-    }
-
-    return category;
   }
 
-  public async getForRoadmap(roadmapId: number){
+  public async getForRoadmap(roadmapId: number) {
     return this.getAllQuery()
       .andWhere('roadmap.id = :roadmapId', { roadmapId })
       .getMany();

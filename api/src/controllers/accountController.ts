@@ -1,8 +1,8 @@
 import { Router } from 'express';
 import { User } from '../models';
 import accountService from '../services/accountService';
-import response from '../utils/response';
 import googleAuthService from '../services/googleAuthService';
+import response from '../utils/response';
 
 const router = Router();
 

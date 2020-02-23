@@ -42,14 +42,14 @@ class AccountService {
     const user = await connection()
       .manager
       .findOne(User, { authCode: code }, { select: ['email', 'id', 'name', 'isAdmin'] });
-    
+
     if (!user) {
       throw new HttpError(resources.Generic_ErrorMessage, 400);
     }
-    
+
     const refreshToken = this.generateLongToken();
     const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
-    await connection().manager.update(User, { email: user.email }, { 
+    await connection().manager.update(User, { email: user.email }, {
       refreshToken,
       authCode: undefined
     });

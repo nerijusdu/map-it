@@ -30,6 +30,9 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
       throw new HttpError(resources.Generic_ValidationError, 400);
     }
 
+    taskInstance.startDate = new Date(task.startDate);
+    taskInstance.endDate = new Date(task.endDate);
+
     return super.save(taskInstance);
   }
 
