@@ -1,6 +1,6 @@
 <template>
   <div>
-    <md-button class="md-button md-raised md-primary" @click="window.location.href = authUrl">
+    <md-button class="md-button md-raised md-primary" @click="linkGoogle">
       <span>Link Google account</span>
       <img src="@/assets/link.svg"/>
     </md-button>
@@ -32,7 +32,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('app', ['showError', 'showMessage'])
+    ...mapActions('app', ['showError', 'showMessage']),
+    linkGoogle() {
+      window.location.href = this.authUrl;
+    }
   },
   mounted() {
     if (this.$route.query.googleAuthSuccess) {
