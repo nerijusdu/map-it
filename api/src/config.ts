@@ -23,7 +23,7 @@ export const googleAuth = {
   token_uri: 'https://oauth2.googleapis.com/token',
   userinfo_uri: 'https://www.googleapis.com/oauth2/v2/userinfo?alt=json',
   redirect_uris: [
-    (process.env.API_URL || 'http://localhost:9091') + '/api/account/callback'
+    (process.env.API_HOST || 'http://localhost:9091') + '/api/account/callback'
   ]
 };
 
