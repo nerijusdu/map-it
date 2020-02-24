@@ -30,19 +30,19 @@ export class Roadmap extends OwnedEntity {
   @IsDefined()
   public endDate: Date;
 
-  @OneToMany(() => Task, (task) => task.roadmap)
+  @OneToMany(() => Task, task => task.roadmap)
   public tasks: Task[];
 
-  @OneToMany(() => Category, (category) => category.roadmap)
+  @OneToMany(() => Category, category => category.roadmap)
   public categories: Category[];
 
-  @OneToMany(() => Milestone, (milestone) => milestone.roadmap)
+  @OneToMany(() => Milestone, milestone => milestone.roadmap)
   public milestones: Milestone[];
 
-  @OneToMany(() => Epic, (epic) => epic.roadmap)
+  @OneToMany(() => Epic, epic => epic.roadmap)
   public epics: Epic[];
 
-  @OneToMany(() => RoadmapUser, (roadmapUser) => roadmapUser.roadmap)
+  @OneToMany(() => RoadmapUser, roadmapUser => roadmapUser.roadmap)
   public roadmapUsers: RoadmapUser[];
 
   public readonly?: boolean;

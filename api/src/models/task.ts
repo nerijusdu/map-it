@@ -1,4 +1,4 @@
-import { IsDateString, IsDefined, IsOptional, Length } from 'class-validator';
+import { IsDate, IsDateString, IsDefined, IsOptional, Length } from 'class-validator';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Category } from './category';
 import { IRoadmapEntity } from './IRoadmapEntity';
@@ -19,11 +19,11 @@ export class Task extends OwnedEntity implements IRoadmapEntity {
   public description: string;
 
   @Column({ type: Date })
-  @IsDateString()
+  @IsDate()
   public startDate: Date;
 
   @Column({ type: Date })
-  @IsDateString()
+  @IsDate()
   public endDate: Date;
 
   @Column({ default: false })

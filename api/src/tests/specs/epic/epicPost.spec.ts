@@ -4,7 +4,7 @@ import shortid from 'shortid';
 import supertest from 'supertest';
 import app from '../../../app';
 import { Category, Epic, Roadmap, User } from '../../../models';
-import * as database from '../../../services/databaseService';
+import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
 const url: string = '/api/epics';
@@ -117,7 +117,7 @@ describe('Epic delete tests', () => {
 
   it('should delete epic and leave categories', async () => {
     const category = await entityFactory.createCategory(roadmap.id);
-    const epic = await entityFactory.createEpic(roadmap.id, (x) => {
+    const epic = await entityFactory.createEpic(roadmap.id, x => {
       x.categories = [category];
       return x;
     });

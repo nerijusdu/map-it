@@ -4,7 +4,7 @@ import { logsDir } from '../config';
 // tslint:disable-next-line: no-var-requires
 const azureBlobTransport = require('winston3-azureblob-transport');
 
-const addIdentifierFormat = format((info) => {
+const addIdentifierFormat = format(info => {
   info.log_id = shortid.generate();
   return info;
 });

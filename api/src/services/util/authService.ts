@@ -1,10 +1,10 @@
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { JWTAge, JWTSecret } from '../config';
-import { HttpError } from '../models';
-import { User } from '../models/user';
-import resources from '../resources';
-import logger from '../utils/logger';
+import { JWTAge, JWTSecret } from '../../config';
+import { HttpError } from '../../models';
+import { User } from '../../models/user';
+import resources from '../../resources';
+import logger from '../../utils/logger';
 
 const getPayload = (token: string): User => {
   const payload = jwt.decode(token) as {[key: string]: any};
@@ -42,7 +42,7 @@ const createToken = (data: ITokenData) => {
 
 const encryptPassword = async (password: string) => {
   const salt = await bcrypt.genSalt(10);
-  return bcrypt.hash(password, salt).catch((err) => { logger.error(err); });
+  return bcrypt.hash(password, salt).catch(err => { logger.error(err); });
 };
 
 const verifyPassword = (inputPass: string, encryptedPass: string) => {

@@ -4,7 +4,7 @@ import supertest from 'supertest';
 import app from '../../../app';
 import { Roadmap, User } from '../../../models';
 import resources from '../../../resources';
-import * as database from '../../../services/databaseService';
+import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
 const url: string = '/api/roadmaps';
@@ -83,7 +83,7 @@ describe('Roadmap get by id tests', () => {
   it('should get roadmap with subcategories by id', async () => {
     const roadmap = await entityFactory.createRoadmap(user.id);
     const category = await entityFactory.createCategory(roadmap.id);
-    const subcategory = await entityFactory.createCategory(roadmap.id, (x) => {
+    const subcategory = await entityFactory.createCategory(roadmap.id, x => {
       x.parentCategoryId = category.id;
       return x;
     });
@@ -95,8 +95,8 @@ describe('Roadmap get by id tests', () => {
     const fetchedRoadmap = response.body as Roadmap;
     expect(fetchedRoadmap.categories).to.be.an('array');
     expect(fetchedRoadmap.categories.length).to.equal(2);
-    expect(fetchedRoadmap.categories.find((x) => x.id === category.id)).to.exist;
-    expect(fetchedRoadmap.categories.find((x) => x.id === subcategory.id)).to.exist;
+    expect(fetchedRoadmap.categories.find(x => x.id === category.id)).to.exist;
+    expect(fetchedRoadmap.categories.find(x => x.id === subcategory.id)).to.exist;
   });
 
   it('should get roadmap with tasks by id', async () => {

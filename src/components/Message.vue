@@ -2,7 +2,7 @@
   <md-snackbar :class="isError ? 'error' : ''" :md-position="'left'" :md-duration="400" :md-active="!!text" md-persistent>
     <span>{{text}}</span>
     <md-button class="md-icon-button close-button" @click="hide">
-      <i class="fas fa-times"></i>
+      <img src="@/assets/x.svg"/>
     </md-button>
   </md-snackbar>
 </template>

@@ -4,8 +4,8 @@ import { JWTAge } from '../config';
 import { HttpError, User } from '../models';
 import resources from '../resources';
 import validate from '../utils/validate';
-import authService from './authService';
-import { connection } from './databaseService';
+import authService from './util/authService';
+import { connection } from './util/databaseService';
 
 class AccountService {
   constructor(private user?: User) {
@@ -27,6 +27,32 @@ class AccountService {
     const refreshToken = this.generateLongToken();
     const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
     await connection().manager.update(User, { email }, { refreshToken });
+
+    return {
+      id: user.id,
+      email: user.email,
+      isAdmin: user.isAdmin,
+      token: authService.createToken({ payload: user }),
+      refreshToken,
+      expiresAt
+    };
+  }
+
+  public async loginWithCode(code: string) {
+    const user = await connection()
+      .manager
+      .findOne(User, { authCode: code }, { select: ['email', 'id', 'name', 'isAdmin'] });
+
+    if (!user) {
+      throw new HttpError(resources.Generic_ErrorMessage, 400);
+    }
+
+    const refreshToken = this.generateLongToken();
+    const expiresAt = moment().add(JWTAge, 'seconds').toISOString();
+    await connection().manager.update(User, { email: user.email }, {
+      refreshToken,
+      authCode: undefined
+    });
 
     return {
       id: user.id,
@@ -98,7 +124,7 @@ class AccountService {
     if (existingUser) {
       throw new HttpError(resources.Registration_EmailExists, 400);
     }
-    const pass = await authService.encryptPassword(newUser.password);
+    const pass = await authService.encryptPassword(newUser.password!);
 
     if (!pass) {
       throw new Error('Password hashing failed');
@@ -121,9 +147,65 @@ class AccountService {
     return user;
   }
 
+  public async getByUniqueIdentifier(uniqueIdentifier: string) {
+    const user = await connection()
+      .manager
+      .findOne(User, { where: { uniqueIdentifier }});
+
+    if (!user) {
+      throw new HttpError(resources.Generic_EntityNotFound('User'), 400);
+    }
+
+    return user;
+  }
+
+  public async getOrCreate(uniqueIdentifier: string, userInfo: IOtherUserInfo) {
+    let userQuery = connection().createQueryBuilder<User>(User, 'user')
+      .where('user.uniqueIdentifier = :uniqueIdentifier', { uniqueIdentifier });
+
+    if (userInfo.email) {
+      userQuery = userQuery.orWhere('user.email = :email', { email: userInfo.email });
+    }
+
+    const user = await userQuery.getOne();
+    if (user) {
+      return user;
+    }
+
+    const newUser = new User();
+    newUser.uniqueIdentifier = uniqueIdentifier;
+    newUser.email = userInfo.email;
+    newUser.name = userInfo.name;
+
+    const res = await connection()
+      .getRepository(User)
+      .save(newUser);
+
+    return res;
+  }
+
+  public setUniqueIdentifier(userId: number, uniqueIdentifier: string) {
+    return connection()
+      .manager
+      .update(User, { id: userId }, { uniqueIdentifier });
+  }
+
+  public async generateAuthCode(userId: number) {
+    const authCode = this.generateLongToken();
+    await connection()
+      .manager
+      .update(User, { id: userId }, { authCode });
+    return authCode;
+  }
+
   private generateLongToken() {
     return `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
   }
+}
+
+interface IOtherUserInfo {
+  email: string;
+  name: string;
 }
 
 export default (user?: User) => new AccountService(user);

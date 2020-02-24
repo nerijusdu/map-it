@@ -1,7 +1,7 @@
 import webpush from 'web-push';
 import { vapidKeys } from '../config';
 import { HttpError, User, UserNotification } from '../models';
-import { connection } from './databaseService';
+import { connection } from './util/databaseService';
 
 webpush.setVapidDetails(
   'mailto:test@test.com',
@@ -56,7 +56,7 @@ class NotificationService {
       return false;
     }
 
-    userNotifications.forEach((un) =>
+    userNotifications.forEach(un =>
       webpush.sendNotification({
         endpoint: un.endpoint,
         keys: {

@@ -5,7 +5,7 @@ import path from 'path';
 import shortid from 'shortid';
 import { ImportMock } from 'ts-mock-imports';
 import logsService, { logFile } from '../../services/logsService';
-import * as storageService from '../../services/storageService';
+import * as storageService from '../../services/util/storageService';
 
 let storageServiceMock = ImportMock.mockClass(storageService, 'StorageService');
 const logPath = path.resolve(__dirname, '../../../', logFile);

@@ -1,3 +1,7 @@
-node_modules/
-api/node_modules/
-api/coverage/
+.dockerignore
+.git
+*Dockerfile*
+*docker-compose*
+node_modules
+api/node_modules
+api/coverage

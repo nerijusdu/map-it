@@ -22,7 +22,7 @@ export class Epic extends OwnedEntity implements IRoadmapEntity {
   @IsDefined()
   public color: string;
 
-  @OneToMany(() => Category, (category) => category.epic)
+  @OneToMany(() => Category, category => category.epic)
   public categories: Category[];
 
   @Column()

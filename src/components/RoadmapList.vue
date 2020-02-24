@@ -62,7 +62,7 @@ export default {
       });
     },
     navigateToRoadmap(roadmapId) {
-      this.selectRoadmap(roadmapId);
+      this.selectRoadmap({ roadmapId });
       this.$router.push('/timeline');
     },
     previewRoadmap(roadmapId) {

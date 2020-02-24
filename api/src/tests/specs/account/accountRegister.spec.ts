@@ -4,7 +4,7 @@ import supertest from 'supertest';
 import app from '../../../app';
 import { User } from '../../../models';
 import resources from '../../../resources';
-import * as database from '../../../services/databaseService';
+import * as database from '../../../services/util/databaseService';
 import entityFactory from '../../helpers/entityFactory';
 
 const url: string = '/api/account/register';
@@ -61,7 +61,7 @@ describe('Account registration tests', () =>  {
 
     const passwordErrors = response.body.data.find((x: any) => x.property === 'password');
     expect(passwordErrors).to.exist;
-    expect(passwordErrors.errors).to.have.lengthOf(2);
+    expect(passwordErrors.errors).to.have.lengthOf(1);
   });
 
   it('should not create account with existing email', async () => {

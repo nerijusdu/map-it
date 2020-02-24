@@ -1,5 +1,5 @@
 import { User } from '../models';
-import { connection } from './databaseService';
+import { connection } from './util/databaseService';
 
 class UserService {
   constructor(private user: User) {}
@@ -23,7 +23,7 @@ class UserService {
       );
     }
     const users = await usersQuery.getMany();
-    return users.map((x) => ({
+    return users.map(x => ({
       id: x.id,
       name: x.name,
       email: x.email

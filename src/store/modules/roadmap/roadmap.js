@@ -94,7 +94,7 @@ export const actions = {
     commit('mDeleteRoadmap', roadmapId);
     return true;
   },
-  async selectRoadmap({ commit }, roadmapId) {
+  async selectRoadmap({ commit }, { roadmapId, ignoreRouter }) {
     const result = await api.getRoadmapById(roadmapId);
     if (!result || !result.ok) {
       return false;
@@ -103,7 +103,9 @@ export const actions = {
     window.localStorage.setItem('roadmapId', roadmapId);
 
     commit('mSelectRoadmap', result.data);
-    router.push(`/timeline/${roadmapId}`);
+    if (!ignoreRouter) {
+      router.push(`/timeline/${roadmapId}`);
+    }
 
     return true;
   },
@@ -132,7 +134,7 @@ export const actions = {
     const selectedRoadmapId = window.localStorage.getItem('roadmapId');
     const id = selectedRoadmapId ? parseInt(selectedRoadmapId, 10) : res.data[0].id;
 
-    const success = await dispatch('selectRoadmap', id);
+    const success = await dispatch('selectRoadmap', { roadmapId: id, ignoreRouter: true });
     if (success) {
       commit('mInit');
     }

@@ -1,7 +1,7 @@
 import { Category, Task, User } from '../models';
-import { connection } from './databaseService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
+import { connection } from './util/databaseService';
 
 class CategoryService extends RoadmapEntityServiceBase<Category> {
   constructor(user: User) {
@@ -39,6 +39,18 @@ class CategoryService extends RoadmapEntityServiceBase<Category> {
     }
 
     return result;
+  }
+
+  public getByName(name: string) {
+    return this.getAllQuery()
+      .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `${name}%`})
+      .getOne();
+  }
+
+  public async getForRoadmap(roadmapId: number) {
+    return this.getAllQuery()
+      .andWhere('roadmap.id = :roadmapId', { roadmapId })
+      .getMany();
   }
 }
 

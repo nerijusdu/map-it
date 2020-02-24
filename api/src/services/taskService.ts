@@ -2,10 +2,10 @@ import moment from 'moment';
 import { HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
 import categoryService from './categoryService';
-import { connection } from './databaseService';
 import notificationService from './notificationService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
 import roadmapService from './roadmapService';
+import { connection } from './util/databaseService';
 
 class TaskService extends RoadmapEntityServiceBase<Task> {
   constructor(user: User) {
@@ -30,6 +30,9 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
       throw new HttpError(resources.Generic_ValidationError, 400);
     }
 
+    taskInstance.startDate = new Date(task.startDate);
+    taskInstance.endDate = new Date(task.endDate);
+
     return super.save(taskInstance);
   }
 
@@ -47,6 +50,12 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
         url: `/#/timeline/${task.roadmapId}`
       });
     }
+  }
+
+  public getByName(name: string) {
+    return this.getAllQuery()
+      .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `${name}%`})
+      .getOne();
   }
 }
 
