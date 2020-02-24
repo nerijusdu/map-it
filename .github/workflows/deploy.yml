@@ -12,6 +12,7 @@ env:
   NODE_ENV: prod
   VAPID_KEYS_PUBLIC: ${{ secrets.VAPID_KEYS_PUBLIC }}
   API_HOST: ${{ secrets.API_HOST }}
+  GOOGLE_CLIENT_ID: ${{ secrets.GOOGLE_CLIENT_ID }}
 
 jobs:
   build-and-deploy:
