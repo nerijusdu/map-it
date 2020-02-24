@@ -4,6 +4,8 @@ export const roadmapMonthFormat = 'MMM YYYY';
 
 export const apiUrl = process.env.API_URL || 'http://localhost:9091/api';
 
+export const apiHost = process.env.API_HOST || 'http://localhost:9091';
+
 export const loginUrl = '/login';
 
 export const publicUrls = [
@@ -28,6 +30,6 @@ export const googleCredentials = {
   scope: 'openid profile email',
   auth_uri: 'https://accounts.google.com/o/oauth2/v2/auth',
   redirect_uris: [
-    `${apiUrl}/account/callback`
+    `${apiHost}/api/account/callback`
   ]
 };

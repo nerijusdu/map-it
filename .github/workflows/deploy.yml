@@ -11,6 +11,7 @@ env:
   NODE_VERSION: '12.14.0'
   NODE_ENV: prod
   VAPID_KEYS_PUBLIC: ${{ secrets.VAPID_KEYS_PUBLIC }}
+  API_HOST: ${{ secrets.API_HOST }}
 
 jobs:
   build-and-deploy:
