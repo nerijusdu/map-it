@@ -56,7 +56,7 @@ class NotificationService {
       return false;
     }
 
-    userNotifications.forEach((un) =>
+    userNotifications.forEach(un =>
       webpush.sendNotification({
         endpoint: un.endpoint,
         keys: {

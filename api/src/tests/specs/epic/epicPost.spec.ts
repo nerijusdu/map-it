@@ -117,7 +117,7 @@ describe('Epic delete tests', () => {
 
   it('should delete epic and leave categories', async () => {
     const category = await entityFactory.createCategory(roadmap.id);
-    const epic = await entityFactory.createEpic(roadmap.id, (x) => {
+    const epic = await entityFactory.createEpic(roadmap.id, x => {
       x.categories = [category];
       return x;
     });

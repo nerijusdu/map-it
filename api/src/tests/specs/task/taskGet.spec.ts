@@ -125,7 +125,7 @@ describe('Task complete tests', () => {
   });
 
   it('should revert completed task', async () => {
-    const task = await entityFactory.createTask(roadmap.id, (x) => {
+    const task = await entityFactory.createTask(roadmap.id, x => {
       x.isCompleted = true;
       return x;
     });

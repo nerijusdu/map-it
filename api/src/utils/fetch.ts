@@ -3,7 +3,7 @@ import logger from './logger';
 
 export default (url: string, opts: RequestInit) =>
   fetch(url, opts)
-  .catch((err) => {
+  .catch(err => {
     logger.error(err);
     return null;
   });

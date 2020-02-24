@@ -61,7 +61,7 @@ describe('Google callback tests', () => {
 
   it('should login with google', async () => {
     const id = shortid.generate();
-    const user = await entityFactory.createAccount((x) => {
+    const user = await entityFactory.createAccount(x => {
       x.uniqueIdentifier = id;
       return x;
     });

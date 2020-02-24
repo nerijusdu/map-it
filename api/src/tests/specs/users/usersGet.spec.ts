@@ -25,15 +25,15 @@ after(async () => {
 describe('Users get tests', () => {
   it('should fetch users filtering by email and name', async () => {
     const prefix = shortid.generate();
-    const user1 = await entityFactory.createAccount((x) => {
+    const user1 = await entityFactory.createAccount(x => {
       x.name = prefix + shortid.generate();
       return x;
     });
-    const user2 = await entityFactory.createAccount((x) => {
+    const user2 = await entityFactory.createAccount(x => {
       x.email = prefix + shortid.generate();
       return x;
     });
-    const user3 = await entityFactory.createAccount((x) => {
+    const user3 = await entityFactory.createAccount(x => {
       // Only search in start of the string
       x.name = shortid.generate() + prefix;
       return x;

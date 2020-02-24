@@ -17,9 +17,9 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       .orderBy('roadmap.id', 'ASC')
       .getMany();
 
-    return roadmaps.map((x) => ({
+    return roadmaps.map(x => ({
       ...x,
-      readonly: x.roadmapUsers.some((y) => (Boolean)(y.userId === this.user.id && y.readonly))
+      readonly: x.roadmapUsers.some(y => (Boolean)(y.userId === this.user.id && y.readonly))
     }));
   }
 
@@ -45,7 +45,7 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
 
     return {
       ...roadmap,
-      readonly: roadmap.roadmapUsers.some((x) => (Boolean)(x.userId === this.user.id && x.readonly))
+      readonly: roadmap.roadmapUsers.some(x => (Boolean)(x.userId === this.user.id && x.readonly))
     };
   }
 

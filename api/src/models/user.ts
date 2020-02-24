@@ -36,10 +36,10 @@ export class User extends EntityBase {
   @IsOptional()
   public refreshToken?: string;
 
-  @OneToMany(() => Roadmap, (roadmap) => roadmap.user)
+  @OneToMany(() => Roadmap, roadmap => roadmap.user)
   public roadmaps: Roadmap[];
 
-  @OneToMany(() => RoadmapUser, (ru) => ru.user)
+  @OneToMany(() => RoadmapUser, ru => ru.user)
   public sharedRoadmaps: RoadmapUser[];
 
   public comparePasswords = (input: string) => {

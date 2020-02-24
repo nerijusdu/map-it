@@ -19,7 +19,7 @@ describe('Healthcheck tests', () => {
 });
 
 describe('Static content tests', () => {
-  ['html', 'css', 'js', 'png', 'ico'].forEach((fileType) => {
+  ['html', 'css', 'js', 'png', 'ico'].forEach(fileType => {
     it(`should return ${fileType} files`, async () => {
       const result = await server.get(`/testData/test.${fileType}`);
       expect(result.status).to.equal(200);

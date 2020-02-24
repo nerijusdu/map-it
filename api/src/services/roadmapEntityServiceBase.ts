@@ -18,7 +18,7 @@ export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements
   public async getById(id: number, options?: FindOneOptions<TEntity>) {
     let query = this.getByIdQuery(id);
     if (options && options.relations) {
-      options.relations.forEach((rel) => {
+      options.relations.forEach(rel => {
         if (rel === 'roadmap' || rel === 'roadmapUsers') {
           return;
         }
@@ -57,7 +57,7 @@ export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements
       throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
     }
 
-    const roadmapUser = roadmap.roadmapUsers.find((x) => x.userId === this.user.id);
+    const roadmapUser = roadmap.roadmapUsers.find(x => x.userId === this.user.id);
     if (roadmap.userId !== this.user.id && (!roadmapUser || roadmapUser!.readonly)) {
       throw new HttpError(resources.Generic_ValidationError, 400);
     }

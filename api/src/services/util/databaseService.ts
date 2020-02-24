@@ -20,7 +20,7 @@ export const init = () => {
   if (con) {
     return;
   }
-  const config = ORMConfigs.find((x) => x.env === (process.env.NODE_ENV || '').trim()) || ORMConfigs[0];
+  const config = ORMConfigs.find(x => x.env === (process.env.NODE_ENV || '').trim()) || ORMConfigs[0];
 
   initPromise = createConnection({
     ...config,
@@ -35,8 +35,8 @@ export const init = () => {
       UserNotification
     ]
   })
-    .then((data) => { con = data; })
-    .catch((e) => { logger.error('connection failed', e); });
+    .then(data => { con = data; })
+    .catch(e => { logger.error('connection failed', e); });
 };
 
 export const close = () => con && con.isConnected

@@ -23,7 +23,7 @@ class UserService {
       );
     }
     const users = await usersQuery.getMany();
-    return users.map((x) => ({
+    return users.map(x => ({
       id: x.id,
       name: x.name,
       email: x.email

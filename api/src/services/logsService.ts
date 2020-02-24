@@ -43,7 +43,7 @@ export class LogsService {
       : result;
     const items = allItems
       .slice(start, end)
-      .map((log) => ({
+      .map(log => ({
         log_id: log.log_id,
         level: log.level,
         message: log.message,
@@ -90,12 +90,12 @@ export class LogsService {
   }
 
   private readLogsFromFile(): Promise<LogEntry[]> {
-    return new Promise((resolve) => {
+    return new Promise(resolve => {
       const readInterface = readline.createInterface({
         input: fs.createReadStream(logFile)
       });
       const items: LogEntry[] = [];
-      readInterface.on('line', (line) => {
+      readInterface.on('line', line => {
         items.push(JSON.parse(line));
       });
       readInterface.on('close', () => resolve(items));
@@ -106,8 +106,8 @@ export class LogsService {
     const file = await this.storageService.getBlobText(containerName!, blobName!);
     return file
       .split(/\r?\n/)
-      .filter((str) => !!(str || '').trim())
-      .map((str) => JSON.parse(str));
+      .filter(str => !!(str || '').trim())
+      .map(str => JSON.parse(str));
   }
 }
 

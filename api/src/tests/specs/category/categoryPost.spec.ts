@@ -104,7 +104,7 @@ describe('Category post tests', () => {
 
   it('should create move tasks to subcategory when creting first subcategory', async () => {
     const parentCategory = await entityFactory.createCategory(roadmap.id);
-    const task = await entityFactory.createTask(roadmap.id, (x) => {
+    const task = await entityFactory.createTask(roadmap.id, x => {
       x.categoryId = parentCategory.id;
       return x;
     });
@@ -178,7 +178,7 @@ describe('Category delete tests', () => {
 
   it('should delete subcategory when deleting parent category', async () => {
     const category = await entityFactory.createCategory(roadmap.id);
-    const subcategory = await entityFactory.createCategory(roadmap.id, (x) => {
+    const subcategory = await entityFactory.createCategory(roadmap.id, x => {
       x.parentCategoryId = category.id;
       return x;
     });

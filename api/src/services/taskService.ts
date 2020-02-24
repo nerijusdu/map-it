@@ -51,6 +51,12 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
       });
     }
   }
+
+  public getByName(name: string) {
+    return this.getAllQuery()
+      .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `${name}%`})
+      .getOne();
+  }
 }
 
 export default (user: User) => new TaskService(user);

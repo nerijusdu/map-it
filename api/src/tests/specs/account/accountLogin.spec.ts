@@ -58,7 +58,7 @@ describe('Account login tests', () => {
 
   it('should login with code', async () => {
     const code = shortid.generate();
-    const user = await entityFactory.createAccount((x) => {
+    const user = await entityFactory.createAccount(x => {
       x.authCode = code;
       return x;
     });
