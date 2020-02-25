@@ -226,6 +226,10 @@ export default {
   .mobile-navigation {
     display: flex;
   }
+
+  .md-list-item-expand {
+    border: none;
+  }
 }
 </style>
 
