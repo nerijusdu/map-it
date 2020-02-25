@@ -1,7 +1,14 @@
 <template>
   <div>
-    <md-button class="md-button md-raised md-primary" @click="linkGoogle">
-      <span>Link Google account</span>
+    <div class="settings-title">
+      <h2>Settings</h2>
+    </div>
+    <md-button
+      class="md-button md-raised md-primary"
+      @click="linkGoogle"
+      :disabled="settings.googleAccountLinked">
+      <span v-if="!settings.googleAccountLinked">Link Google account</span>
+      <span v-if="settings.googleAccountLinked">Google account linked</span>
       <img src="@/assets/link.svg"/>
     </md-button>
   </div>
@@ -16,7 +23,8 @@ import { googleCredentials } from '../constants';
 export default {
   computed: {
     ...mapState({
-      userId: state => state.app.user.id
+      userId: state => state.app.user.id,
+      settings: state => state.settings
     }),
     authUrl() {
       const params = {
@@ -55,3 +63,9 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.settings-title {
+  margin: 10px;
+}
+</style>

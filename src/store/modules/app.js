@@ -140,6 +140,7 @@ export const actions = {
   },
   async onLogin({ dispatch }) {
     await dispatch('roadmap/init', null, { root: true });
+    await dispatch('settings/init', null, { root: true });
     await notificationService.onLogin();
   },
   async init({ commit, state, dispatch }) {
