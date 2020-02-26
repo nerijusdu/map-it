@@ -198,6 +198,14 @@ class AccountService {
     return authCode;
   }
 
+  public async getSettings() {
+    const userInfo = await this.getById(this.user!.id);
+
+    return {
+      googleAccountLinked: !!userInfo.uniqueIdentifier
+    };
+  }
+
   private generateLongToken() {
     return `${shortid.generate()}${shortid.generate()}${shortid.generate()}`;
   }

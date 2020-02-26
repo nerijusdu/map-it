@@ -47,4 +47,9 @@ router.get('/callback', response(async (req, res) => {
   res.redirect(redirectUrl);
 }, { isPublic: true }));
 
+router.get('/settings', response(async (req, res) => {
+  const result = await accountService(req.user).getSettings();
+  return res.json(result);
+}));
+
 export default router;

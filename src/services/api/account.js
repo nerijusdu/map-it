@@ -37,5 +37,8 @@ export default {
       ...options,
       ignoreAuth: true
     });
+  },
+  getSettings(options) {
+    return apiCall('/account/settings', {}, options);
   }
 };
