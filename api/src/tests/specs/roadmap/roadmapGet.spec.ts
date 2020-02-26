@@ -167,3 +167,26 @@ describe('Roadmap get by id tests', () => {
     expect(response.status).to.equal(200);
   });
 });
+
+describe('Roadmap get users', () => {
+  it('should get users for roadmap', async () => {
+    const roadmap = await entityFactory.createRoadmap(user.id);
+    const anotherUser = await entityFactory.createAccount();
+    await entityFactory.linkRoadmapToUser(roadmap, anotherUser);
+
+    const response = await server.get(`${url}/${roadmap.id}/users`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).to.equal(200);
+    expect(response.body).to.be.an('array');
+    expect(response.body.length).to.equal(2);
+    const user1 = (response.body as any[]).find(x => x.id === user.id);
+    const user2 = (response.body as any[]).find(x => x.id === anotherUser.id);
+    expect(user1).to.exist;
+    expect(user1.name).to.equal(user.name);
+    expect(user1.email).to.equal(user.email);
+    expect(user2).to.exist;
+    expect(user2.name).to.equal(anotherUser.name);
+    expect(user2.email).to.equal(anotherUser.email);
+  });
+});

@@ -1,6 +1,7 @@
 import moment from 'moment';
 import { HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
+import accountService from './accountService';
 import categoryService from './categoryService';
 import notificationService from './notificationService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
@@ -56,6 +57,20 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
     return this.getAllQuery()
       .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `${name}%`})
       .getOne();
+  }
+
+  public async assign(taskId: number, userId?: number) {
+    const task = await this.getById(taskId);
+    if (!userId) {
+      await connection().manager.update(Task, { id: task.id }, { assigneeId: undefined });
+      return;
+    }
+
+    const user = await accountService().getById(userId);
+
+    await this.canEdit(task.roadmapId, user.id);
+
+    await connection().manager.update(Task, { id: task.id }, { assigneeId: user.id });
   }
 }
 

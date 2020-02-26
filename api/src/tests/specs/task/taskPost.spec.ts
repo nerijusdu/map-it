@@ -228,3 +228,57 @@ describe('Task delete tests', () => {
     expect(deletedTask).to.exist;
   });
 });
+
+describe('Task assign tests', () => {
+  it('should assign user to a task', async () => {
+    const task = await entityFactory.createTask(roadmap.id);
+
+    const response = await server.put(`${url}/${task.id}/assign/${user.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).to.equal(200);
+
+    const updatedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(updatedTask).to.exist;
+    expect(updatedTask!.assigneeId).to.equal(user.id);
+  });
+
+  it('should unassign user from a task', async () => {
+    const task = await entityFactory.createTask(roadmap.id);
+
+    const response = await server.put(`${url}/${task.id}/unassign`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).to.equal(200);
+
+    const updatedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(updatedTask).to.exist;
+    expect(updatedTask!.assigneeId).to.not.exist;
+  });
+
+  it('should not assign user that don\'t have access' , async () => {
+    const anotherUser = await entityFactory.createAccount();
+    const task = await entityFactory.createTask(roadmap.id);
+
+    const response = await server.put(`${url}/${task.id}/assign/${anotherUser.id}`)
+      .set('Authorization', `Bearer ${token}`);
+
+    expect(response.status).to.equal(400);
+
+    const updatedTask = await database
+      .connection()
+      .manager
+      .findOne(Task, task.id);
+
+    expect(updatedTask).to.exist;
+    expect(updatedTask!.assigneeId).to.not.exist;
+  });
+});
