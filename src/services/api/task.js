@@ -13,5 +13,11 @@ export default {
   },
   deleteTask(id, options) {
     return apiCall(`/tasks/${id}`, { method: 'DELETE' }, options);
+  },
+  assignUserToTask(userId, taskId, options) {
+    return apiCall(`/tasks/${taskId}/assign/${userId}`, { method: 'PUT' }, options);
+  },
+  unassignFromTask(taskId, options) {
+    return apiCall(`/tasks/${taskId}/unassign`, { method: 'PUT' }, options);
   }
 };

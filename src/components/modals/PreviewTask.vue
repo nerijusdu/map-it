@@ -13,12 +13,23 @@
       <div class="preview-item-description">
         <p v-for="(par, i) in getParagraphs(task.description)" :key="i">{{ par }}</p>
       </div>
-      <div class="preview-item-category" :style="{background: task.category.color}">
-        {{ task.category.title }}
-      </div>
-      <div class="preview-item-dates">
-        <div><span>From:</span> <span>{{ task.startDate.format(datePreviewFormat) }}</span></div>
-        <div><span>To: </span><span>{{ task.endDate.format(datePreviewFormat) }}</span></div>
+      <div class="preview-item-field">
+        <div>
+          <div>Assignee:</div>
+          <md-field class="assignee-select">
+            <md-select v-model="task.assigneeId" @md-selected="updateAssignee">
+              <md-option v-for="a in availableAssignees" :key="a.id" :value="a.id">{{ a.name }}</md-option>
+            </md-select>
+          </md-field>
+        </div>
+        <div>
+          <div>Category:</div>
+          <div class="preview-item-category" :style="{background: task.category.color}">
+            {{ task.category.title }}
+          </div>
+        </div>
+        <div><div>From:</div> <div>{{ task.startDate.format(datePreviewFormat) }}</div></div>
+        <div><div>To:</div><div>{{ task.endDate.format(datePreviewFormat) }}</div></div>
       </div>
     </div>
     <div class="modal-footer">
@@ -34,20 +45,32 @@ import { mapGetters, mapActions } from 'vuex';
 import { datePreviewFormat } from '../../constants';
 import formatService from '../../services/formatService';
 import resources from '../../services/resourceService';
+import api from '../../services/api';
 
 export default {
   computed: {
     ...mapGetters('roadmap', ['taskToPreview', 'readonly'])
   },
   watch: {
-    taskToPreview(val) {
+    async taskToPreview(val) {
+      this.initialized = false;
       if (val) {
-        this.task = { ...val };
+        if (val.id !== this.task.id) {
+          const res = await api.getUsersForRoadmap(val.roadmapId, { ignoreLoading: true });
+          const users = [{ id: 0, name: 'Unassigned', email: '' }];
+          this.availableAssignees = res
+            ? users.concat(res.data)
+            : users;
+        }
+
+        this.task = { ...val, assigneeId: val.assigneeId || 0 };
+        this.initialized = true;
       }
     }
   },
   data: () => ({
     datePreviewFormat,
+    initialized: false,
     task: {
       id: '',
       title: '',
@@ -58,13 +81,26 @@ export default {
       },
       isCompleted: false,
       startDate: moment(),
-      endDate: moment()
-    }
+      endDate: moment(),
+      assigneeId: 0
+    },
+    availableAssignees: [
+      {
+        id: 0,
+        name: 'Unassigned'
+      }
+    ]
   }),
   methods: {
-    ...mapActions('roadmap', ['editTask', 'completeTask', 'deleteTask']),
+    ...mapActions('roadmap', [
+      'editTask',
+      'completeTask',
+      'deleteTask',
+      'assignUserToTask'
+    ]),
     onClose() {
       this.editTask({ taskId: null, modal: this.$modal });
+      this.initialized = false;
       this.$modal.hide('previewTask');
     },
     complete(isCompleted) {
@@ -79,12 +115,23 @@ export default {
         }
       });
     },
+    updateAssignee(assigneeId) {
+      if (!this.initialized) {
+        return;
+      }
+
+      this.assignUserToTask({ userId: assigneeId, taskId: this.task.id });
+    },
     getParagraphs: formatService.getParagraphs
   }
 };
 </script>
 
 <style>
+.modal-content {
+  padding-bottom: 0px;
+}
+
 .preview-item-modal > .modal-content > * {
   margin-top: 10px;
   margin-bottom: 10px;
@@ -97,18 +144,12 @@ export default {
   max-height: 50vh;
 }
 
-.preview-item-dates > div {
+.preview-item-field > div {
   display: flex;
-  width: 50%;
+  width: 60%;
   justify-content: space-between;
-}
-
-.preview-item-category {
-  width: 50%;
-  display: flex;
   align-items: center;
-  justify-content: center;
-  height: 30px;
+  margin-bottom: 10px;
 }
 
 .modal-title > .title {
@@ -121,5 +162,13 @@ export default {
 .modal-title > .delete-icon {
   margin: 10px;
   cursor: pointer;
+}
+
+.assignee-select {
+  margin: 0px;
+  padding: 0px;
+  min-height: auto;
+  width: auto;
+  margin-left: 10px;
 }
 </style>

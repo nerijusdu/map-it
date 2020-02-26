@@ -32,6 +32,7 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
       .leftJoinAndSelect('ru.user', 'roadmapUsers')
       .leftJoinAndSelect('roadmap.user', 'user')
+      .leftJoinAndSelect('tasks.assignee', 'assignee')
       .addSelect('roadmapUsers.id')
       .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)', { id, userId: this.user.id })
       .orderBy('epics.id', 'ASC')

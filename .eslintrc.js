@@ -55,6 +55,7 @@ module.exports = {
     'import/no-unresolved': 'off',
     'no-param-reassign': 'off',
     'no-mixed-operators': 'off',
-    'import/no-named-as-default-member': 'off'
+    'import/no-named-as-default-member': 'off',
+    'brace-style': 'off'
   }
 }

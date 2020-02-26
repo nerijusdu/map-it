@@ -22,5 +22,8 @@ export default {
       method: 'POST',
       body: JSON.stringify(request)
     }, options);
+  },
+  getUsersForRoadmap(roadmapId, options) {
+    return apiCall(`/roadmaps/${roadmapId}/users`, {}, options);
   }
 };

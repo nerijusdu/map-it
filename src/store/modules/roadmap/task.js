@@ -119,6 +119,21 @@ export const actions = {
     }
 
     commit('mCompleteTask', { id, isCompleted });
+  },
+  async assignUserToTask({ commit, state }, { userId, taskId }) {
+    const options = { ignoreLoading: true };
+    if (userId) {
+      await api.assignUserToTask(userId, taskId, options);
+    }
+    else {
+      await api.unassignFromTask(taskId, options);
+    }
+
+    const task = state.current.tasks.find(t => t.id === taskId);
+    commit('mUpdateTask', {
+      ...task,
+      assigneeId: userId
+    });
   }
 };
 
