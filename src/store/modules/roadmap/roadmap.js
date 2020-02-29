@@ -105,6 +105,7 @@ export const actions = {
     commit('mSelectRoadmap', result.data);
     commit('milestones/mLoad', result.data.milestones, { root: true });
     commit('epics/mLoad', result.data.epics, { root: true });
+    commit('categories/mLoad', result.data.categories, { root: true });
     if (!ignoreRouter) {
       router.push(`/timeline/${roadmapId}`);
     }
@@ -145,6 +146,9 @@ export const actions = {
   },
   reset({ commit }) {
     commit('mReset');
+    commit('milestones/mReset', null, { root: true });
+    commit('epics/mReset', null, { root: true });
+    commit('categories/mReset', null, { root: true });
   }
 };
 
@@ -187,7 +191,6 @@ export const mutations = {
     state.current = {};
     state.editTaskId = null;
     state.previewTaskId = null;
-    state.previewCategoryId = null;
     state.editRoadmapId = null;
     state.isInitialized = false;
     state.isInitialising = false;

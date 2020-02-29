@@ -21,7 +21,10 @@ import formatService from '../../services/formatService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['categoryToPreview', 'readonly'])
+    ...mapGetters({
+      categoryToPreview: 'categories/categoryToPreview',
+      readonly: 'roadmap/readonly'
+    })
   },
   watch: {
     categoryToPreview(val) {
@@ -36,7 +39,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editCategory']),
+    ...mapActions('categories', ['editCategory']),
     onClose() {
       this.editCategory({ categoryId: null, modal: this.$modal });
       this.$modal.hide('previewCategory');

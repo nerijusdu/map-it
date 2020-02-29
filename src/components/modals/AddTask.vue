@@ -125,13 +125,13 @@ export default {
   mixins: [validationMixin],
   computed: {
     ...mapState({
-      categories: state => state.roadmap.current.categories,
+      categories: state => state.categories.items,
       tasks: state => state.roadmap.current.tasks,
       roadmapId: state => state.roadmap.current.id
     }),
     ...mapGetters({
       taskToEdit: 'roadmap/taskToEdit',
-      categoryToEdit: 'roadmap/categoryToEdit',
+      categoryToEdit: 'categories/categoryToEdit',
       epicToEdit: 'epics/epicToEdit',
       roadmapTimeFrame: 'roadmap/roadmapTimeFrame',
       milestoneToEdit: 'milestones/milestoneToEdit'
@@ -213,7 +213,7 @@ export default {
     ...mapActions({
       saveTaskToStore: 'roadmap/saveTask',
       editTask: 'roadmap/editTask',
-      saveCategoryToStore: 'roadmap/saveCategory',
+      saveCategoryToStore: 'categories/saveCategory',
       saveEpicToStore: 'epics/saveEpic',
       selectRoadmap: 'roadmap/selectRoadmap',
       saveMilestoneToStore: 'milestones/saveMilestone'

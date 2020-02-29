@@ -43,7 +43,7 @@ import Epics from './Epics';
 export default {
   computed: {
     ...mapState({
-      categories: state => state.roadmap.current.categories,
+      categories: state => state.categories.items,
       tasks: state => state.roadmap.current.tasks,
       epics: state => state.epics.items
     }),

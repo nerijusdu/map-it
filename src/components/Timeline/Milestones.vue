@@ -35,6 +35,7 @@ export default {
   computed: {
     ...mapState({
       roadmap: state => state.roadmap.current,
+      categories: state => state.categories.items,
       milestones: state => state.milestones.items,
       hasEpics: state => state.epics.items.length > 0
     }),
@@ -43,7 +44,7 @@ export default {
     }),
     dateMarkerHeight() {
       const parentCategories = new Set();
-      const subCategories = this.roadmap.categories
+      const subCategories = this.categories
         .filter((x) => {
           if (x.parentCategoryId) {
             parentCategories.add(x.parentCategoryId);
@@ -52,9 +53,9 @@ export default {
           return false;
         })
         .map(x => x.id);
-      const emptyCategories = this.roadmap.categories
+      const emptyCategories = this.categories
         .filter(x => !this.roadmap.tasks.some(t => t.id === x.id) && !parentCategories.has(x.id));
-      const otherCategories = this.roadmap.categories
+      const otherCategories = this.categories
         .filter(x => !subCategories.includes(x.id) && !parentCategories.has(x.id));
       const taskCount = this.roadmap.tasks.length;
 

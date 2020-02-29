@@ -65,6 +65,11 @@ export const mutations = {
   mLoad(state, milestones) {
     state.items = milestones;
   },
+  mReset(state) {
+    state.items = initialState.items;
+    state.editMilestoneId = initialState.editMilestoneId;
+    state.previewMilestoneId = initialState.previewMilestoneId;
+  },
   mEditMilestone(state, milestoneId) {
     state.editMilestoneId = milestoneId;
   },

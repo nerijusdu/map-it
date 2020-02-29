@@ -28,19 +28,19 @@ export const getters = {
 
     return {
       ...epic,
-      categories: rootState.roadmap.current.categories.filter(x => x.epicId === epic.id)
+      categories: rootState.categories.items.filter(x => x.epicId === epic.id)
     };
   },
   epicList: (state, _, rootState) => state.items.map((epic) => {
-    const categories = rootState.roadmap.current.categories
+    const categories = rootState.categories.items
       .filter(x => x.epicId === epic.id)
       .map(x => x.id);
-    const allCategories = rootState.roadmap.current.categories
+    const allCategories = rootState.categories.items
       .filter(x => categories.includes(x.id) || categories.includes(x.parentCategoryId))
       .map(x => x.id);
 
     const emptyCategories = new Set([...allCategories]);
-    rootState.roadmap.current.categories.forEach((x) => {
+    rootState.categories.items.forEach((x) => {
       if (allCategories.includes(x.id) && x.parentCategoryId) {
         emptyCategories.delete(x.parentCategoryId);
       }
@@ -99,6 +99,11 @@ export const actions = {
 export const mutations = {
   mLoad(state, epics) {
     state.items = epics;
+  },
+  mReset(state) {
+    state.items = initialState.items;
+    state.previewEpicId = initialState.previewEpicId;
+    state.editEpicId = initialState.editEpicId;
   },
   mEditEpic(state, epicId) {
     state.editEpicId = epicId;

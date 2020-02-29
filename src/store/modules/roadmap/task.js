@@ -50,7 +50,7 @@ export const getters = {
       endDate: new Date(task.endDate)
     };
   },
-  taskToPreview: (state) => {
+  taskToPreview: (state, _, rootState) => {
     if (!state.previewTaskId) {
       return null;
     }
@@ -64,7 +64,7 @@ export const getters = {
       ...task,
       startDate: moment(task.startDate),
       endDate: moment(task.endDate),
-      category: state.current.categories.find(c => c.id === task.categoryId)
+      category: rootState.categories.items.find(c => c.id === task.categoryId)
     };
   }
 };

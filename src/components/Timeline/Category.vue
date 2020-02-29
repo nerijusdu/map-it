@@ -71,7 +71,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('roadmap', ['previewTask', 'previewCategory'])
+    ...mapActions({
+      previewTask: 'roadmap/previewTask',
+      previewCategory: 'categories/previewCategory'
+    })
   }
 };
 </script>
