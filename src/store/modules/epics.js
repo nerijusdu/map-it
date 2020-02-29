@@ -45,7 +45,7 @@ export const getters = {
         emptyCategories.delete(x.parentCategoryId);
       }
     });
-    const tasks = rootState.roadmap.current.tasks.filter((x) => {
+    const tasks = rootState.tasks.items.filter((x) => {
       const includes = allCategories.includes(x.categoryId);
       if (includes) {
         emptyCategories.delete(x.categoryId);

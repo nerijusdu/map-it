@@ -126,11 +126,11 @@ export default {
   computed: {
     ...mapState({
       categories: state => state.categories.items,
-      tasks: state => state.roadmap.current.tasks,
+      tasks: state => state.tasks.items,
       roadmapId: state => state.roadmap.current.id
     }),
     ...mapGetters({
-      taskToEdit: 'roadmap/taskToEdit',
+      taskToEdit: 'tasks/taskToEdit',
       categoryToEdit: 'categories/categoryToEdit',
       epicToEdit: 'epics/epicToEdit',
       roadmapTimeFrame: 'roadmap/roadmapTimeFrame',
@@ -211,8 +211,8 @@ export default {
   }),
   methods: {
     ...mapActions({
-      saveTaskToStore: 'roadmap/saveTask',
-      editTask: 'roadmap/editTask',
+      saveTaskToStore: 'tasks/saveTask',
+      editTask: 'tasks/editTask',
       saveCategoryToStore: 'categories/saveCategory',
       saveEpicToStore: 'epics/saveEpic',
       selectRoadmap: 'roadmap/selectRoadmap',

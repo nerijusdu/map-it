@@ -1,15 +1,16 @@
 import moment from 'moment';
-import api from '../../../services/api';
-import converters from '../../../services/converterService';
-import formatService from '../../../services/formatService';
+import api from '../../services/api';
+import converters from '../../services/converterService';
+import formatService from '../../services/formatService';
 
 const initialState = {
+  items: [],
   editTaskId: null,
   previewTaskId: null,
 };
 
 export const getters = {
-  tasksByCategory: state => categoryId => state.current.tasks
+  tasksByCategory: (state, _, rootState) => categoryId => state.items
     .filter(t => t.categoryId === categoryId)
     .map(t => ({
       ...t,
@@ -17,8 +18,8 @@ export const getters = {
       endDate: moment(t.endDate),
       width: formatService.calculateWidthPercentage(
         {
-          startDate: moment(state.current.startDate),
-          endDate: moment(state.current.endDate)
+          startDate: moment(rootState.roadmap.current.startDate),
+          endDate: moment(rootState.roadmap.current.endDate)
         },
         {
           startDate: moment(t.startDate),
@@ -26,11 +27,11 @@ export const getters = {
         }),
       leftMargin: formatService.calculateWidthPercentage(
         {
-          startDate: moment(state.current.startDate),
-          endDate: moment(state.current.endDate)
+          startDate: moment(rootState.roadmap.current.startDate),
+          endDate: moment(rootState.roadmap.current.endDate)
         },
         {
-          startDate: moment(state.current.startDate),
+          startDate: moment(rootState.roadmap.current.startDate),
           endDate: moment(t.startDate)
         }, true)
     })),
@@ -39,7 +40,7 @@ export const getters = {
       return null;
     }
 
-    const task = state.current.tasks.find(t => t.id === state.editTaskId);
+    const task = state.items.find(t => t.id === state.editTaskId);
     if (!task) {
       return null;
     }
@@ -55,7 +56,7 @@ export const getters = {
       return null;
     }
 
-    const task = state.current.tasks.find(t => t.id === state.previewTaskId);
+    const task = state.items.find(t => t.id === state.previewTaskId);
     if (!task) {
       return null;
     }
@@ -70,8 +71,8 @@ export const getters = {
 };
 
 export const actions = {
-  async saveTask({ state, commit }, task) {
-    task.roadmapId = state.current.id;
+  async saveTask({ rootState, commit }, task) {
+    task.roadmapId = rootState.roadmap.current.id;
 
     const isNew = !task.id;
     const result = await api.saveTask(task);
@@ -129,7 +130,7 @@ export const actions = {
       await api.unassignFromTask(taskId, options);
     }
 
-    const task = state.current.tasks.find(t => t.id === taskId);
+    const task = state.items.find(t => t.id === taskId);
     commit('mUpdateTask', {
       ...task,
       assigneeId: userId
@@ -138,26 +139,34 @@ export const actions = {
 };
 
 export const mutations = {
+  mLoad(state, tasks) {
+    state.items = tasks;
+  },
+  mReset(state) {
+    state.items = initialState.items;
+    state.editTaskId = initialState.editTaskId;
+    state.previewTaskId = initialState.previewTaskId;
+  },
   mCompleteTask(state, { id, isCompleted }) {
-    const i = state.current.tasks.findIndex(t => t.id === id);
-    state.current.tasks[i].isCompleted = isCompleted;
+    const i = state.items.findIndex(t => t.id === id);
+    state.items[i].isCompleted = isCompleted;
   },
   mAddTask(state, task) {
-    state.current.tasks.push(task);
+    state.items.push(task);
   },
   mDeleteTask(state, id) {
-    const i = state.current.tasks.findIndex(t => t.id === id);
-    state.current.tasks = [
-      ...state.current.tasks.slice(0, i),
-      ...state.current.tasks.slice(i + 1)
+    const i = state.items.findIndex(t => t.id === id);
+    state.items = [
+      ...state.items.slice(0, i),
+      ...state.items.slice(i + 1)
     ];
   },
   mUpdateTask(state, task) {
-    const i = state.current.tasks.findIndex(t => t.id === task.id);
-    state.current.tasks = [
-      ...state.current.tasks.slice(0, i),
+    const i = state.items.findIndex(t => t.id === task.id);
+    state.items = [
+      ...state.items.slice(0, i),
       task,
-      ...state.current.tasks.slice(i + 1)
+      ...state.items.slice(i + 1)
     ];
   },
   mEditTask(state, taskId) {
@@ -169,6 +178,7 @@ export const mutations = {
 };
 
 export default {
+  namespaced: true,
   state: initialState,
   getters,
   actions,

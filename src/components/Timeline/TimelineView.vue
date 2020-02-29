@@ -44,7 +44,7 @@ export default {
   computed: {
     ...mapState({
       categories: state => state.categories.items,
-      tasks: state => state.roadmap.current.tasks,
+      tasks: state => state.tasks.items,
       epics: state => state.epics.items
     }),
     ...mapGetters('roadmap', {

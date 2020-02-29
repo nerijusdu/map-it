@@ -49,7 +49,10 @@ import api from '../../services/api';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['taskToPreview', 'readonly'])
+    ...mapGetters({
+      taskToPreview: 'tasks/taskToPreview',
+      readonly: 'roadmap/readonly'
+    })
   },
   watch: {
     async taskToPreview(val) {
@@ -92,7 +95,7 @@ export default {
     ]
   }),
   methods: {
-    ...mapActions('roadmap', [
+    ...mapActions('tasks', [
       'editTask',
       'completeTask',
       'deleteTask',

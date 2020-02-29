@@ -37,6 +37,7 @@ export default {
       roadmap: state => state.roadmap.current,
       categories: state => state.categories.items,
       milestones: state => state.milestones.items,
+      tasks: state => state.tasks.items,
       hasEpics: state => state.epics.items.length > 0
     }),
     ...mapGetters('roadmap', {
@@ -54,18 +55,18 @@ export default {
         })
         .map(x => x.id);
       const emptyCategories = this.categories
-        .filter(x => !this.roadmap.tasks.some(t => t.id === x.id) && !parentCategories.has(x.id));
+        .filter(x => !this.tasks.some(t => t.id === x.id) && !parentCategories.has(x.id));
       const otherCategories = this.categories
         .filter(x => !subCategories.includes(x.id) && !parentCategories.has(x.id));
-      const taskCount = this.roadmap.tasks.length;
+      const taskCount = this.tasks.length;
 
       return ((taskCount + emptyCategories.length) * 35)
            + ((parentCategories.size + otherCategories.length) * 5) - 5;
     },
     mobileDateMarkerHeight() {
-      const taskCount = this.roadmap.tasks.length;
+      const taskCount = this.tasks.length;
       const categoiresWithTasks = new Set();
-      this.roadmap.tasks.forEach(x => categoiresWithTasks.add(x.categoryId));
+      this.tasks.forEach(x => categoiresWithTasks.add(x.categoryId));
 
       return (taskCount * 35) + (categoiresWithTasks.size * 57);
     },
