@@ -132,7 +132,7 @@ export default {
     ...mapGetters({
       taskToEdit: 'roadmap/taskToEdit',
       categoryToEdit: 'roadmap/categoryToEdit',
-      epicToEdit: 'roadmap/epicToEdit',
+      epicToEdit: 'epics/epicToEdit',
       roadmapTimeFrame: 'roadmap/roadmapTimeFrame',
       milestoneToEdit: 'milestones/milestoneToEdit'
     }),
@@ -214,7 +214,7 @@ export default {
       saveTaskToStore: 'roadmap/saveTask',
       editTask: 'roadmap/editTask',
       saveCategoryToStore: 'roadmap/saveCategory',
-      saveEpicToStore: 'roadmap/saveEpic',
+      saveEpicToStore: 'epics/saveEpic',
       selectRoadmap: 'roadmap/selectRoadmap',
       saveMilestoneToStore: 'milestones/saveMilestone'
     }),

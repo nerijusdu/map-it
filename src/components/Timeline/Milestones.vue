@@ -36,7 +36,7 @@ export default {
     ...mapState({
       roadmap: state => state.roadmap.current,
       milestones: state => state.milestones.items,
-      hasEpics: state => state.roadmap.current.epics.length > 0
+      hasEpics: state => state.epics.items.length > 0
     }),
     ...mapGetters('roadmap', {
       timeFrame: 'roadmapTimeFrame'

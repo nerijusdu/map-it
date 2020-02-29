@@ -45,7 +45,7 @@ export default {
     ...mapState({
       categories: state => state.roadmap.current.categories,
       tasks: state => state.roadmap.current.tasks,
-      epics: state => state.roadmap.current.epics
+      epics: state => state.epics.items
     }),
     ...mapGetters('roadmap', {
       months: 'roadmapMonths',

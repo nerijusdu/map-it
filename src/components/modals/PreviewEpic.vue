@@ -32,7 +32,10 @@ import formatService from '../../services/formatService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['epicToPreview', 'readonly'])
+    ...mapGetters({
+      epicToPreview: 'epics/epicToPreview',
+      readonly: 'roadmap/readonly'
+    })
   },
   watch: {
     epicToPreview(val) {
@@ -50,7 +53,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editEpic']),
+    ...mapActions('epics', ['editEpic']),
     onClose() {
       this.editEpic({ epicId: null, modal: this.$modal });
       this.$modal.hide('previewEpic');

@@ -104,6 +104,7 @@ export const actions = {
 
     commit('mSelectRoadmap', result.data);
     commit('milestones/mLoad', result.data.milestones, { root: true });
+    commit('epics/mLoad', result.data.epics, { root: true });
     if (!ignoreRouter) {
       router.push(`/timeline/${roadmapId}`);
     }
