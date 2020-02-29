@@ -129,13 +129,13 @@ export default {
       tasks: state => state.roadmap.current.tasks,
       roadmapId: state => state.roadmap.current.id
     }),
-    ...mapGetters('roadmap', [
-      'taskToEdit',
-      'categoryToEdit',
-      'milestoneToEdit',
-      'epicToEdit',
-      'roadmapTimeFrame'
-    ]),
+    ...mapGetters({
+      taskToEdit: 'roadmap/taskToEdit',
+      categoryToEdit: 'roadmap/categoryToEdit',
+      epicToEdit: 'roadmap/epicToEdit',
+      roadmapTimeFrame: 'roadmap/roadmapTimeFrame',
+      milestoneToEdit: 'milestones/milestoneToEdit'
+    }),
     title() {
       if (this.taskToEdit) {
         return this.task.title;
@@ -210,13 +210,13 @@ export default {
     descriptionLength: validationRules.descriptionLength
   }),
   methods: {
-    ...mapActions('roadmap', {
-      saveTaskToStore: 'saveTask',
-      editTask: 'editTask',
-      saveCategoryToStore: 'saveCategory',
-      saveMilestoneToStore: 'saveMilestone',
-      saveEpicToStore: 'saveEpic',
-      selectRoadmap: 'selectRoadmap'
+    ...mapActions({
+      saveTaskToStore: 'roadmap/saveTask',
+      editTask: 'roadmap/editTask',
+      saveCategoryToStore: 'roadmap/saveCategory',
+      saveEpicToStore: 'roadmap/saveEpic',
+      selectRoadmap: 'roadmap/selectRoadmap',
+      saveMilestoneToStore: 'milestones/saveMilestone'
     }),
     async save(refresh) {
       let success = true;

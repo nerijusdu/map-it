@@ -23,7 +23,10 @@ import formatService from '../../services/formatService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['milestoneToPreview', 'readonly'])
+    ...mapGetters({
+      milestoneToPreview: 'milestones/milestoneToPreview',
+      readonly: 'roadmap/readonly'
+    })
   },
   watch: {
     milestoneToPreview(val) {
@@ -45,7 +48,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editMilestone']),
+    ...mapActions('milestones', ['editMilestone']),
     onClose() {
       this.editMilestone({ milestoneId: null, modal: this.$modal });
       this.$modal.hide('previewMilestone');

@@ -8,7 +8,7 @@
       v-show="showCurrentDate"
     />
     <DateMarker
-      v-for="milestone in roadmap.milestones"
+      v-for="milestone in milestones"
       :key="milestone.id"
       :percentage="calculatePercentage(timeFrame, { startDate: timeFrame.startDate, endDate: moment(milestone.date) })"
       :dateMarkerHeigh="isMobileView ? mobileDateMarkerHeight : dateMarkerHeight"
@@ -35,6 +35,7 @@ export default {
   computed: {
     ...mapState({
       roadmap: state => state.roadmap.current,
+      milestones: state => state.milestones.items,
       hasEpics: state => state.roadmap.current.epics.length > 0
     }),
     ...mapGetters('roadmap', {
@@ -80,7 +81,7 @@ export default {
       );
     }
   },
-  methods: mapActions('roadmap', ['previewMilestone']),
+  methods: mapActions('milestones', ['previewMilestone']),
   created() {
     window
       .matchMedia('(max-width: 600px)')

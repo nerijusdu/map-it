@@ -1,6 +1,7 @@
-import api from '../../../services/api';
+import api from '../../services/api';
 
 const initialState = {
+  items: [],
   editMilestoneId: null,
   previewMilestoneId: null
 };
@@ -11,7 +12,7 @@ export const getters = {
       return null;
     }
 
-    const milestone = state.current.milestones.find(t => t.id === state.editMilestoneId);
+    const milestone = state.items.find(t => t.id === state.editMilestoneId);
 
     return milestone || null;
   },
@@ -20,7 +21,7 @@ export const getters = {
       return null;
     }
 
-    const milestone = state.current.milestones.find(t => t.id === state.previewMilestoneId);
+    const milestone = state.items.find(t => t.id === state.previewMilestoneId);
 
     return milestone || null;
   }
@@ -42,8 +43,8 @@ export const actions = {
     }
     commit('mPreviewMilestone', milestoneId);
   },
-  async saveMilestone({ state, commit }, milestone) {
-    milestone.roadmapId = state.current.id;
+  async saveMilestone({ rootState, commit }, milestone) {
+    milestone.roadmapId = rootState.roadmap.current.id;
 
     const isNew = !milestone.id;
     const result = await api.saveMilestone(milestone);
@@ -61,6 +62,9 @@ export const actions = {
 };
 
 export const mutations = {
+  mLoad(state, milestones) {
+    state.items = milestones;
+  },
   mEditMilestone(state, milestoneId) {
     state.editMilestoneId = milestoneId;
   },
@@ -68,19 +72,20 @@ export const mutations = {
     state.previewMilestoneId = milestoneId;
   },
   mAddMilestone(state, milestone) {
-    state.current.milestones.push(milestone);
+    state.items.push(milestone);
   },
   mUpdateMilestone(state, milestone) {
-    const i = state.current.milestones.findIndex(c => c.id === milestone.id);
-    state.current.milestones = [
-      ...state.current.milestones.slice(0, i),
+    const i = state.items.findIndex(c => c.id === milestone.id);
+    state.items = [
+      ...state.items.slice(0, i),
       milestone,
-      ...state.current.milestones.slice(i + 1)
+      ...state.items.slice(i + 1)
     ];
   }
 };
 
 export default {
+  namespaced: true,
   state: initialState,
   getters,
   actions,

@@ -103,6 +103,7 @@ export const actions = {
     window.localStorage.setItem('roadmapId', roadmapId);
 
     commit('mSelectRoadmap', result.data);
+    commit('milestones/mLoad', result.data.milestones, { root: true });
     if (!ignoreRouter) {
       router.push(`/timeline/${roadmapId}`);
     }
