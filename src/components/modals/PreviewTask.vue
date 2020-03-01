@@ -30,6 +30,21 @@
         </div>
         <div><div>From:</div> <div>{{ task.startDate.format(datePreviewFormat) }}</div></div>
         <div><div>To:</div><div>{{ task.endDate.format(datePreviewFormat) }}</div></div>
+        <div class="comment-box">
+          <div>
+            <span v-show="task.comments !== undefined">Comments({{ commentCount }}):</span>
+            <span v-show="task.comments === undefined">Comments(<md-progress-spinner
+                class="md-primary"
+                md-mode="indeterminate"
+                :md-stroke="3"
+                :md-diameter="15"
+              />):</span>
+          </div>
+          <div class="comment" v-for="comment in task.comments" :key="comment.id">
+            <div><b>{{ comment.user.name }}:</b></div>
+            <div><p v-for="(par, i) in getParagraphs(comment.text)" :key="i">{{ par }}</p></div>
+          </div>
+        </div>
       </div>
     </div>
     <div class="modal-footer">
@@ -52,21 +67,44 @@ export default {
     ...mapGetters({
       taskToPreview: 'tasks/taskToPreview',
       readonly: 'roadmap/readonly'
-    })
+    }),
+    commentCount() {
+      return this.task.comments ? this.task.comments.length : 0;
+    }
   },
   watch: {
     async taskToPreview(val) {
       this.initialized = false;
       if (val) {
+        // eslint-disable-next-line no-unused-vars
+        let comments = [];
         if (val.id !== this.task.id) {
-          const res = await api.getUsersForRoadmap(val.roadmapId, { ignoreLoading: true });
-          const users = [{ id: 0, name: 'Unassigned', email: '' }];
-          this.availableAssignees = res
-            ? users.concat(res.data)
-            : users;
+          await this.loadAssignees(val.roadmapId);
+          comments = await this.loadComments(val.id);
         }
 
-        this.task = { ...val, assigneeId: val.assigneeId || 0 };
+        this.task = {
+          ...val,
+          comments: [{
+            id: 1,
+            text: 'My first comment',
+            user: {
+              id: 1,
+              name: 'Commenter',
+              email: 'commenter@email.com'
+            }
+          },
+          {
+            id: 2,
+            text: 'My second comment',
+            user: {
+              id: 1,
+              name: 'Commenter2',
+              email: 'commenter@email.com'
+            }
+          }],
+          assigneeId: val.assigneeId || 0
+        };
         this.initialized = true;
       }
     }
@@ -85,14 +123,16 @@ export default {
       isCompleted: false,
       startDate: moment(),
       endDate: moment(),
-      assigneeId: 0
+      assigneeId: 0,
+      comments: undefined
     },
     availableAssignees: [
       {
         id: 0,
         name: 'Unassigned'
       }
-    ]
+    ],
+    newComment: ''
   }),
   methods: {
     ...mapActions('tasks', [
@@ -104,6 +144,7 @@ export default {
     onClose() {
       this.editTask({ taskId: null, modal: this.$modal });
       this.initialized = false;
+      this.task.comments = undefined;
       this.$modal.hide('previewTask');
     },
     complete(isCompleted) {
@@ -117,6 +158,17 @@ export default {
           this.deleteTask(id);
         }
       });
+    },
+    async loadAssignees(roadmapId) {
+      const res = await api.getUsersForRoadmap(roadmapId, { ignoreLoading: true });
+      const users = [{ id: 0, name: 'Unassigned', email: '' }];
+      this.availableAssignees = res
+        ? users.concat(res.data)
+        : users;
+    },
+    async loadComments(taskId) {
+      const res = await api.getTaskComments(taskId, { ignoreLoading: true });
+      return res ? res.data : [];
     },
     updateAssignee(assigneeId) {
       if (!this.initialized) {
@@ -147,7 +199,7 @@ export default {
   max-height: 50vh;
 }
 
-.preview-item-field > div {
+.preview-item-field > div:not(.comment-box) {
   display: flex;
   width: 60%;
   justify-content: space-between;
@@ -173,5 +225,20 @@ export default {
   min-height: auto;
   width: auto;
   margin-left: 10px;
+}
+
+.comment-box {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.comment {
+  display: flex;
+  margin-top: 10px;
+}
+
+.comment > div:first-of-type {
+  margin-right: 10px;
 }
 </style>

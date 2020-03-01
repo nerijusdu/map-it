@@ -19,5 +19,8 @@ export default {
   },
   unassignFromTask(taskId, options) {
     return apiCall(`/tasks/${taskId}/unassign`, { method: 'PUT' }, options);
+  },
+  getTaskComments(taskId, options) {
+    return apiCall(`/tasks/${taskId}/comments`, {}, options);
   }
 };
