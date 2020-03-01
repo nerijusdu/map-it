@@ -20,4 +20,17 @@ router.put('/:taskId/unassign', response(async (req, res) => {
   return res.json({});
 }));
 
+router.get('/:taskId/comments', response(async (req, res) => {
+  const result = await taskService(req.user!).getComments(req.params.taskId);
+  return res.json(result);
+}));
+
+router.post('/:taskId/comments', response(async (req, res) => {
+  const result = await taskService(req.user!).postComment({
+    ...req.body,
+    taskId: req.params.taskId
+  });
+  return res.json(result);
+}));
+
 export default router;

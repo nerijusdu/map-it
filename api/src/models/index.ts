@@ -14,7 +14,8 @@ export * from './httpError';
 export * from './entityBase';
 export * from './roadmapUser';
 export * from './userNotification';
+export * from './comment';
 
-export type AnyEntity = Roadmap | Task | Category | Milestone | Epic;
+export type AnyEntity = Roadmap | Task | Category | Milestone | Epic | Comment;
 
 export type RoadmapEntity = Task | Category | Milestone | Epic;

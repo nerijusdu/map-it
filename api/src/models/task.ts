@@ -1,6 +1,7 @@
 import { IsDate, IsDefined, IsOptional, Length } from 'class-validator';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Category } from './category';
+import { Comment } from './comment';
 import { IRoadmapEntity } from './IRoadmapEntity';
 import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
@@ -50,4 +51,7 @@ export class Task extends OwnedEntity implements IRoadmapEntity {
 
   @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   public category: Category;
+
+  @OneToMany(() => Comment, comment => comment.task)
+  public comments: Comment[];
 }

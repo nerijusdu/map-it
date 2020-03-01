@@ -1,6 +1,7 @@
 import moment from 'moment';
-import { HttpError, Roadmap, Task, User } from '../models';
+import { Comment, HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
+import validate from '../utils/validate';
 import accountService from './accountService';
 import categoryService from './categoryService';
 import notificationService from './notificationService';
@@ -71,6 +72,25 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
     await this.canEdit(task.roadmapId, user.id);
 
     await connection().manager.update(Task, { id: task.id }, { assigneeId: user.id });
+  }
+
+  public async getComments(taskId: number) {
+    const taskWithComments = await this.getById(taskId, {
+      relations: ['comments']
+    });
+
+    return taskWithComments.comments;
+  }
+
+  public async postComment(comment: Comment) {
+    const newComment = new Comment(comment);
+    newComment.userId = this.user.id;
+    const task = await this.getById(newComment.taskId);
+
+    await validate(newComment);
+    await this.canEdit(task.roadmapId);
+
+    return connection().manager.save(newComment);
   }
 }
 
