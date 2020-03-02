@@ -1,9 +1,9 @@
 import moment from 'moment';
-import api from '../../../services/api';
-import { roadmapMonthFormat } from '../../../constants';
-import converters from '../../../services/converterService';
-import formatService from '../../../services/formatService';
-import router from '../../../router';
+import api from '../../services/api';
+import { roadmapMonthFormat } from '../../constants';
+import converters from '../../services/converterService';
+import formatService from '../../services/formatService';
+import router from '../../router';
 
 const initialState = {
   current: {},
@@ -103,6 +103,10 @@ export const actions = {
     window.localStorage.setItem('roadmapId', roadmapId);
 
     commit('mSelectRoadmap', result.data);
+    commit('milestones/mLoad', result.data.milestones, { root: true });
+    commit('epics/mLoad', result.data.epics, { root: true });
+    commit('categories/mLoad', result.data.categories, { root: true });
+    commit('tasks/mLoad', result.data.tasks, { root: true });
     if (!ignoreRouter) {
       router.push(`/timeline/${roadmapId}`);
     }
@@ -143,6 +147,10 @@ export const actions = {
   },
   reset({ commit }) {
     commit('mReset');
+    commit('milestones/mReset', null, { root: true });
+    commit('epics/mReset', null, { root: true });
+    commit('categories/mReset', null, { root: true });
+    commit('tasks/mReset', null, { root: true });
   }
 };
 
@@ -183,9 +191,6 @@ export const mutations = {
   mReset(state) {
     state.all = [];
     state.current = {};
-    state.editTaskId = null;
-    state.previewTaskId = null;
-    state.previewCategoryId = null;
     state.editRoadmapId = null;
     state.isInitialized = false;
     state.isInitialising = false;
@@ -193,6 +198,7 @@ export const mutations = {
 };
 
 export default {
+  namespaced: true,
   state: initialState,
   getters,
   actions,

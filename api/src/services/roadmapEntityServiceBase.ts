@@ -46,19 +46,23 @@ export class RoadmapEntityServiceBase<TEntity extends IRoadmapEntity> implements
     return connection().manager.remove(entity);
   }
 
-  protected async canEdit(roadmapId: number) {
+  protected async canEdit(roadmapId: number, userId?: number) {
+    if (!userId) {
+      userId = this.user.id;
+    }
+
     const roadmap = await connection().createQueryBuilder<Roadmap>(Roadmap, 'roadmap')
       .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
       .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)',
-        { id: roadmapId, userId: this.user.id })
+        { id: roadmapId, userId })
       .getOne();
 
     if (!roadmap) {
       throw new HttpError(resources.Generic_EntityNotFound('Roadmap'), 400);
     }
 
-    const roadmapUser = roadmap.roadmapUsers.find(x => x.userId === this.user.id);
-    if (roadmap.userId !== this.user.id && (!roadmapUser || roadmapUser!.readonly)) {
+    const roadmapUser = roadmap.roadmapUsers.find(x => x.userId === userId);
+    if (roadmap.userId !== userId && (!roadmapUser || roadmapUser!.readonly)) {
       throw new HttpError(resources.Generic_ValidationError, 400);
     }
   }

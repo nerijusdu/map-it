@@ -2,6 +2,7 @@
 import shortid from 'shortid';
 import {
   Category,
+  Comment,
   Epic,
   Milestone,
   Roadmap,
@@ -154,6 +155,19 @@ const createNotificationSubscription = async (userId: number) => {
   return connection().manager.save(subscription);
 };
 
+const createComment = async (task: Task, commenter: User, modifier?: (x: Comment) => Comment) => {
+  let comment = new Comment();
+  comment.text = shortid.generate();
+  comment.taskId = task.id;
+  comment.userId = commenter.id;
+
+  if (modifier) {
+    comment = modifier(comment);
+  }
+
+  return connection().manager.save(comment);
+};
+
 export default {
   defaultPassword,
   createAccount,
@@ -164,5 +178,6 @@ export default {
   createMilestone,
   createEpic,
   linkRoadmapToUser,
-  createNotificationSubscription
+  createNotificationSubscription,
+  createComment
 };

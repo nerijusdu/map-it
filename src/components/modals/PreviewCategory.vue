@@ -1,5 +1,5 @@
 <template>
-  <modal name="previewCategory" height="auto">
+  <modal name="previewCategory" height="auto" :scrollable="true">
     <div class="modal-title" :style="{background: category.color}">
       <div class="title">{{ category.title }}</div>
     </div>
@@ -21,7 +21,10 @@ import formatService from '../../services/formatService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['categoryToPreview', 'readonly'])
+    ...mapGetters({
+      categoryToPreview: 'categories/categoryToPreview',
+      readonly: 'roadmap/readonly'
+    })
   },
   watch: {
     categoryToPreview(val) {
@@ -36,7 +39,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editCategory']),
+    ...mapActions('categories', ['editCategory']),
     onClose() {
       this.editCategory({ categoryId: null, modal: this.$modal });
       this.$modal.hide('previewCategory');

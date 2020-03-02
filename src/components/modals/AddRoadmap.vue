@@ -1,5 +1,5 @@
 <template>
-  <modal name="addRoadmap" height="auto">
+  <modal name="addRoadmap" height="auto" :scrollable="true">
     <div class="modal-title">
       <div>{{roadmapToEdit ? 'Edit roadmap' : 'Create new roadmap'}}</div>
     </div>

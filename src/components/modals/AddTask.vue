@@ -1,5 +1,5 @@
 <template>
-  <modal name="addTask" height="auto" @closed="onClose">
+  <modal name="addTask" height="auto" :scrollable="true" @closed="onClose">
     <div class="modal-title">
       <div>{{ title }}</div>
     </div>
@@ -125,17 +125,17 @@ export default {
   mixins: [validationMixin],
   computed: {
     ...mapState({
-      categories: state => state.roadmap.current.categories,
-      tasks: state => state.roadmap.current.tasks,
+      categories: state => state.categories.items,
+      tasks: state => state.tasks.items,
       roadmapId: state => state.roadmap.current.id
     }),
-    ...mapGetters('roadmap', [
-      'taskToEdit',
-      'categoryToEdit',
-      'milestoneToEdit',
-      'epicToEdit',
-      'roadmapTimeFrame'
-    ]),
+    ...mapGetters({
+      taskToEdit: 'tasks/taskToEdit',
+      categoryToEdit: 'categories/categoryToEdit',
+      epicToEdit: 'epics/epicToEdit',
+      roadmapTimeFrame: 'roadmap/roadmapTimeFrame',
+      milestoneToEdit: 'milestones/milestoneToEdit'
+    }),
     title() {
       if (this.taskToEdit) {
         return this.task.title;
@@ -210,13 +210,13 @@ export default {
     descriptionLength: validationRules.descriptionLength
   }),
   methods: {
-    ...mapActions('roadmap', {
-      saveTaskToStore: 'saveTask',
-      editTask: 'editTask',
-      saveCategoryToStore: 'saveCategory',
-      saveMilestoneToStore: 'saveMilestone',
-      saveEpicToStore: 'saveEpic',
-      selectRoadmap: 'selectRoadmap'
+    ...mapActions({
+      saveTaskToStore: 'tasks/saveTask',
+      editTask: 'tasks/editTask',
+      saveCategoryToStore: 'categories/saveCategory',
+      saveEpicToStore: 'epics/saveEpic',
+      selectRoadmap: 'roadmap/selectRoadmap',
+      saveMilestoneToStore: 'milestones/saveMilestone'
     }),
     async save(refresh) {
       let success = true;

@@ -1,5 +1,5 @@
 <template>
-  <modal name="previewMilestone" height="auto">
+  <modal name="previewMilestone" height="auto" :scrollable="true">
     <div class="modal-title" :style="{background: milestone.color}">
       <div class="title">{{ milestone.title }}</div>
     </div>
@@ -23,7 +23,10 @@ import formatService from '../../services/formatService';
 
 export default {
   computed: {
-    ...mapGetters('roadmap', ['milestoneToPreview', 'readonly'])
+    ...mapGetters({
+      milestoneToPreview: 'milestones/milestoneToPreview',
+      readonly: 'roadmap/readonly'
+    })
   },
   watch: {
     milestoneToPreview(val) {
@@ -45,7 +48,7 @@ export default {
     }
   }),
   methods: {
-    ...mapActions('roadmap', ['editMilestone']),
+    ...mapActions('milestones', ['editMilestone']),
     onClose() {
       this.editMilestone({ milestoneId: null, modal: this.$modal });
       this.$modal.hide('previewMilestone');

@@ -31,6 +31,8 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       .leftJoinAndSelect('roadmap.epics', 'epics')
       .leftJoinAndSelect('roadmap.roadmapUsers', 'ru')
       .leftJoinAndSelect('ru.user', 'roadmapUsers')
+      .leftJoinAndSelect('roadmap.user', 'user')
+      .leftJoinAndSelect('tasks.assignee', 'assignee')
       .addSelect('roadmapUsers.id')
       .where('roadmap.id = :id AND (roadmap.user = :userId OR ru.userId = :userId)', { id, userId: this.user.id })
       .orderBy('epics.id', 'ASC')
@@ -108,6 +110,24 @@ class RoadmapService implements IEntityServiceBase<Roadmap> {
       .getOne();
 
     return roadmap;
+  }
+
+  public async getUsers(roadmapId: number) {
+    const roadmap = await this.getById(roadmapId);
+    const users = [
+      {
+        id: roadmap.user.id,
+        name: roadmap.user.name,
+        email: roadmap.user.email
+      },
+      ...roadmap.roadmapUsers.map(ru => ({
+        id: ru.user.id,
+        name: ru.user.name,
+        email: ru.user.email
+      }))
+    ];
+
+    return users;
   }
 }
 

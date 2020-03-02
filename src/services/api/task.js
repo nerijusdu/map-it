@@ -13,5 +13,20 @@ export default {
   },
   deleteTask(id, options) {
     return apiCall(`/tasks/${id}`, { method: 'DELETE' }, options);
+  },
+  assignUserToTask(userId, taskId, options) {
+    return apiCall(`/tasks/${taskId}/assign/${userId}`, { method: 'PUT' }, options);
+  },
+  unassignFromTask(taskId, options) {
+    return apiCall(`/tasks/${taskId}/unassign`, { method: 'PUT' }, options);
+  },
+  getTaskComments(taskId, options) {
+    return apiCall(`/tasks/${taskId}/comments`, {}, options);
+  },
+  postComment({ taskId, text }, options) {
+    return apiCall(`/tasks/${taskId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ text })
+    }, options);
   }
 };

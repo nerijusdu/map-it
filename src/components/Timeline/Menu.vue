@@ -1,10 +1,5 @@
 <template>
   <div class="menu-bar">
-    <!-- <div class="menu-bar-nav border-between-children">
-      <div class="flex-center">Items</div>
-      <div class="flex-center">Layout</div>
-      <div class="flex-center">Colors</div>
-    </div> -->
     <div class="flex add-button" v-if="!!selectedRoadmap">
       <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addTask')">
         <img src="@/assets/plus.svg" alt="Add"/>

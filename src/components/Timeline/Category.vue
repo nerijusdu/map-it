@@ -58,11 +58,11 @@ export default {
   props: ['category', 'subCategories'],
   computed: {
     ...mapState({
-      roadmapTasks: state => state.roadmap.current.tasks.length
+      roadmapTasks: state => state.tasks.items.length
     }),
-    ...mapGetters('roadmap', {
-      getTasks: 'tasksByCategory',
-      timeFrame: 'roadmapTimeFrame'
+    ...mapGetters({
+      getTasks: 'tasks/tasksByCategory',
+      timeFrame: 'roadmap/roadmapTimeFrame'
     }),
     renderCategories() {
       return this.subCategories && this.subCategories.length > 0
@@ -71,7 +71,10 @@ export default {
     }
   },
   methods: {
-    ...mapActions('roadmap', ['previewTask', 'previewCategory'])
+    ...mapActions({
+      previewTask: 'tasks/previewTask',
+      previewCategory: 'categories/previewCategory'
+    })
   }
 };
 </script>

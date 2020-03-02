@@ -9,4 +9,9 @@ router.post('/assign', response(async (req, res) => {
   return res.json(result);
 }));
 
+router.get('/:id/users', response(async (req, res) => {
+  const result = await roadmapService(req.user!).getUsers(req.params.id);
+  return res.json(result);
+}));
+
 export default router;

@@ -3,6 +3,7 @@ import { Connection, createConnection } from 'typeorm';
 import { ORMConfigs } from '../../config';
 import {
   Category,
+  Comment,
   Epic,
   Milestone,
   Roadmap,
@@ -32,7 +33,8 @@ export const init = () => {
       Category,
       Milestone,
       Epic,
-      UserNotification
+      UserNotification,
+      Comment
     ]
   })
     .then(data => { con = data; })

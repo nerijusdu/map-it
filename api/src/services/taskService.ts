@@ -1,6 +1,8 @@
 import moment from 'moment';
-import { HttpError, Roadmap, Task, User } from '../models';
+import { Comment, HttpError, Roadmap, Task, User } from '../models';
 import resources from '../resources';
+import validate from '../utils/validate';
+import accountService from './accountService';
 import categoryService from './categoryService';
 import notificationService from './notificationService';
 import { RoadmapEntityServiceBase } from './roadmapEntityServiceBase';
@@ -55,6 +57,52 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
   public getByName(name: string) {
     return this.getAllQuery()
       .andWhere('LOWER(entity.title) LIKE LOWER(:title)', { title: `${name}%`})
+      .getOne();
+  }
+
+  public async assign(taskId: number, userId?: number) {
+    const task = await this.getById(taskId);
+    if (!userId) {
+      await connection().manager.update(Task, { id: task.id }, { assigneeId: undefined });
+      return;
+    }
+
+    const user = await accountService().getById(userId);
+
+    await this.canEdit(task.roadmapId, user.id);
+
+    await connection().manager.update(Task, { id: task.id }, { assigneeId: user.id });
+  }
+
+  public async getComments(taskId: number) {
+    const taskWithComments = await this.getByIdQuery(taskId)
+      .leftJoinAndSelect('entity.comments', 'comment')
+      .leftJoin('comment.user', 'user')
+      .addSelect('user.name')
+      .addSelect('user.email')
+      .getOne();
+
+    if (!taskWithComments) {
+      throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);
+    }
+
+    return taskWithComments.comments;
+  }
+
+  public async postComment(comment: Comment) {
+    const newComment = new Comment(comment);
+    newComment.userId = this.user.id;
+    const task = await this.getById(newComment.taskId);
+
+    await validate(newComment);
+    await this.canEdit(task.roadmapId);
+
+    const savedComment = await connection().manager.save(newComment);
+    return connection().createQueryBuilder<Comment>(Comment, 'comment')
+      .where('comment.id = :id', { id: savedComment.id })
+      .innerJoin('comment.user', 'user')
+      .addSelect('user.name')
+      .addSelect('user.email')
       .getOne();
   }
 }

@@ -1,6 +1,7 @@
-import api from '../../../services/api';
+import api from '../../services/api';
 
 const initialState = {
+  items: [],
   editCategoryId: null,
   previewCategoryId: null
 };
@@ -11,7 +12,7 @@ export const getters = {
       return null;
     }
 
-    const category = state.current.categories.find(t => t.id === state.editCategoryId);
+    const category = state.items.find(t => t.id === state.editCategoryId);
 
     return category || null;
   },
@@ -20,7 +21,7 @@ export const getters = {
       return null;
     }
 
-    const category = state.current.categories.find(t => t.id === state.previewCategoryId);
+    const category = state.items.find(t => t.id === state.previewCategoryId);
 
     return category || null;
   }
@@ -42,8 +43,8 @@ export const actions = {
     }
     commit('mPreviewCategory', categoryId);
   },
-  async saveCategory({ state, commit }, category) {
-    category.roadmapId = state.current.id;
+  async saveCategory({ rootState, commit }, category) {
+    category.roadmapId = rootState.roadmap.current.id;
 
     const isNew = !category.id;
     const result = await api.saveCategory(category);
@@ -61,6 +62,14 @@ export const actions = {
 };
 
 export const mutations = {
+  mLoad(state, categories) {
+    state.items = categories;
+  },
+  mReset(state) {
+    state.items = initialState.items;
+    state.previewCategoryId = initialState.previewCategoryId;
+    state.editCategoryId = initialState.editCategoryId;
+  },
   mEditCategory(state, categoryId) {
     state.editCategoryId = categoryId;
   },
@@ -68,19 +77,20 @@ export const mutations = {
     state.previewCategoryId = categoryId;
   },
   mAddCategory(state, category) {
-    state.current.categories.push(category);
+    state.items.push(category);
   },
   mUpdateCategory(state, category) {
-    const i = state.current.categories.findIndex(c => c.id === category.id);
-    state.current.categories = [
-      ...state.current.categories.slice(0, i),
+    const i = state.items.findIndex(c => c.id === category.id);
+    state.items = [
+      ...state.items.slice(0, i),
       category,
-      ...state.current.categories.slice(i + 1)
+      ...state.items.slice(i + 1)
     ];
   }
 };
 
 export default {
+  namespaced: true,
   state: initialState,
   getters,
   actions,

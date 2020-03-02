@@ -1,9 +1,11 @@
-import { IsDate, IsDateString, IsDefined, IsOptional, Length } from 'class-validator';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { IsDate, IsDefined, IsOptional, Length } from 'class-validator';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { Category } from './category';
+import { Comment } from './comment';
 import { IRoadmapEntity } from './IRoadmapEntity';
 import { OwnedEntity } from './ownedEntity';
 import { Roadmap } from './roadmap';
+import { User } from './user';
 
 @Entity()
 export class Task extends OwnedEntity implements IRoadmapEntity {
@@ -29,6 +31,13 @@ export class Task extends OwnedEntity implements IRoadmapEntity {
   @Column({ default: false })
   public isCompleted: boolean;
 
+  @Column({ nullable: true })
+  @IsOptional()
+  public assigneeId?: number;
+
+  @ManyToOne(() => User, { nullable: true })
+  public assignee?: User;
+
   @Column()
   @IsDefined()
   public roadmapId: number;
@@ -42,4 +51,7 @@ export class Task extends OwnedEntity implements IRoadmapEntity {
 
   @ManyToOne(() => Category, { onDelete: 'CASCADE' })
   public category: Category;
+
+  @OneToMany(() => Comment, comment => comment.task)
+  public comments: Comment[];
 }

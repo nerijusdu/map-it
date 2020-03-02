@@ -1,6 +1,7 @@
-import api from '../../../services/api';
+import api from '../../services/api';
 
 const initialState = {
+  items: [],
   editEpicId: null,
   previewEpicId: null
 };
@@ -11,40 +12,40 @@ export const getters = {
       return null;
     }
 
-    const epic = state.current.epics.find(t => t.id === state.editEpicId);
+    const epic = state.items.find(t => t.id === state.editEpicId);
 
     return epic || null;
   },
-  epicToPreview: (state) => {
+  epicToPreview: (state, _, rootState) => {
     if (!state.previewEpicId) {
       return null;
     }
 
-    const epic = state.current.epics.find(t => t.id === state.previewEpicId);
+    const epic = state.items.find(t => t.id === state.previewEpicId);
     if (!epic) {
       return null;
     }
 
     return {
       ...epic,
-      categories: state.current.categories.filter(x => x.epicId === epic.id)
+      categories: rootState.categories.items.filter(x => x.epicId === epic.id)
     };
   },
-  epicList: state => state.current.epics.map((epic) => {
-    const categories = state.current.categories
+  epicList: (state, _, rootState) => state.items.map((epic) => {
+    const categories = rootState.categories.items
       .filter(x => x.epicId === epic.id)
       .map(x => x.id);
-    const allCategories = state.current.categories
+    const allCategories = rootState.categories.items
       .filter(x => categories.includes(x.id) || categories.includes(x.parentCategoryId))
       .map(x => x.id);
 
     const emptyCategories = new Set([...allCategories]);
-    state.current.categories.forEach((x) => {
+    rootState.categories.items.forEach((x) => {
       if (allCategories.includes(x.id) && x.parentCategoryId) {
         emptyCategories.delete(x.parentCategoryId);
       }
     });
-    const tasks = state.current.tasks.filter((x) => {
+    const tasks = rootState.tasks.items.filter((x) => {
       const includes = allCategories.includes(x.categoryId);
       if (includes) {
         emptyCategories.delete(x.categoryId);
@@ -77,8 +78,8 @@ export const actions = {
     }
     commit('mPreviewEpic', epicId);
   },
-  async saveEpic({ state, commit }, epic) {
-    epic.roadmapId = state.current.id;
+  async saveEpic({ rootState, commit }, epic) {
+    epic.roadmapId = rootState.roadmap.current.id;
 
     const isNew = !epic.id;
     const result = await api.saveEpic(epic);
@@ -96,6 +97,14 @@ export const actions = {
 };
 
 export const mutations = {
+  mLoad(state, epics) {
+    state.items = epics;
+  },
+  mReset(state) {
+    state.items = initialState.items;
+    state.previewEpicId = initialState.previewEpicId;
+    state.editEpicId = initialState.editEpicId;
+  },
   mEditEpic(state, epicId) {
     state.editEpicId = epicId;
   },
@@ -103,19 +112,20 @@ export const mutations = {
     state.previewEpicId = epicId;
   },
   mAddEpic(state, epic) {
-    state.current.epics.push(epic);
+    state.items.push(epic);
   },
   mUpdateEpic(state, epic) {
-    const i = state.current.epics.findIndex(c => c.id === epic.id);
-    state.current.epics = [
-      ...state.current.epics.slice(0, i),
+    const i = state.items.findIndex(c => c.id === epic.id);
+    state.items = [
+      ...state.items.slice(0, i),
       epic,
-      ...state.current.epics.slice(i + 1)
+      ...state.items.slice(i + 1)
     ];
   }
 };
 
 export default {
+  namespaced: true,
   state: initialState,
   getters,
   actions,

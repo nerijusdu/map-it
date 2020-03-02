@@ -8,7 +8,7 @@
       v-show="showCurrentDate"
     />
     <DateMarker
-      v-for="milestone in roadmap.milestones"
+      v-for="milestone in milestones"
       :key="milestone.id"
       :percentage="calculatePercentage(timeFrame, { startDate: timeFrame.startDate, endDate: moment(milestone.date) })"
       :dateMarkerHeigh="isMobileView ? mobileDateMarkerHeight : dateMarkerHeight"
@@ -35,14 +35,17 @@ export default {
   computed: {
     ...mapState({
       roadmap: state => state.roadmap.current,
-      hasEpics: state => state.roadmap.current.epics.length > 0
+      categories: state => state.categories.items,
+      milestones: state => state.milestones.items,
+      tasks: state => state.tasks.items,
+      hasEpics: state => state.epics.items.length > 0
     }),
     ...mapGetters('roadmap', {
       timeFrame: 'roadmapTimeFrame'
     }),
     dateMarkerHeight() {
       const parentCategories = new Set();
-      const subCategories = this.roadmap.categories
+      const subCategories = this.categories
         .filter((x) => {
           if (x.parentCategoryId) {
             parentCategories.add(x.parentCategoryId);
@@ -51,19 +54,19 @@ export default {
           return false;
         })
         .map(x => x.id);
-      const emptyCategories = this.roadmap.categories
-        .filter(x => !this.roadmap.tasks.some(t => t.id === x.id) && !parentCategories.has(x.id));
-      const otherCategories = this.roadmap.categories
+      const emptyCategories = this.categories
+        .filter(x => !this.tasks.some(t => t.id === x.id) && !parentCategories.has(x.id));
+      const otherCategories = this.categories
         .filter(x => !subCategories.includes(x.id) && !parentCategories.has(x.id));
-      const taskCount = this.roadmap.tasks.length;
+      const taskCount = this.tasks.length;
 
       return ((taskCount + emptyCategories.length) * 35)
            + ((parentCategories.size + otherCategories.length) * 5) - 5;
     },
     mobileDateMarkerHeight() {
-      const taskCount = this.roadmap.tasks.length;
+      const taskCount = this.tasks.length;
       const categoiresWithTasks = new Set();
-      this.roadmap.tasks.forEach(x => categoiresWithTasks.add(x.categoryId));
+      this.tasks.forEach(x => categoiresWithTasks.add(x.categoryId));
 
       return (taskCount * 35) + (categoiresWithTasks.size * 57);
     },
@@ -80,7 +83,7 @@ export default {
       );
     }
   },
-  methods: mapActions('roadmap', ['previewMilestone']),
+  methods: mapActions('milestones', ['previewMilestone']),
   created() {
     window
       .matchMedia('(max-width: 600px)')

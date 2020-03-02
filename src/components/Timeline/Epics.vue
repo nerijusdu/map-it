@@ -25,10 +25,10 @@ export default {
     isMobileView: window.innerWidth <= 600
   }),
   computed: {
-    ...mapGetters('roadmap', ['epicList'])
+    ...mapGetters('epics', ['epicList'])
   },
   methods: {
-    ...mapActions('roadmap', ['previewEpic'])
+    ...mapActions('epics', ['previewEpic'])
   },
   created() {
     window
