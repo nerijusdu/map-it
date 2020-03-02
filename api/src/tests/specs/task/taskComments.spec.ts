@@ -39,6 +39,9 @@ describe('Task comments tests', () => {
     expect(response.body.length).to.equal(1);
     expect(response.body[0].text).to.equal(comment.text);
     expect(response.body[0].userId).to.equal(comment.userId);
+    expect(response.body[0].user).to.be.an('object');
+    expect(response.body[0].user.name).to.equal(user.name);
+    expect(response.body[0].user.email).to.equal(user.email);
   });
 
   it('should post a comment', async () => {
@@ -50,6 +53,9 @@ describe('Task comments tests', () => {
     expect(response.status).to.equal(200);
     expect(response.body).to.be.an('object');
     expect(response.body.id).to.exist;
+    expect(response.body.user).to.be.an('object');
+    expect(response.body.user.name).to.equal(user.name);
+    expect(response.body.user.email).to.equal(user.email);
 
     const newComment = await database.connection()
       .manager

@@ -32,8 +32,8 @@
         <div><div>To:</div><div>{{ task.endDate.format(datePreviewFormat) }}</div></div>
         <div class="comment-box">
           <div>
-            <span v-show="task.comments !== undefined">Comments({{ commentCount }}):</span>
-            <span v-show="task.comments === undefined">Comments(<md-progress-spinner
+            <span v-show="!isLoadingComments">Comments({{ commentCount }}):</span>
+            <span v-show="isLoadingComments">Comments(<md-progress-spinner
                 class="md-primary"
                 md-mode="indeterminate"
                 :md-stroke="3"
@@ -43,6 +43,14 @@
           <div class="comment" v-for="comment in task.comments" :key="comment.id">
             <div><b>{{ comment.user.name }}:</b></div>
             <div><p v-for="(par, i) in getParagraphs(comment.text)" :key="i">{{ par }}</p></div>
+          </div>
+          <div class="comment-input">
+            <md-field :class="newCommentError ? 'md-invalid' : ''">
+              <label>Write a comment</label>
+              <md-input v-model="newComment" @keyup.native.enter="writeComment"/>
+              <span class="md-error" v-show="newCommentError">{{ newCommentError }}</span>
+            </md-field>
+            <img @click="() => writeComment(task.id)" src="@/assets/arrow-right-circle.svg" alt="Delete"/>
           </div>
         </div>
       </div>
@@ -70,39 +78,22 @@ export default {
     }),
     commentCount() {
       return this.task.comments ? this.task.comments.length : 0;
+    },
+    isLoadingComments() {
+      return this.task.comments === undefined || this.postingComment;
     }
   },
   watch: {
     async taskToPreview(val) {
       this.initialized = false;
-      if (val) {
-        // eslint-disable-next-line no-unused-vars
+      if (val && val.id !== this.task.id) {
         let comments = [];
-        if (val.id !== this.task.id) {
-          await this.loadAssignees(val.roadmapId);
-          comments = await this.loadComments(val.id);
-        }
+        await this.loadAssignees(val.roadmapId);
+        comments = await this.loadComments(val.id);
 
         this.task = {
           ...val,
-          comments: [{
-            id: 1,
-            text: 'My first comment',
-            user: {
-              id: 1,
-              name: 'Commenter',
-              email: 'commenter@email.com'
-            }
-          },
-          {
-            id: 2,
-            text: 'My second comment',
-            user: {
-              id: 1,
-              name: 'Commenter2',
-              email: 'commenter@email.com'
-            }
-          }],
+          comments,
           assigneeId: val.assigneeId || 0
         };
         this.initialized = true;
@@ -132,7 +123,9 @@ export default {
         name: 'Unassigned'
       }
     ],
-    newComment: ''
+    newComment: '',
+    newCommentError: '',
+    postingComment: false
   }),
   methods: {
     ...mapActions('tasks', [
@@ -144,7 +137,6 @@ export default {
     onClose() {
       this.editTask({ taskId: null, modal: this.$modal });
       this.initialized = false;
-      this.task.comments = undefined;
       this.$modal.hide('previewTask');
     },
     complete(isCompleted) {
@@ -158,6 +150,26 @@ export default {
           this.deleteTask(id);
         }
       });
+    },
+    async writeComment() {
+      if (!this.newComment || this.newComment.length < 3 || this.newComment.length > 2000) {
+        this.newCommentError = 'Comment must be between 3 and 2000 characters!';
+        return;
+      }
+
+      this.postingComment = true;
+      const res = await api.postComment({
+        taskId: this.task.id,
+        text: this.newComment
+      }, { ignoreLoading: true });
+
+      if (!res) {
+        return;
+      }
+
+      this.task.comments.push(res.data);
+      this.newComment = '';
+      this.postingComment = false;
     },
     async loadAssignees(roadmapId) {
       const res = await api.getUsersForRoadmap(roadmapId, { ignoreLoading: true });
@@ -240,5 +252,15 @@ export default {
 
 .comment > div:first-of-type {
   margin-right: 10px;
+}
+
+.comment-input {
+  width: 60%;
+  display: flex;
+}
+
+.comment-input > img {
+  margin-left: 5px;
+  cursor: pointer;
 }
 </style>

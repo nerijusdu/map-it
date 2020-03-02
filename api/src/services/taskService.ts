@@ -75,9 +75,16 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
   }
 
   public async getComments(taskId: number) {
-    const taskWithComments = await this.getById(taskId, {
-      relations: ['comments']
-    });
+    const taskWithComments = await this.getByIdQuery(taskId)
+      .leftJoinAndSelect('entity.comments', 'comment')
+      .leftJoin('comment.user', 'user')
+      .addSelect('user.name')
+      .addSelect('user.email')
+      .getOne();
+
+    if (!taskWithComments) {
+      throw new HttpError(resources.Generic_EntityNotFound(this.entity.name), 400);
+    }
 
     return taskWithComments.comments;
   }
@@ -90,7 +97,13 @@ class TaskService extends RoadmapEntityServiceBase<Task> {
     await validate(newComment);
     await this.canEdit(task.roadmapId);
 
-    return connection().manager.save(newComment);
+    const savedComment = await connection().manager.save(newComment);
+    return connection().createQueryBuilder<Comment>(Comment, 'comment')
+      .where('comment.id = :id', { id: savedComment.id })
+      .innerJoin('comment.user', 'user')
+      .addSelect('user.name')
+      .addSelect('user.email')
+      .getOne();
   }
 }
 

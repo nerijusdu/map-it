@@ -22,5 +22,11 @@ export default {
   },
   getTaskComments(taskId, options) {
     return apiCall(`/tasks/${taskId}/comments`, {}, options);
+  },
+  postComment({ taskId, text }, options) {
+    return apiCall(`/tasks/${taskId}/comments`, {
+      method: 'POST',
+      body: JSON.stringify({ text })
+    }, options);
   }
 };
