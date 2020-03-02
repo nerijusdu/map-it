@@ -32,8 +32,6 @@ export default {
   align-items: space-between;
   justify-content: space-between;
   padding-right: 1%;
-  position: fixed;
-  bottom: 0px;
 }
 
 .menu-bar > div > div.button {

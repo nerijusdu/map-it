@@ -1,5 +1,5 @@
 <template>
-  <modal name="previewEpic" height="auto">
+  <modal name="previewEpic" height="auto" :scrollable="true">
     <div class="modal-title" :style="{background: epic.color}">
       <div class="title">{{ epic.title }}</div>
     </div>

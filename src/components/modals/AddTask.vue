@@ -1,5 +1,5 @@
 <template>
-  <modal name="addTask" height="auto" @closed="onClose">
+  <modal name="addTask" height="auto" :scrollable="true" @closed="onClose">
     <div class="modal-title">
       <div>{{ title }}</div>
     </div>

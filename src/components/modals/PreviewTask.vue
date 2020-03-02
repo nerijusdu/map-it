@@ -1,5 +1,5 @@
 <template>
-  <modal name="previewTask" height="auto">
+  <modal name="previewTask" height="auto" :scrollable="true">
     <div class="modal-title">
       <div class="delete-icon" v-if="!readonly">
         <img @click="() => confirmDelete(task.id)" src="@/assets/trash.svg" alt="Delete"/>
@@ -86,10 +86,12 @@ export default {
   watch: {
     async taskToPreview(val) {
       this.initialized = false;
-      if (val && val.id !== this.task.id) {
-        let comments = [];
-        await this.loadAssignees(val.roadmapId);
-        comments = await this.loadComments(val.id);
+      if (val) {
+        let comments = this.task.comments;
+        if (val.id !== this.task.id) {
+          await this.loadAssignees(val.roadmapId);
+          comments = await this.loadComments(val.id);
+        }
 
         this.task = {
           ...val,
@@ -262,5 +264,13 @@ export default {
 .comment-input > img {
   margin-left: 5px;
   cursor: pointer;
+}
+
+@media only screen and (max-width: 600px) {
+  .preview-item-field > div:not(.comment-box),
+  .comment-box,
+  .comment-input {
+    width: 100%;
+  }
 }
 </style>

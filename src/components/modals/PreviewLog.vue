@@ -1,5 +1,5 @@
 <template>
-  <modal name="preview-log" @before-open="beforeOpen" height="auto">
+  <modal name="preview-log" @before-open="beforeOpen" height="auto" :scrollable="true">
     <div :class="['modal-title', level]">
       <div>Preview Log Entry</div>
     </div>

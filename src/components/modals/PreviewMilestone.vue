@@ -1,5 +1,5 @@
 <template>
-  <modal name="previewMilestone" height="auto">
+  <modal name="previewMilestone" height="auto" :scrollable="true">
     <div class="modal-title" :style="{background: milestone.color}">
       <div class="title">{{ milestone.title }}</div>
     </div>

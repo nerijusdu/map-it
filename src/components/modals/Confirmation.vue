@@ -1,5 +1,5 @@
 <template>
-  <modal name="confirmation" @before-open="beforeOpen" height="auto">
+  <modal name="confirmation" @before-open="beforeOpen" height="auto" :scrollable="true">
     <div class="modal-title">
       <div>{{ title || 'Confirm' }}</div>
     </div>
