@@ -14,3 +14,4 @@ jobs:
         uses: cypress-io/github-action@v1
         with:
           start: docker-compose up
+          wait-on: 'http://localhost:9090'
