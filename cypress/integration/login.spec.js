@@ -1,4 +1,6 @@
 describe('Login tests', () => {
+  before(cy.seedDatabase);
+
   it('should login', () => {
     cy.visit('http://localhost:9090');
     cy.get('input[name=email]')

@@ -4,6 +4,9 @@ on:
     branches:
       - develop
 
+env:
+  NODE_ENV: e2e-test
+
 jobs:
   cypress-run:
     runs-on: ubuntu-16.04
@@ -16,3 +19,6 @@ jobs:
           start: docker-compose up
           wait-on: 'http://localhost:9090'
           wait-on-timeout: 300
+          record: true
+        env:
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

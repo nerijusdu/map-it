@@ -1,5 +1,6 @@
 describe('Timeline tests', () => {
   before(() => {
+    cy.seedDatabase();
     cy.clearLocalStorageCache();
     cy.login();
   });

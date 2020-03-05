@@ -7,9 +7,7 @@
 // commands please read more here:
 // https://on.cypress.io/custom-commands
 // ***********************************************
-//
-//
-// -- This is a parent command --
+
 Cypress.Commands.add('login', (email, password) => {
   cy.request('POST', 'http://localhost:9091/api/account/login', {
     email: email || 'e2e-test@email.com',
@@ -24,6 +22,10 @@ Cypress.Commands.add('login', (email, password) => {
       window.localStorage.setItem('email', data.email);
       window.localStorage.setItem('tokenExpiresAt', data.expiresAt);
     });
+});
+
+Cypress.Commands.add('seedDatabase', () => {
+  cy.request('http://localhost:9091/api/test-data/seed');
 });
 
 // These are needed to keep local storage (with JWT) across multiple tests
@@ -42,16 +44,3 @@ Cypress.Commands.add('clearLocalStorageCache', () => {
   localStorage.clear();
   LOCAL_STORAGE_MEMORY = {};
 });
-
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add("drag", { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add("dismiss", { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })

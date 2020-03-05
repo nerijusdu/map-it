@@ -9,7 +9,7 @@ export class EntityBase {
   @CreateDateColumn()
   public createdOn: Date;
 
-  constructor(obj?: EntityBase) {
+  constructor(obj?: any) {
     if (obj) {
       Object.assign(this, obj);
     }

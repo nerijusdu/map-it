@@ -84,5 +84,17 @@ export const ORMConfigs: any[] = [
     synchronize: true,
     dropSchema: true,
     logging: false
+  },
+  {
+    env: 'e2e-test',
+    type: 'postgres',
+    host: 'map-it-database',
+    port: 5432,
+    username: 'postgres',
+    password: 'root',
+    database: 'map-it',
+    synchronize: true,
+    dropSchema: true,
+    logging: false
   }
 ];
