@@ -8,6 +8,7 @@ import MilestoneController from './milestoneController';
 import NotificationController from './notificationController';
 import RoadmapController from './roadmapController';
 import TaskController from './taskController';
+import TestDataController from './testDataController';
 import UserController from './userController';
 
 export const registerControllers = (app: Application) => {
@@ -21,4 +22,5 @@ export const registerControllers = (app: Application) => {
   app.use('/api/logs', LogsController);
   app.use('/api/notifications', NotificationController);
   app.use('/api/actions', ActionsController);
+  app.use('/api/test-data', TestDataController);
 };

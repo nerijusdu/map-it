@@ -1,9 +1,9 @@
 name: Build and test
 
 on:
-  push:
+  pull_request:
     branches:
-      - develop
+      - master
 
 env:
   NODE_VERSION: '12.14.0'

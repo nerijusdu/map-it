@@ -8,6 +8,7 @@ services:
       - GOOGLE_ACTIONS_CLIENT_ID=${GOOGLE_ACTIONS_CLIENT_ID}
       - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET}
       - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID}
+      - NODE_ENV=${NODE_ENV}
     volumes:
       - ./api/src:/usr/src/app/src
     build:
