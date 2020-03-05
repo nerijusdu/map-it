@@ -1,5 +1,7 @@
 # map-it
-Roadmap tool.
+Roadmap tool. 
+![Run E2E tests](https://github.com/nerijusdu/map-it/workflows/Run%20E2E%20tests/badge.svg?branch=master) 
+![Build and test](https://github.com/nerijusdu/map-it/workflows/Build%20and%20test/badge.svg?branch=master)
 
 # New things I tried/learned with this project
 - Typescript
@@ -10,8 +12,9 @@ Roadmap tool.
 - Service workers
   - Caching
   - Push notifications
-- Github pipelines
+- Github actions
 - Docker
+- [Cypres](https://www.cypress.io/)
 
 # Run locally
 - Have [Docker](https://docs.docker.com/install/) installed
