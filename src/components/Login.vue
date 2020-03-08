@@ -5,19 +5,19 @@
       <div class="form-content">
         <md-field :class="getValidationClass('email')" @keyup.native.enter="validateForm">
           <label>Email</label>
-          <md-input v-model="user.email" name="email"/>
+          <md-input v-model="user.email" name="email" data-cy="email"/>
           <span class="md-error" v-if="!$v.user.email.required">{{ resources.requiredMsg }}</span>
           <span class="md-error" v-if="!$v.user.email.email">{{ resources.invalidEmailMsg }}</span>
         </md-field>
         <md-field :md-toggle-password="false" :class="getValidationClass('password')" @keyup.native.enter="validateForm">
           <label>Password</label>
-          <md-input v-model="user.password" type="password" name="password"/>
+          <md-input v-model="user.password" type="password" name="password" data-cy="password"/>
           <span class="md-error" v-if="!$v.user.password.required">{{ resources.requiredMsg }}</span>
         </md-field>
       </div>
       <div class="form-footer">
         <md-button class="md-raised" @click="register">Register</md-button>
-        <md-button class="md-raised md-primary" @click="validateForm">
+        <md-button class="md-raised md-primary" @click="validateForm" data-cy="loginBtn">
           <div>Login</div>
         </md-button>
         <md-button class="md-raised google-button" @click="useGoogle">

@@ -1,5 +1,11 @@
 <template>
-  <md-snackbar :class="isError ? 'error' : ''" :md-position="'left'" :md-duration="400" :md-active="!!text" md-persistent>
+  <md-snackbar
+    :class="isError ? 'error' : ''"
+    :md-position="'left'"
+    :md-duration="400"
+    :md-active="!!text"
+    data-cy="message"
+    md-persistent>
     <span>{{text}}</span>
     <md-button class="md-icon-button close-button" @click="hide">
       <img src="@/assets/x.svg"/>

@@ -3,13 +3,13 @@ describe('Login tests', () => {
 
   it('should login', () => {
     cy.visit('http://localhost:9090');
-    cy.get('input[name=email]')
+    cy.get('input[data-cy=email]')
       .type('e2e-test@email.com');
 
-    cy.get('input[name=password]')
+    cy.get('input[data-cy=password]')
       .type('E2EsecurePassword');
 
-    cy.get('button.md-button.md-primary')
+    cy.get('[data-cy=loginBtn]')
       .click();
 
     cy.url()
@@ -18,15 +18,15 @@ describe('Login tests', () => {
 
   it('should show error when failed', () => {
     cy.visit('http://localhost:9090');
-    cy.get('input[name=email]')
+    cy.get('input[data-cy=email]')
       .type('e2e-test@email.com');
 
-    cy.get('input[name=password]')
+    cy.get('input[data-cy=password]')
       .type('E2EincorrectPassword');
 
-    cy.get('button.md-button.md-primary')
+    cy.get('[data-cy=loginBtn]')
       .click();
 
-    cy.get('.md-snackbar.error').should('be.visible');
+    cy.get('[data-cy=message]').should('be.visible');
   });
 });

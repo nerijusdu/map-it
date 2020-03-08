@@ -7,6 +7,7 @@
         'margin-left': `${((window.width - otherElementsSize) * percentage / 100) + categoryLabelSize}px`
       }"
       @click="click"
+      :data-cy="`date-marker-${title.replace(' ', '-')}`"
     >
       <div class="arrow-down">
         <md-tooltip md-direction="top">{{title}}</md-tooltip>
