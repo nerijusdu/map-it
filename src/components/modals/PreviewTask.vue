@@ -174,6 +174,7 @@ export default {
       this.postingComment = false;
     },
     async loadAssignees(roadmapId) {
+      if (!roadmapId) return; // TODO: this is undefined sometimes
       const res = await api.getUsersForRoadmap(roadmapId, { ignoreLoading: true });
       const users = [{ id: 0, name: 'Unassigned', email: '' }];
       this.availableAssignees = res

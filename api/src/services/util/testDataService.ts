@@ -63,6 +63,11 @@ export class TestDataService {
       x.color = '#BADA55';
       return x;
     });
+    const category3 = await entityFactory.createCategory(roadmap1.id, x => {
+      x.title = 'E2E Category3';
+      x.color = '#BADA55';
+      return x;
+    });
     const subCategory1 = await entityFactory.createCategory(roadmap1.id, x => {
       x.title = 'E2E Sub-Category1';
       x.color = '#BADA55';
@@ -73,6 +78,7 @@ export class TestDataService {
     return {
       category1,
       category2,
+      category3,
       subCategory1
     };
   }
