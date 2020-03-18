@@ -23,9 +23,10 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: root
-      POSTGRES_DB: map-it
+      POSTGRES_MULTIPLE_DATABASES: map-it,map-it-test
     volumes:
       - map-it-db-data:/var/lib/postgresql/data
+      - ./postgres:/docker-entrypoint-initdb.d
     ports:
       - 5432:5432
   map-it-frontend:

@@ -14,11 +14,11 @@ export class TestDataService {
     this.password = (await authService.encryptPassword(defaultPass)) || defaultPass;
 
     const user = await this.seedUsers();
-    const roadmap = await this.seedRoadmap(user);
-    const categories = await this.seedCategories(roadmap);
-    await this.seedTasks(roadmap, categories);
-    await this.seedEpics(roadmap, [categories.category1, categories.category2]);
-    await this.seedMilestones(roadmap);
+    const {roadmap1} = await this.seedRoadmap(user);
+    const categories = await this.seedCategories(roadmap1);
+    await this.seedTasks(roadmap1, categories);
+    await this.seedEpics(roadmap1, [categories.category1, categories.category2]);
+    await this.seedMilestones(roadmap1);
   }
 
   private async seedMilestones(roadmap: Roadmap) {
@@ -90,8 +90,17 @@ export class TestDataService {
       x.startDate.setMonth(x.startDate.getMonth() - 1);
       return x;
     });
+    const roadmap2 = await entityFactory.createRoadmap(user1.id, x => {
+      x.title = 'E2E Roadmap2';
+      x.startDate = new Date();
+      x.startDate.setMonth(x.startDate.getMonth() - 1);
+      return x;
+    });
 
-    return roadmap1;
+    return {
+      roadmap1,
+      roadmap2
+    };
   }
 
   private async seedUsers() {

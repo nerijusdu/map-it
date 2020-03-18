@@ -92,7 +92,7 @@ export const ORMConfigs: any[] = [
     port: 5432,
     username: 'postgres',
     password: 'root',
-    database: 'map-it',
+    database: 'map-it-test',
     synchronize: true,
     dropSchema: true,
     logging: false

@@ -23,4 +23,13 @@ describe('Timeline tests', () => {
     cy.get('[data-cy=date-marker-Today').should('be.visible');
     cy.get('[data-cy=addTask]').should('be.visible');
   });
+
+  it('should switch roadmaps', () => {
+    cy.visit('http://localhost:9090');
+
+    cy.get('[data-cy=roadmap-selection]').click();
+    cy.get('[data-cy=roadmap-option]:last-of-type()').click();
+
+    cy.contains('E2E Task1').should('not.be.visible');
+  });
 });
