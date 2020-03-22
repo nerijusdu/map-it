@@ -1,5 +1,5 @@
 <template>
-  <modal name="confirmation" @before-open="beforeOpen" height="auto" :scrollable="true">
+  <modal name="confirmation" @before-open="beforeOpen" height="auto" :scrollable="true" data-cy="confirmation-modal">
     <div class="modal-title">
       <div>{{ title || 'Confirm' }}</div>
     </div>
@@ -7,8 +7,8 @@
       {{ content || 'Are you sure?' }}
     </div>
     <div class="modal-footer">
-      <md-button class="md-raised md-accent" @click="onClose">{{ cancelLabel || 'Cancel' }}</md-button>
-      <md-button class="md-raised md-primary" @click="onConfirm">{{ confirmLabel || 'Confirm' }}</md-button>
+      <md-button class="md-raised md-accent" @click="onClose" data-cy="cancel-confirm">{{ cancelLabel || 'Cancel' }}</md-button>
+      <md-button class="md-raised md-primary" @click="onConfirm" data-cy="confirm">{{ confirmLabel || 'Confirm' }}</md-button>
     </div>
   </modal>
 </template>

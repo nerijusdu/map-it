@@ -1,7 +1,7 @@
 <template>
   <div class="menu-bar">
     <div class="flex add-button" v-if="!!selectedRoadmap">
-      <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addTask')">
+      <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addTask')" data-cy="addTask">
         <img src="@/assets/plus.svg" alt="Add"/>
       </md-button>
     </div>

@@ -5,102 +5,102 @@
     </div>
     <form class="modal-content">
       <md-tabs :md-active-tab="activeTabName">
-        <md-tab id="tab-home" md-label="Task" @click="activeTab = tab.Task" v-if="categories && categories.length > 0">
-          <md-field :class="getValidationClass('title')">
+        <md-tab data-cy="tab-task" id="tab-home" md-label="Task" @click="activeTab = tab.Task" v-if="categories && categories.length > 0">
+          <md-field :class="getValidationClass('title')" data-cy="task-title-input">
             <label>Title</label>
             <md-input v-model="task.title"/>
             <span class="md-error" v-if="!$v.task.title.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-field :class="getValidationClass('description')">
+          <md-field :class="getValidationClass('description')" data-cy="task-description-input">
             <label>Description</label>
             <md-textarea v-model="task.description"/>
             <span class="md-error" v-if="!$v.task.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
           </md-field>
-          <md-field :class="getValidationClass('categoryId')">
+          <md-field :class="getValidationClass('categoryId')" data-cy="task-category-input">
             <label for="categoryId">Category</label>
             <md-select name="categoryId" id="categoryId" v-model="task.categoryId">
               <md-option v-for="cat in categoriesForTasks" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
             <span class="md-error" v-if="!$v.task.categoryId.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-datepicker md-immediately v-model="task.startDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
+          <md-datepicker md-immediately v-model="task.startDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)" data-cy="task-start-date">
             <label>Start date</label>
           </md-datepicker>
-          <md-datepicker md-immediately v-model="task.endDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
+          <md-datepicker md-immediately v-model="task.endDate" :md-disabled-dates="disabledDates(roadmapTimeFrame)" data-cy="task-end-date">
             <label>End date</label>
           </md-datepicker>
         </md-tab>
         <md-tab id="tab-category" md-label="Category" @click="activeTab = tab.Category" v-if="!task.id">
-          <md-field :class="getValidationClass('title')">
+          <md-field :class="getValidationClass('title')" data-cy="category-title-input">
             <label>Title</label>
             <md-input v-model="category.title"/>
             <span class="md-error" v-if="!$v.category.title.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-field :class="getValidationClass('description')">
+          <md-field :class="getValidationClass('description')" data-cy="category-description-input">
             <label>Description</label>
             <md-textarea v-model="category.description"/>
             <span class="md-error" v-if="!$v.category.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
           </md-field>
-          <md-field :class="getValidationClass('color')">
+          <md-field :class="getValidationClass('color')" data-cy="category-color-input">
             <label>Color</label>
             <md-input v-model="category.color" type="color"/>
             <span class="md-error" v-if="!$v.category.color.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <div class="checkbox" v-if="categories && categories.length > 0">
+          <div class="checkbox" v-if="categories && categories.length > 0" data-cy="category-is-subcategory-input">
             <md-checkbox v-model="category.isSubCategory" class="md-primary" />
             <div>Is Sub-Category?</div>
           </div>
-          <md-field :class="getValidationClass('parentCategoryId')" v-show="category.isSubCategory">
+          <md-field :class="getValidationClass('parentCategoryId')" v-show="category.isSubCategory" data-cy="category-parent-input">
             <label for="parentCategoryId">Parent category</label>
             <md-select name="parentCategoryId" id="parentCategoryId" v-model="category.parentCategoryId">
-              <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+              <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id" data-cy="category-parent">{{ cat.title }}</md-option>
             </md-select>
             <span class="md-error" v-if="!$v.category.parentCategoryId.required">{{ resources.requiredMsg }}</span>
           </md-field>
         </md-tab>
         <md-tab id="tab-milestone" md-label="Milestone" @click="activeTab = tab.Milestone" v-if="!task.id">
-          <md-field :class="getValidationClass('title')">
+          <md-field :class="getValidationClass('title')" data-cy="milestone-title-input">
             <label>Title</label>
             <md-input v-model="milestone.title"/>
             <span class="md-error" v-if="!$v.milestone.title.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-field :class="getValidationClass('color')">
+          <md-field :class="getValidationClass('color')" data-cy="milestone-color-input">
             <label>Color</label>
             <md-input v-model="milestone.color" type="color"/>
             <span class="md-error" v-if="!$v.milestone.color.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-datepicker md-immediately v-model="milestone.date" :md-disabled-dates="disabledDates(roadmapTimeFrame)">
+          <md-datepicker md-immediately v-model="milestone.date" :md-disabled-dates="disabledDates(roadmapTimeFrame)" data-cy="milestone-date-input">
             <label>Date</label>
           </md-datepicker>
         </md-tab>
         <md-tab id="tab-epic" md-label="Epic" @click="activeTab = tab.Epic">
-          <md-field :class="getValidationClass('title')">
+          <md-field :class="getValidationClass('title')" data-cy="epic-title-input">
             <label>Title</label>
             <md-input v-model="epic.title"/>
             <span class="md-error" v-if="!$v.epic.title.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-field :class="getValidationClass('description')">
+          <md-field :class="getValidationClass('description')" data-cy="epic-description-input">
             <label>Description</label>
             <md-textarea v-model="epic.description"/>
             <span class="md-error" v-if="!$v.epic.description.required">{{ resources.maxLengthMsg(descriptionLength) }}</span>
           </md-field>
-          <md-field :class="getValidationClass('color')">
+          <md-field :class="getValidationClass('color')" data-cy="epic-color-input">
             <label>Color</label>
             <md-input v-model="epic.color" type="color"/>
             <span class="md-error" v-if="!$v.epic.color.required">{{ resources.requiredMsg }}</span>
           </md-field>
-          <md-field>
+          <md-field data-cy="epic-categories-input">
             <label for="categoryIds">Categories</label>
             <md-select name="categoryIds" id="categoryIds" v-model="epic.categoryIds" multiple>
-              <md-option v-for="cat in categoriesForEpics" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
+              <md-option v-for="cat in categoriesForEpics" :key="cat.id" :value="cat.id" data-cy="epic-category">{{ cat.title }}</md-option>
             </md-select>
           </md-field>
         </md-tab>
       </md-tabs>
     </form>
     <div class="modal-footer">
-      <md-button class="md-raised md-accent" @click="onClose">Cancel</md-button>
-      <md-button class="md-raised md-primary" @click="validateForm">Save</md-button>
+      <md-button class="md-raised md-accent" @click="onClose" data-cy="cancel-button">Cancel</md-button>
+      <md-button class="md-raised md-primary" @click="validateForm" data-cy="save-button">Save</md-button>
     </div>
   </modal>
 </template>

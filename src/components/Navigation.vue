@@ -4,12 +4,13 @@
       <img src="@/assets/logo.svg"/>
     </div>
     <div class="grow flex-center-v">
-      <md-field class="roadmap-select" v-show="roadmaps.length > 0">
+      <md-field class="roadmap-select" v-show="roadmaps.length > 0" data-cy="roadmap-selection">
         <md-select v-model="roadmapSelection" @md-selected="updateRoadmap">
           <md-option
             v-for="r in roadmaps"
             :key="r.id"
             :value="r.id"
+            data-cy="roadmap-option"
           >
             {{ r.title }}
           </md-option>
