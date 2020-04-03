@@ -1,5 +1,6 @@
+const SW_CACHE_VERSION = '1';
 const RUNTIME = 'runtime';
-const PRECACHE = 'static-files-v5';
+const PRECACHE = `static-files-v${SW_CACHE_VERSION}`;
 const PRECACHE_URLS = [
   '/',
   'static/manifest.json',

@@ -31,7 +31,7 @@
           <div class="rows-container">
             <div
               v-for="task in getTasks(c.id)"
-              :key="task.title"
+              :key="task.id"
               class="row">
               <div
                 class="item flex-center"

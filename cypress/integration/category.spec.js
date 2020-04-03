@@ -13,7 +13,7 @@ describe('Category tests', () => {
     cy.visit('http://localhost:9090');
     const id = generate();
 
-    cy.get('[data-cy=addTask]').click();
+    cy.get('[data-cy=add-btn]').click();
     cy.contains('Category').click();
     cy.get('[data-cy=category-title-input]')
       .children('input')
@@ -34,7 +34,7 @@ describe('Category tests', () => {
     cy.visit('http://localhost:9090');
     const id = generate();
 
-    cy.get('[data-cy=addTask]').click();
+    cy.get('[data-cy=add-btn]').click();
     cy.contains('Category').click();
     cy.get('[data-cy=category-title-input]')
       .children('input')
