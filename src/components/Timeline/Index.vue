@@ -1,27 +1,28 @@
 <template>
   <div className="app-wrapper">
-    <Menu v-if="!roadmap.readonly"/>
     <TimelineView v-if="!!roadmap.id"/>
     <div v-if="!roadmap.id" class="no-roadmap">
       <div>No roadmap selected!</div>
     </div>
+    <AddButton @click="() => $modal.show('addTask')" v-show="!roadmap.readonly && !!selectedRoadmap"/>
   </div>
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions, mapGetters } from 'vuex';
 import TimelineView from './TimelineView';
-import Menu from './Menu';
+import AddButton from '../AddButton';
 
 export default {
   components: {
     TimelineView,
-    Menu
+    AddButton
   },
   computed: {
     ...mapState({
       roadmap: state => state.roadmap.current
-    })
+    }),
+    ...mapGetters('roadmap', ['selectedRoadmap'])
   },
   methods: mapActions('roadmap', ['selectRoadmap']),
   beforeRouteEnter(to, from, next) {

@@ -1,5 +1,5 @@
 const RUNTIME = 'runtime';
-const PRECACHE = 'static-files-v5';
+const PRECACHE = 'static-files-v6';
 const PRECACHE_URLS = [
   '/',
   'static/manifest.json',

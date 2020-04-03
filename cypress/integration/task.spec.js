@@ -13,7 +13,7 @@ describe('Task tests', () => {
     cy.visit('http://localhost:9090');
     const id = generate();
 
-    cy.get('[data-cy=addTask]').click();
+    cy.get('[data-cy=add-btn]').click();
     cy.contains('Task').click();
     cy.get('[data-cy=task-title-input]')
       .children('input')

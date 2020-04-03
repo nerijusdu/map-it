@@ -18,7 +18,7 @@
           </md-field>
           <md-field :class="getValidationClass('categoryId')" data-cy="task-category-input">
             <label for="categoryId">Category</label>
-            <md-select name="categoryId" id="categoryId" v-model="task.categoryId">
+            <md-select name="categoryId" v-model="task.categoryId">
               <md-option v-for="cat in categoriesForTasks" :key="cat.id" :value="cat.id">{{ cat.title }}</md-option>
             </md-select>
             <span class="md-error" v-if="!$v.task.categoryId.required">{{ resources.requiredMsg }}</span>
@@ -52,7 +52,7 @@
           </div>
           <md-field :class="getValidationClass('parentCategoryId')" v-show="category.isSubCategory" data-cy="category-parent-input">
             <label for="parentCategoryId">Parent category</label>
-            <md-select name="parentCategoryId" id="parentCategoryId" v-model="category.parentCategoryId">
+            <md-select name="parentCategoryId" v-model="category.parentCategoryId">
               <md-option v-for="cat in parentCategories" :key="cat.id" :value="cat.id" data-cy="category-parent">{{ cat.title }}</md-option>
             </md-select>
             <span class="md-error" v-if="!$v.category.parentCategoryId.required">{{ resources.requiredMsg }}</span>
@@ -91,7 +91,7 @@
           </md-field>
           <md-field data-cy="epic-categories-input">
             <label for="categoryIds">Categories</label>
-            <md-select name="categoryIds" id="categoryIds" v-model="epic.categoryIds" multiple>
+            <md-select name="categoryIds" v-model="epic.categoryIds" multiple>
               <md-option v-for="cat in categoriesForEpics" :key="cat.id" :value="cat.id" data-cy="epic-category">{{ cat.title }}</md-option>
             </md-select>
           </md-field>

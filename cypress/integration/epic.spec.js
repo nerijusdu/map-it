@@ -13,7 +13,7 @@ describe('Epic tests', () => {
     cy.visit('http://localhost:9090');
     const id = generate();
 
-    cy.get('[data-cy=addTask]').click();
+    cy.get('[data-cy=add-btn]').click();
     cy.contains('Epic').click();
     cy.get('[data-cy=epic-title-input]')
       .children('input')

@@ -13,6 +13,7 @@
       }"
       @click="() => previewEpic({ epicId: epic.id, modal: $modal })">
       {{epic.title}}
+      <md-tooltip md-direction="top">{{epic.title}}</md-tooltip>
     </div>
   </div>
 </template>
@@ -52,7 +53,9 @@ export default {
   text-orientation: mixed;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .epic:not(:first-of-type) {

@@ -13,7 +13,7 @@ describe('Milestone tests', () => {
     cy.visit('http://localhost:9090');
     const id = generate();
 
-    cy.get('[data-cy=addTask]').click();
+    cy.get('[data-cy=add-btn]').click();
     cy.contains('Milestone').click();
     cy.get('[data-cy=milestone-title-input]')
       .children('input')

@@ -34,20 +34,18 @@
         </md-table-cell>
       </md-table-row>
     </md-table>
-    <div class="flex add-button">
-      <md-button class="md-icon-button md-primary md-raised" @click="() => $modal.show('addRoadmap')">
-        <img src="@/assets/plus.svg" alt="Add"/>
-      </md-button>
-    </div>
+    <AddButton @click="() => $modal.show('addRoadmap')"/>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex';
+import AddButton from './AddButton';
 import { datePreviewFormat } from '../constants';
 import resources from '../services/resourceService';
 
 export default {
+  components: { AddButton },
   computed: {
     ...mapState({
       roadmaps: state => state.roadmap.all
