@@ -30,7 +30,7 @@ jobs:
         npm install
         npm run build
         cp -R dist/. api/public/
-        sed -i "s/\$\{SW_CACHE_VERSION\}/$GITHUB_RUN_NUMBER/" dist/sw.js
+        sed -i -r "s/\$\{SW_CACHE_VERSION\}/$GITHUB_RUN_NUMBER/" dist/sw.js
     - name: npm install and build backend
       run: |
         cd api
