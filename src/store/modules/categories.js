@@ -30,7 +30,7 @@ export const getters = {
 export const actions = {
   editCategory({ state, commit }, { categoryId, modal }) {
     if (categoryId) {
-      modal.show('addTask');
+      modal.show('addRoadmapEntity');
       modal.hide('previewCategory');
     } else if (state.previewCategoryId) {
       modal.show('previewCategory');

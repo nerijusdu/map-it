@@ -30,7 +30,7 @@ export const getters = {
 export const actions = {
   editMilestone({ state, commit }, { milestoneId, modal }) {
     if (milestoneId) {
-      modal.show('addTask');
+      modal.show('addRoadmapEntity');
       modal.hide('previewMilestone');
     } else if (state.previewMilestoneId) {
       modal.show('previewMilestone');

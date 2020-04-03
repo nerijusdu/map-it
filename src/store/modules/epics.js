@@ -65,7 +65,7 @@ export const getters = {
 export const actions = {
   editEpic({ state, commit }, { epicId, modal }) {
     if (epicId) {
-      modal.show('addTask');
+      modal.show('addRoadmapEntity');
       modal.hide('previewEpic');
     } else if (state.previewEpicId) {
       modal.show('previewEpic');

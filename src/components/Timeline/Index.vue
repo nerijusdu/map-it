@@ -4,7 +4,7 @@
     <div v-if="!roadmap.id" class="no-roadmap">
       <div>No roadmap selected!</div>
     </div>
-    <AddButton @click="() => $modal.show('addTask')" v-show="!roadmap.readonly && !!selectedRoadmap"/>
+    <AddButton @click="() => $modal.show('addRoadmapEntity')" v-show="!roadmap.readonly && !!selectedRoadmap"/>
   </div>
 </template>
 
