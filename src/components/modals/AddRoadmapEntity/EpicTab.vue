@@ -82,6 +82,11 @@ export default {
         return;
       }
 
+      const success = await this.saveToStore(this.model);
+      if (!success) {
+        return;
+      }
+
       this.beforeClose();
       this.$modal.hide('addRoadmapEntity');
       this.selectRoadmap({ roadmapId: this.roadmapId });

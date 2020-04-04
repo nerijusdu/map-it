@@ -23,6 +23,7 @@ Roadmap tool.
 
 # Test
 
+## API test
 - Local DB
   - Install PostgreSQL
   - Create database `map-it-test`
@@ -31,6 +32,11 @@ Roadmap tool.
   - `docker run --name pg-docker-map-it-test -e POSTGRES_DB=map-it-test -p 5432:5432 postgres:11`
 
 - `npm run test-local` or `npm run test-watch`
+
+## Cypress test
+- Set `NODE_ENV=e2e-test` in `.env` file
+- Run `docker-compose up`
+- Run `npm run cypress` (in a separate console window/tab)
 
 
 # Env variables
