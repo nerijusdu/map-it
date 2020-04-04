@@ -1,6 +1,6 @@
 <template>
   <div>
-    <AddTask />
+    <AddRoadmapEntity />
     <PreviewTask />
     <PreviewCategory />
     <PreviewMilestone />
@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import AddTask from './AddTask';
+import AddRoadmapEntity from './AddRoadmapEntity/Index';
 import PreviewTask from './PreviewTask';
 import PreviewCategory from './PreviewCategory';
 import PreviewMilestone from './PreviewMilestone';
@@ -23,7 +23,7 @@ import PreviewLog from './PreviewLog';
 
 export default {
   components: {
-    AddTask,
+    AddRoadmapEntity,
     PreviewTask,
     PreviewCategory,
     PreviewMilestone,

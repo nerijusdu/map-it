@@ -92,7 +92,9 @@ export const actions = {
     window.localStorage.setItem('email', data.email);
     window.localStorage.setItem('tokenExpiresAt', data.expiresAt);
     commit('mSaveUser', data);
-    dispatch('onLogin');
+    if (data.isLogin) {
+      dispatch('onLogin');
+    }
   },
   showError({ commit }, error) {
     if (error) {
@@ -128,6 +130,7 @@ export const actions = {
     commit('mLogout');
     dispatch('roadmap/reset', null, { root: true });
     router.push('/login');
+    commit('mInit', false);
   },
   toggleOnline({ commit, dispatch, state }, isOnline) {
     if (state.isOnline && !isOnline) {
@@ -151,7 +154,7 @@ export const actions = {
       await dispatch('onLogin');
     }
 
-    commit('mInit');
+    commit('mInit', true);
   }
 };
 
@@ -172,8 +175,8 @@ export const mutations = {
   mShowMessage(state, error) {
     state.message = error;
   },
-  mInit(state) {
-    state.isInitialized = true;
+  mInit(state, isInit) {
+    state.isInitialized = isInit;
   },
   mLogout(state) {
     state.isInitialized = false;
