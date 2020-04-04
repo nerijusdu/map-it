@@ -29,8 +29,8 @@ jobs:
         npm config set unsafe-perm=true
         npm install
         npm run build
-        cp -R dist/. api/public/
         sed -i -r "s/\$\{SW_CACHE_VERSION\}/$GITHUB_RUN_NUMBER/" dist/sw.js
+        cp -R dist/. api/public/
     - name: npm install and build backend
       run: |
         cd api
