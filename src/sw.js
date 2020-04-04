@@ -1,4 +1,4 @@
-const SW_CACHE_VERSION = '1';
+const SW_CACHE_VERSION = 'SW_CACHE_VERSION_PLACEHOLDER';
 const RUNTIME = 'runtime';
 const PRECACHE = `static-files-v${SW_CACHE_VERSION}`;
 const PRECACHE_URLS = [
