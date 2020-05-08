@@ -126,6 +126,7 @@ export const actions = {
     window.localStorage.removeItem('refreshToken');
     window.localStorage.removeItem('email');
     window.localStorage.removeItem('tokenExpiresAt');
+    window.localStorage.removeItem('roadmapId');
     commit('mSaveUser', { token: null, refreshToken: null, email: null });
     commit('mLogout');
     dispatch('roadmap/reset', null, { root: true });

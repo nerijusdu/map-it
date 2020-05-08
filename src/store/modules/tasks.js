@@ -100,7 +100,7 @@ export const actions = {
   },
   editTask({ state, commit }, { taskId, modal }) {
     if (taskId) {
-      modal.show('addTask');
+      modal.show('addRoadmapEntity');
       modal.hide('previewTask');
     } else if (state.previewTaskId) {
       modal.show('previewTask');
@@ -114,6 +114,10 @@ export const actions = {
     commit('mPreviewTask', taskId);
   },
   async completeTask({ commit }, { id, isCompleted }) {
+    if (!id) {
+      return;
+    }
+
     const result = await api.completeTask(id, isCompleted, { ignoreLoading: true });
     if (!result || !result.ok) {
       return;

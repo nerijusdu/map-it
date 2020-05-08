@@ -55,7 +55,7 @@ export default {
         })
         .map(x => x.id);
       const emptyCategories = this.categories
-        .filter(x => !this.tasks.some(t => t.id === x.id) && !parentCategories.has(x.id));
+        .filter(x => !this.tasks.some(t => t.categoryId === x.id) && !parentCategories.has(x.id));
       const otherCategories = this.categories
         .filter(x => !subCategories.includes(x.id) && !parentCategories.has(x.id));
       const taskCount = this.tasks.length;

@@ -22,7 +22,7 @@
         </md-button>
         <md-button class="md-raised google-button" @click="useGoogle">
           <div class="google-button-content">
-            <img src="@/assets/googleLogo32px.svg" width="24px"/>
+            <img src="@/assets/googleLogo32px.png" width="24px"/>
           </div>
         </md-button>
       </div>

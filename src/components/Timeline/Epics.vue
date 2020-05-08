@@ -56,6 +56,7 @@ export default {
   justify-content: flex-start;
   white-space: nowrap;
   overflow: hidden;
+  padding-top: 10px;
 }
 
 .epic:not(:first-of-type) {
