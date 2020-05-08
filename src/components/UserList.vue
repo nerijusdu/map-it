@@ -78,7 +78,8 @@ export default {
   }),
   methods: {
     async getUsers(term) {
-      if (!term || term.length < 3) {
+      if (!term || term.length < 1) {
+        this.suggestedUsers = [];
         return;
       }
 
@@ -109,7 +110,7 @@ export default {
         toString: () => ''
       };
       this.isReadonly = null;
-      this.term = null;
+      this.term = '';
       this.$emit('update');
     },
     async confirmDelete(userId) {
