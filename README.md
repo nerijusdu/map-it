@@ -3,7 +3,15 @@ Roadmap tool.
 ![Run E2E tests](https://github.com/nerijusdu/map-it/workflows/Run%20E2E%20tests/badge.svg?branch=master) 
 ![Build and test](https://github.com/nerijusdu/map-it/workflows/Build%20and%20test/badge.svg?branch=master)
 
-# New things I tried/learned with this project
+## About
+This is a PWA project management tool with a cool UI (at least for my standards). It was a playground to try out all the shiny new things and technologies. This project got my personal award for being the longest ongoing side-project of mine. I don't feel like working on this "masterpiece" anymore, but who knows, maybe I'll think of something else to add after another year or so.
+
+Stack:
+- Frontend: Vue.js
+- Backend: Express.js/Typescript
+- Database: Postgres
+
+### New things I tried/learned with this project
 - Typescript
 - Testing with [supertest](https://github.com/visionmedia/supertest)
 - [TypeORM](https://github.com/typeorm/typeorm)
@@ -16,14 +24,16 @@ Roadmap tool.
 - Docker
 - [Cypres](https://www.cypress.io/)
 
-# Run locally
+## Project info
+
+### Run locally
 - Have [Docker](https://docs.docker.com/install/) installed
 - Add `.env` file with `NODE_ENV=docker-dev` inside
 - Run `docker-compose up`
 
-# Test
+### Test
 
-## API test
+#### API test
 - Local DB
   - Install PostgreSQL
   - Create database `map-it-test`
@@ -33,13 +43,13 @@ Roadmap tool.
 
 - `npm run test-local` or `npm run test-watch`
 
-## Cypress test
+#### Cypress test
 - Set `NODE_ENV=e2e-test` in `.env` file
 - Run `docker-compose up`
 - Run `npm run cypress` (in a separate console window/tab)
 
 
-# Env variables
+### Env variables
 
 Environment variables needed for deployment:
 
